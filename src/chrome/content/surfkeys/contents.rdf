@@ -1,0 +1,30 @@
+<?xml version="1.0"?>
+<!DOCTYPE dialog SYSTEM "chrome://surfkeys/locale/surfkeys.dtd">
+
+
+<RDF:RDF xmlns:chrome="http://www.mozilla.org/rdf/chrome#"
+         xmlns:RDF="http://www.w3.org/1999/02/22-rdf-syntax-ns#">
+
+    <RDF:Seq about="urn:mozilla:package:root">
+        <RDF:li resource="urn:mozilla:package:surfkeys"/>
+    </RDF:Seq>
+    
+    <RDF:Description about="urn:mozilla:package:surfkeys"
+                     chrome:author="Pekka P. Sillanpaa"
+                     chrome:description="Click links by hitting hints!!"
+                     chrome:displayName="surfkeys"
+                     chrome:extension="true"
+                     chrome:name="surfkeys"
+                     chrome:settingsURL="chrome://surfkeys/content/settings.xul">
+    </RDF:Description>
+
+    <RDF:Seq about="urn:mozilla:overlays">
+        <RDF:li resource="chrome://browser/content/browser.xul"/>
+    </RDF:Seq>
+    
+    <!-- Firefox -->  
+    <RDF:Seq about="chrome://browser/content/browser.xul">
+        <RDF:li>chrome://surfkeys/content/surfkeys.xul</RDF:li>
+    </RDF:Seq>
+    
+</RDF:RDF>

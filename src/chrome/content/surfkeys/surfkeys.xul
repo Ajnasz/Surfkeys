@@ -1,0 +1,18 @@
+<?xml version="1.0"?>
+
+<?xml-stylesheet href="chrome://surfkeys/content/surfkeys.css" type="text/css"?>
+<overlay id="surfkeysOverlay"
+    xmlns="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul">
+  <script src="chrome://surfkeys/content/surfkeys.js" />
+  <script src="chrome://surfkeys/content/surfkeyssettings.js" />
+  <keyset id="mainKeyset">
+    <key id="surfkeysAccelerateUp" key="i" oncommand="surfkeysAccelerateUp()"/>
+    <key id="surfkeysAccelerateDown" key="k" oncommand="surfkeysAccelerateDown()"/>
+    <key id="surfkeysAccelerateRight" key="l" oncommand="surfkeysAccelerateRight()"/>
+    <key id="surfkeysAccelerateLeft" key="j" oncommand="surfkeysAccelerateLeft()"/>
+    <key id="surfkeysChangeNextPage" key="n" oncommand="surfkeysChangePage(window._content.location.href, 1)"/>
+    <key id="surfkeysChangePreviousPage" key="p" oncommand="surfkeysChangePage(window._content.location.href, 2)"/>
+    <key id="surfkeysBack" key="h" command="Browser:Back"/>
+    <key id="surfkeysForward" key="y" command="Browser:Forward"/>
+  </keyset>   
+</overlay>
