@@ -102,6 +102,22 @@ function quickEnable() {
   surfkeysQuickDisabled = false;
 }
 
+function sk_isFormElemFocused()
+{
+  var elt = document.commandDispatcher.focusedElement;
+  if (elt == null) return false;
+
+  var tagName = elt.localName.toUpperCase();
+
+  if (tagName == "INPUT" ||
+      tagName == "TEXTAREA" ||
+      tagName == "SELECT" ||
+      tagName == "BUTTON" ||
+      tagName == "ISINDEX")
+    return true;
+  
+  return false;
+}
 
 ////////////////////////////////////////////////////////////////////////////////
 // surfkeys
@@ -117,6 +133,8 @@ function surfkeysOnKeypress(event) {
     stopScroller();    
     return; 
   }
+  
+  if (sk_isFormElemFocused() && !event.altKey) return;
   
   key = String.fromCharCode(event.charCode);
 
