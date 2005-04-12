@@ -10,7 +10,7 @@
     <em:name>SurfKeys</em:name>
     <em:description>Comfortable surfing with keyboard.</em:description>
     <em:creator>Pekka Sillanpaa</em:creator>
-    <em:homepageURL>http://www.hut.fi/~psillanp/surfkeys_hp</em:homepageURL>
+    <em:homepageURL>http://surfkeys.mozdev.org</em:homepageURL>
 	<em:iconURL>chrome://surfkeys/skin/icon.png</em:iconURL>  
 	    <em:optionsURL>chrome://surfkeys/content/settings.xul</em:optionsURL>
     <em:targetApplication>

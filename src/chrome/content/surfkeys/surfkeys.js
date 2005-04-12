@@ -30,11 +30,14 @@
 // Surf Keys
 ////////////////////////////////////////////////////////////////////////////////
 
+var isFirstTime = true;
 var surfScroll = false;
 var xDelta = 0;
 var yDelta = 0;
 var surfDelta = 2;
 var s;
+
+isHahModeEnabled = false; // in case hah isn't installed
 
 var SK_KEY_SCROLL_UP = "i";
 var SK_KEY_SCROLL_DOWN = "k";
@@ -108,30 +111,41 @@ var minDelta = 2;
 var maxDelta = 64;
 
 function surfkeysOnKeypress(event) {
+  
+  if (isHahModeEnabled || !surfkeysPrefs.get(SURFKEYS_PREFS.ENABLED) ||
+      !document.getElementById("FindToolbar").hidden) {
+    stopScroller();    
+    return; 
+  }
+  
   key = String.fromCharCode(event.charCode);
 
   switch (key) {
   case SK_KEY_NEXT:
-    //    surfkeysChangePage(window._content.location.href, 1);
+    stopScroller();
+    surfkeysChangePage(window._content.location.href, 1);
     break;
   case SK_KEY_PREVIOUS:
-    //    surfkeysChangePage(window._content.location.href, 2);
+    stopScroller();
+    surfkeysChangePage(window._content.location.href, 2);
     break;
-  case SK_KEY_BACK:
+  case SK_KEY_BACK: // these are handled in the XUL file
+    stopScroller();
     break;
   case SK_KEY_FORWARD:
+    stopScroller();  
     break;
   case SK_KEY_SCROLL_RIGHT:
-    //    surfkeysAccelerateRight();
+    surfkeysAccelerateRight();
     break;
   case SK_KEY_SCROLL_LEFT:
-    //    surfkeysAccelerateLeft();
+    surfkeysAccelerateLeft();
     break;
   case SK_KEY_SCROLL_DOWN:
-    //    surfkeysAccelerateDown();
+    surfkeysAccelerateDown();
     break;
   case SK_KEY_SCROLL_UP:
-    //    surfkeysAccelerateUp();
+    surfkeysAccelerateUp();
     break;
   default:
     stopScroller();
@@ -152,7 +166,7 @@ function surfkeysOnKeypress(event) {
  */
 function surfkeysChangePage(url, value) {
   var linkArray = window._content.document.links;
-  var siteArray = hahPrefs.get(HAH_PREFS.HINT_TEXT_LINKS).split(";");
+  var siteArray = surfkeysPrefs.get(SURFKEYS_PREFS.RESULTLINKS).split(";");
 
   //  url = window._content.location.href;
 
@@ -219,7 +233,21 @@ function surfkeysAccelerateLeft() {
   startScroller();
 }
 
+function surfkeysLoad() {
+  if (isFirstTime) {
+    isFirstTime = false;
+    surfkeysPrefs.setDefaultPreferences();
+  }
+}
+
 window.addEventListener("keypress", surfkeysOnKeypress, true);
 
+window.document.addEventListener("load", surfkeysLoad, true);
+
 surfkeysLogMessage("Initialized.");
+
+
+
+
+
 

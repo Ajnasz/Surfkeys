@@ -13,7 +13,7 @@
  * limitations under the License.
  *
  * The  Original Code and  Idea is  the SurfKeys  Mozilla extension.
- * The Initial  Developer of the Original  Code and the  Idea is Pekka
+ * The Initial  Developer of the Original  Code is Pekka
  * P. Sillanpaa.  Portions created  by Initial Developer are Copyright
  * (C) 2004.  All Rights Reserved.
  *
@@ -94,8 +94,8 @@ var SURFKEYS_BOOL = 1;
 var SURFKEYS_INT = 2;
 var SURFKEYS_STRING = 3;
 var SURFKEYS_PREFS = {
-  ENABLED:           new SurfkeysPref('enabled',               SURFKEYS_BOOL,   true)
-  RESULTLINKS:       new SurfkeysPref('results.patterns',         SURFKEYS_STRING, 'google.com:Next:Previous;google.fi:Seuraava:Edellinen;statcounter.com:NEXT:PREV;www.helsinginsanomat.fi/viivijawagner:SEURAAVA:EDELLINEN')
+  ENABLED:           new SurfkeysPref('enabled',               SURFKEYS_BOOL,   true),
+  RESULTLINKS:       new SurfkeysPref('results.patterns',         SURFKEYS_STRING, 'google.com:Next:Previous;google.fi:Seuraava:Edellinen;www.helsinginsanomat.fi/viivijawagner:SEURAAVA:EDELLINEN')
 };
 
 var surfkeysPrefs = 
@@ -169,4 +169,3 @@ var surfkeysPrefs =
     }
   }
 }
-
