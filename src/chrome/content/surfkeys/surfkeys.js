@@ -62,7 +62,7 @@ var SK_KEY_CLOSETAB = "y";
 var SK_KEY_STOP = "s";
 var SK_KEY_RELOAD = "r";
 
-var SK_KEY_NEWTAB = "r";
+var SK_KEY_NEWTAB = "t";
 var SK_KEY_GOTOLOCATIONBAR = "g";
 var SK_KEY_CLOSEWINDOW = "w";
 
@@ -206,6 +206,7 @@ function surfkeysOnKeypress(event) {
     break;
   case SK_KEY_NEWTAB:
     stopScroller();
+    BrowserOpenTab();
     break;
   case SK_KEY_NEXTTAB:
     stopScroller();
@@ -223,7 +224,10 @@ function surfkeysOnKeypress(event) {
     stopScroller();
     window._content.scrollByPages(-1);
     break;
-  case SK_GOTOLOCATIONBAR:
+  case SK_KEY_GOTOLOCATIONBAR:
+    Urlbar = document.getElementById("urlbar");
+    Urlbar.focus();
+    Urlbar.select()
     stopScroller();
     break;
   default:

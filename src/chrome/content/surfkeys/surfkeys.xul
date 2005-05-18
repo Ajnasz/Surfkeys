@@ -5,10 +5,4 @@
     xmlns="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul">
   <script src="chrome://surfkeys/content/surfkeys.js" />
   <script src="chrome://surfkeys/content/surfkeyssettings.js" />
-
-
-  <keyset id="mainKeyset">
-    <key id="surfkeysGotoUrlbar" key="g" command="Browser:OpenLocation"/>
-    <key id="surfkeysNewTab" key="t" command="cmd_newNavigatorTab" />
-  </keyset> 
 </overlay>
