@@ -159,28 +159,33 @@ function surfkeysOnKeypress(event) {
 
   var w = document.commandDispatcher.focusedWindow;
 
-  stopScroller();
-
   switch (key) {
   case SK_KEY_NEXT:
+    stopScroller();
     surfkeysChangePage(window._content.location.href, 1);
     break;
   case SK_KEY_PREVIOUS:
+    stopScroller();
     surfkeysChangePage(window._content.location.href, 2);
     break;
   case SK_KEY_BACK: // these are handled in the XUL file
+    stopScroller();
     w.back();
     break;
   case SK_KEY_FORWARD:
+    stopScroller();
     w.forward();
     break;
   case SK_KEY_STOP:
+    stopScroller();
     w.stop();
     break;
   case SK_KEY_RELOAD:
+    stopScroller();
     w.reload();
     break;
   case SK_KEY_CLOSEWINDOW:
+    stopScroller();
     w.close();
     break;
   case SK_KEY_SCROLL_RIGHT:
@@ -196,25 +201,33 @@ function surfkeysOnKeypress(event) {
     surfkeysScrAccelerateScroller(SK_Y, -1);
     break;
   case SK_KEY_CLOSETAB:
+    stopScroller();
     gBrowser.removeTab(gBrowser.mCurrentTab);
     break;
   case SK_KEY_NEWTAB:
+    stopScroller();
     break;
   case SK_KEY_NEXTTAB:
+    stopScroller();
     gBrowser.mTabContainer.advanceSelectedTab(1);
     break;
   case SK_KEY_PREVTAB:
+    stopScroller();
     gBrowser.mTabContainer.advanceSelectedTab(-1);
     break;
   case SK_KEY_PGDN:
+    stopScroller();
     window._content.scrollByPages(1);
     break;
   case SK_KEY_PGUP:
+    stopScroller();
     window._content.scrollByPages(-1);
     break;
   case SK_GOTOLOCATIONBAR:
+    stopScroller();
     break;
   default:
+    stopScroller();
     break;
   }
 }

@@ -9,6 +9,6 @@
 
   <keyset id="mainKeyset">
     <key id="surfkeysGotoUrlbar" key="g" command="Browser:OpenLocation"/>
-<!--    <key id="surfkeysNewTab" key="t" command="cmd_newNavigatorTab" />  -->
+    <key id="surfkeysNewTab" key="t" command="cmd_newNavigatorTab" />
   </keyset> 
 </overlay>
