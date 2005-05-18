@@ -8,16 +8,7 @@
 
 
   <keyset id="mainKeyset">
-<!--
-    <key id="surfkeysAccelerateUp" key="i" oncommand="surfkeysAccelerateUp()"/>
-    <key id="surfkeysAccelerateDown" key="k" oncommand="surfkeysAccelerateDown()"/>
-    <key id="surfkeysAccelerateRight" key="l" oncommand="surfkeysAccelerateRight()"/>
-    <key id="surfkeysAccelerateLeft" key="j" oncommand="surfkeysAccelerateLeft()"/>
-    <key id="surfkeysChangeNextPage" key="n" oncommand="surfkeysChangePage(window._content.location.href, 1)"/>
-    <key id="surfkeysChangePreviousPage" key="p" oncommand="surfkeysChangePage(window._content.location.href, 2)"/>
-    -->
-    <key id="surfkeysBack" key="h" command="Browser:Back"/>
-    <key id="surfkeysForward" key="y" command="Browser:Forward"/>
-  
+    <key id="surfkeysGotoUrlbar" key="g" command="Browser:OpenLocation"/>
+<!--    <key id="surfkeysNewTab" key="t" command="cmd_newNavigatorTab" />  -->
   </keyset> 
 </overlay>

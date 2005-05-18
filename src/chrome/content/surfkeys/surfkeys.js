@@ -30,12 +30,16 @@
 // Surf Keys
 ////////////////////////////////////////////////////////////////////////////////
 
+
 var isFirstTime = true;
 var surfScroll = false;
-var xDelta = 0;
-var yDelta = 0;
-var surfDelta = 2;
+var SK_X = 0;
+var SK_Y = 1;
+var scrDelta = Array(2);
+var scrAccel = Array(2);
+var surfScrDelta = 2;
 var s;
+var maxScrAccel = 5;
 
 isHahModeEnabled = false; // in case hah isn't installed
 
@@ -43,22 +47,38 @@ var SK_KEY_SCROLL_UP = "i";
 var SK_KEY_SCROLL_DOWN = "k";
 var SK_KEY_SCROLL_LEFT = "j";
 var SK_KEY_SCROLL_RIGHT = "l";
-var SK_KEY_BACK = "b";
-var SK_KEY_FORWARD = "h";
-var SK_KEY_NEXT = "n";
-var SK_KEY_PREVIOUS = "p";
+var SK_KEY_BACK = ",";
+var SK_KEY_FORWARD = ".";
+var SK_KEY_NEXT = "m";
+var SK_KEY_PREVIOUS = "n";
 
+var SK_KEY_NEXTTAB = "o";
+var SK_KEY_PREVTAB = "u";
+var SK_KEY_PGUP = "p";
+var SK_KEY_PGDN = ";";
+var SK_KEY_NEWTAB = "t";
+var SK_KEY_CLOSETAB = "y";
+
+var SK_KEY_STOP = "s";
+var SK_KEY_RELOAD = "r";
+
+var SK_KEY_NEWTAB = "r";
+var SK_KEY_GOTOLOCATIONBAR = "g";
+var SK_KEY_CLOSEWINDOW = "w";
 
 function scroller() {
-  var w = window._content;
+
+  frames = window._content.frames;  
+  
+  var w = document.commandDispatcher.focusedWindow;
 
   var oScrollX = w.scrollX;
   var oScrollY = w.scrollY;
-  w.scrollBy(xDelta, 0);
-  w.scrollBy(0, yDelta);
-  if (w.scrollX == oScrollX) xDelta = 0;
-  if (w.scrollY == oScrollY) yDelta = 0;
-  if (xDelta == 0 && yDelta == 0) stopScroller();
+  w.scrollBy(scrDelta[SK_X], 0);
+  w.scrollBy(0, scrDelta[SK_Y]);
+  if (w.scrollX == oScrollX) scrDelta[SK_X] = 0;
+  if (w.scrollY == oScrollY) scrDelta[SK_Y] = 0;
+  if (scrDelta[SK_X] == 0 && scrDelta[SK_Y] == 0) stopScroller();
 }
 
 function startScroller() {
@@ -73,8 +93,10 @@ function stopScroller() {
   if (surfScroll) {
     window.clearInterval(s);
     surfScroll = false;
-    xDelta = 0;
-    yDelta = 0;
+    scrDelta[SK_X] = 0;
+    scrDelta[SK_Y] = 0;
+    scrAccel[SK_X] = 0;
+    scrAccel[SK_Y] = 0;
   }
   return 1;
 }
@@ -123,13 +145,10 @@ function sk_isFormElemFocused()
 // surfkeys
 ////////////////////////////////////////////////////////////////////////////////
 
-var minDelta = 2;
-var maxDelta = 64;
-
 function surfkeysOnKeypress(event) {
   
   if (isHahModeEnabled || !surfkeysPrefs.get(SURFKEYS_PREFS.ENABLED) ||
-      !document.getElementById("FindToolbar").hidden) {
+      !document.getElementById("FindToolbar").hidden || event.ctrlKey) {
     stopScroller();    
     return; 
   }
@@ -138,38 +157,66 @@ function surfkeysOnKeypress(event) {
   
   key = String.fromCharCode(event.charCode);
 
+  var w = document.commandDispatcher.focusedWindow;
+
+  stopScroller();
+
   switch (key) {
   case SK_KEY_NEXT:
-    stopScroller();
     surfkeysChangePage(window._content.location.href, 1);
     break;
   case SK_KEY_PREVIOUS:
-    stopScroller();
     surfkeysChangePage(window._content.location.href, 2);
     break;
   case SK_KEY_BACK: // these are handled in the XUL file
-    stopScroller();
+    w.back();
     break;
   case SK_KEY_FORWARD:
-    stopScroller();  
+    w.forward();
+    break;
+  case SK_KEY_STOP:
+    w.stop();
+    break;
+  case SK_KEY_RELOAD:
+    w.reload();
+    break;
+  case SK_KEY_CLOSEWINDOW:
+    w.close();
     break;
   case SK_KEY_SCROLL_RIGHT:
-    surfkeysAccelerateRight();
+    surfkeysScrAccelerateScroller(SK_X, 1);
     break;
   case SK_KEY_SCROLL_LEFT:
-    surfkeysAccelerateLeft();
+    surfkeysScrAccelerateScroller(SK_X, -1);
     break;
   case SK_KEY_SCROLL_DOWN:
-    surfkeysAccelerateDown();
+    surfkeysScrAccelerateScroller(SK_Y, 1);
     break;
   case SK_KEY_SCROLL_UP:
-    surfkeysAccelerateUp();
+    surfkeysScrAccelerateScroller(SK_Y, -1);
+    break;
+  case SK_KEY_CLOSETAB:
+    gBrowser.removeTab(gBrowser.mCurrentTab);
+    break;
+  case SK_KEY_NEWTAB:
+    break;
+  case SK_KEY_NEXTTAB:
+    gBrowser.mTabContainer.advanceSelectedTab(1);
+    break;
+  case SK_KEY_PREVTAB:
+    gBrowser.mTabContainer.advanceSelectedTab(-1);
+    break;
+  case SK_KEY_PGDN:
+    window._content.scrollByPages(1);
+    break;
+  case SK_KEY_PGUP:
+    window._content.scrollByPages(-1);
+    break;
+  case SK_GOTOLOCATIONBAR:
     break;
   default:
-    stopScroller();
     break;
   }
-
 }
 
 /**
@@ -180,13 +227,11 @@ function surfkeysOnKeypress(event) {
  *
  * @param url    the url of the current page
  * @param value  the direction of the change (1: next, 2: previous)
- * @author       Pekka Sillanpaa
+ * @author       psillanp
  */
 function surfkeysChangePage(url, value) {
   var linkArray = window._content.document.links;
   var siteArray = surfkeysPrefs.get(SURFKEYS_PREFS.RESULTLINKS).split(";");
-
-  //  url = window._content.location.href;
 
   for (s = 0; s < siteArray.length; s++) {
     site = siteArray[s].split(":");
@@ -206,47 +251,28 @@ function surfkeysChangePage(url, value) {
   }
 }
 
-function surfkeysAccelerateUp() {
-  if (yDelta <= -minDelta)
-    yDelta *= 2;
-  else if (yDelta > -minDelta && yDelta <= minDelta)
-    yDelta = -minDelta;
-  else yDelta /= 2;
-  if (yDelta < -maxDelta) yDelta = -maxDelta;
+/**
+ * ScrAccelerates the scroller either horizontally or vertically
+ * by the given value
+ * 
+ * @param dir    direction, either SK_X or SK_Y
+ * @param value  value indicating the amount how much to scrAccelerate
+ * @author       psillanp
+ */
+function surfkeysScrAccelerateScroller(dir, value) {
 
-  startScroller();
-}
+  scrAccel[dir] += value;
 
-function surfkeysAccelerateDown() {
-  //  alert("boo");
-  if (yDelta >= minDelta)
-    yDelta *= 2;
-  else if (yDelta >= -minDelta && yDelta < minDelta)
-    yDelta = minDelta;
-  else yDelta /= 2;
-  if (yDelta > maxDelta) yDelta = maxDelta;
-
-  startScroller();
-}
-
-function surfkeysAccelerateRight() {
-  if (xDelta >= minDelta)
-    xDelta *= 2;
-  else if (xDelta >= -minDelta && xDelta < minDelta)
-    xDelta = minDelta;
-  else xDelta /= 2;
-  if (xDelta > maxDelta) xDelta = maxDelta;
-  
-  startScroller();
-}
-
-function surfkeysAccelerateLeft() {
-  if (xDelta <= -minDelta)
-    xDelta *= 2;
-  else if (xDelta > -minDelta && xDelta <= minDelta)
-    xDelta = -minDelta;
-  else xDelta /= 2;
-  if (xDelta < -maxDelta) xDelta = -maxDelta;
+  if (scrAccel[dir] > maxScrAccel) {
+    scrAccel[dir] = maxScrAccel;
+  } else if (scrAccel[dir] < -maxScrAccel) {
+    scrAccel[dir] = -maxScrAccel;
+  } else if (scrAccel[dir] == 0) {
+    scrDelta[dir] = 0;
+  } else {
+    scrDelta[dir] = Math.pow(2, Math.abs(scrAccel[dir]));
+    if (scrAccel[dir] < 0) scrDelta[dir] = -scrDelta[dir];
+  }
 
   startScroller();
 }
@@ -254,6 +280,11 @@ function surfkeysAccelerateLeft() {
 function surfkeysLoad() {
   if (isFirstTime) {
     isFirstTime = false;
+    scrAccel[0] = 0;
+    scrAccel[1] = 0;
+    scrDelta[0] = 0;
+    scrDelta[1] = 0;
+
     surfkeysPrefs.setDefaultPreferences();
   }
 }
@@ -262,7 +293,7 @@ window.addEventListener("keypress", surfkeysOnKeypress, true);
 
 window.document.addEventListener("load", surfkeysLoad, true);
 
-surfkeysLogMessage("Initialized.");
+surfkeysLogMessage("Initialized");
 
 
 
