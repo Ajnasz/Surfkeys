@@ -114,6 +114,7 @@ var surfkeysPrefs =
   set: function(surfkeysPref, prefVal) {
     var prefs = surfkeysPrefs.getPreferences();
     prefString = "extensions.surfkeys." + surfkeysPref.name;
+    var str = Components.classes["@mozilla.org/supports-string;1"].createInstance(Components.interfaces.nsISupportsString);
     
     switch (surfkeysPref.type) {
       case SURFKEYS_BOOL:
@@ -123,7 +124,10 @@ var surfkeysPrefs =
         prefs.setIntPref(prefString, prefVal);
         break;
       case SURFKEYS_STRING:
-        prefs.setCharPref(prefString, prefVal);
+    //    prefs.setCharPref(prefString, prefVal);
+	  	  str.data = prefVal;
+		  prefs.setComplexValue(prefString,Components.interfaces.nsISupportsString, str);
+
         break;
     }       
   },
@@ -140,7 +144,7 @@ var surfkeysPrefs =
         return prefs.getIntPref(prefString);
         break;
       case SURFKEYS_STRING:
-        return prefs.getCharPref(prefString);
+        return prefs.getComplexValue(prefString,Components.interfaces.nsISupportsString).data; 
         break;
     }
     return null;
@@ -150,7 +154,7 @@ var surfkeysPrefs =
     var prefs = surfkeysPrefs.getPreferences();
     var name;
     var defaultPref;
-
+	var str = Components.classes["@mozilla.org/supports-string;1"].createInstance(Components.interfaces.nsISupportsString);
     for (i in SURFKEYS_PREFS) {
       defaultPref = SURFKEYS_PREFS[i];
       name = "extensions.surfkeys." + defaultPref.name;
@@ -163,7 +167,10 @@ var surfkeysPrefs =
             prefs.setIntPref(name, defaultPref.defaultValue);
             break;
           case SURFKEYS_STRING:
-            prefs.setCharPref(name, defaultPref.defaultValue);
+            //prefs.setCharPref(name, defaultPref.defaultValue);
+		  str.data = defaultPref.defaultValue;
+		  prefs.setComplexValue(name,Components.interfaces.nsISupportsString, str);
+
         }
       }
     }
