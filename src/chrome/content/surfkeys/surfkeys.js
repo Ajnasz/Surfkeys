@@ -30,7 +30,7 @@
 // Surf Keys
 ////////////////////////////////////////////////////////////////////////////////
 
-
+//var modified_flag = false;
 var isFirstTime = true;
 var surfScroll = false;
 var SK_X = 0;
@@ -40,8 +40,10 @@ var scrAccel = Array(2);
 var surfScrDelta = 2;
 var s;
 var maxScrAccel = 5;
+var disableFlag = false;
 
 isHahModeEnabled = false; // in case hah isn't installed
+var surfkeysStringbundle;
 
 var SK_KEY_SCROLL_UP = "i";
 var SK_KEY_SCROLL_DOWN = "k";
@@ -62,7 +64,7 @@ var SK_KEY_CLOSETAB = "y";
 var SK_KEY_STOP = "s";
 var SK_KEY_RELOAD = "r";
 
-var SK_KEY_NEWTAB = "t";
+//var SK_KEY_NEWTAB = "r";
 var SK_KEY_GOTOLOCATIONBAR = "g";
 var SK_KEY_CLOSEWINDOW = "w";
 
@@ -148,7 +150,8 @@ function sk_isFormElemFocused()
 function surfkeysOnKeypress(event) {
   
   if (isHahModeEnabled || !surfkeysPrefs.get(SURFKEYS_PREFS.ENABLED) ||
-      !document.getElementById("FindToolbar").hidden || event.ctrlKey) {
+      !document.getElementById("FindToolbar").hidden || event.ctrlKey || 
+	  disableFlag) {
     stopScroller();    
     return; 
   }
@@ -168,7 +171,7 @@ function surfkeysOnKeypress(event) {
     stopScroller();
     surfkeysChangePage(window._content.location.href, 2);
     break;
-  case SK_KEY_BACK: // these are handled in the XUL file
+  case SK_KEY_BACK: 
     stopScroller();
     w.back();
     break;
@@ -182,7 +185,8 @@ function surfkeysOnKeypress(event) {
     break;
   case SK_KEY_RELOAD:
     stopScroller();
-    w.reload();
+//  w.reload();   - did not work for me
+    BrowserReload();   
     break;
   case SK_KEY_CLOSEWINDOW:
     stopScroller();
@@ -225,10 +229,10 @@ function surfkeysOnKeypress(event) {
     window._content.scrollByPages(-1);
     break;
   case SK_KEY_GOTOLOCATIONBAR:
+    stopScroller();
     Urlbar = document.getElementById("urlbar");
     Urlbar.focus();
-    Urlbar.select()
-    stopScroller();
+    Urlbar.select();
     break;
   default:
     stopScroller();
@@ -295,20 +299,132 @@ function surfkeysScrAccelerateScroller(dir, value) {
 }
 
 function surfkeysLoad() {
+
   if (isFirstTime) {
     isFirstTime = false;
     scrAccel[0] = 0;
     scrAccel[1] = 0;
     scrDelta[0] = 0;
     scrDelta[1] = 0;
-
     surfkeysPrefs.setDefaultPreferences();
+	
+	surfkeysStringbundle = document.getElementById("surfkeysstringbundle");
+	
+
+/*	var gBrowser = document.getElementById("content");
+  	if (gBrowser) {
+		var TabBox = document.getAnonymousNodes(gBrowser)[1];
+		var TabBar = TabBox.getElementsByAttribute('class', 'tabbrowser-tabs')[0];
+	//	TabBar.hidden = true;
+	}
+*/
+	var menu = window.document.getElementById("contentAreaContextMenu");
+	menu.addEventListener("popupshowing", surfkeysShowcontext, false);
+    menu.addEventListener("popuphiding", surfkeysEnable, false);
+
+
   }
+}
+
+/**
+ * Function called when context menu pops up, decides whether to show
+ * option for adding as next/previous link.
+ *
+ * @author				aeternus
+ */
+
+function surfkeysShowcontext() {
+	var sk_menuitem1 = document.getElementById("sk_markasnext");
+	sk_menuitem1.hidden = !gContextMenu.onLink;
+	var sk_menuitem2 = document.getElementById("sk_markasprev");
+    sk_menuitem2.hidden = !gContextMenu.onLink;
+	surfkeysDisable();
+}
+
+/**
+ * Allows to add/modify next/previous links, called by items in context menu.
+ * First checks if there is an entry for the domain in the urlbar. If yes, 
+ * replaces the link text associated with the specified direction. If not, adds
+ * a section for current domain.
+ *
+ * @param direction		the direction of the link (1: next, 2: previous)
+ * @author				aeternus
+ */
+ 
+function SurfKeysAddNextPrev(direction) {
+var modfied_flag;
+
+if(gContextMenu) {
+	var href = gContextMenu.linkURL(); 
+	var linktext = gContextMenu.linkText();
+	
+    var hrefstripped = href.substring(href.indexOf("//") + 2, href.length);
+    var domain = hrefstripped.substring(0, hrefstripped.indexOf("/"));
+
+
+	var currloc = window._content.location.href;
+  var siteArray = surfkeysPrefs.get(SURFKEYS_PREFS.RESULTLINKS).split(";");
+	modified_flag = false;
+
+	for (s = 0; s < siteArray.length; s++) {
+		site = siteArray[s].split(":");
+		if ((currloc.indexOf(site[0]) != -1) && (site[0].length > 0) && (currloc.indexOf(domain)!=-1)) {
+			modified_flag = true;
+			site[direction] = linktext;
+			siteArray[s] = site.join(":");
+			alert(surfkeysStringbundle.getString("modifiedlink_for") + " " + domain + 
+				surfkeysStringbundle.getString("linktext") + " " + linktext)
+		}
+	}
+	
+	var siteList = siteArray.join(";");
+//	alert(modified_flag);
+//	alert(siteList);
+	if ((!modified_flag) && (currloc.indexOf(domain)!=-1)) {
+		
+		var linkToadd;
+		if (direction==1) { 
+			linkToadd = linktext + ":"; 
+		} else {
+			linkToadd = ":" + linktext;
+		}
+		alert(surfkeysStringbundle.getString("addedlink_for") + " " + 
+			domain + surfkeysStringbundle.getString("linktext") + " " + linktext);
+		siteList = siteList + ";" + domain + ":" + linkToadd;
+							
+	}
+
+	surfkeysPrefs.set(SURFKEYS_PREFS.RESULTLINKS, siteList)
+
+	}
+}
+
+/**
+ * Two functions to temporarily disable surfkeys, currently only when
+ * a menu is shown, in the future: also when a buffer list is shown
+ * @author				aeternus
+ */
+
+function surfkeysDisable() {
+	disableFlag = true;
+	stopScroller();
+}
+
+function surfkeysEnable() {
+	disableFlag = false;
 }
 
 window.addEventListener("keypress", surfkeysOnKeypress, true);
 
-window.document.addEventListener("load", surfkeysLoad, true);
+// listeners to suppress keyboard browsing when in menu
+window.addEventListener("DOMMenuItemActive", surfkeysDisable, true);
+window.addEventListener("DOMMenuItemInactive", surfkeysEnable, true);
+
+// applied to window, not window._content, since in the latter case 
+// surfkeysLoad was never called.
+window.addEventListener("load", surfkeysLoad, true);
+
+
 
 surfkeysLogMessage("Initialized");
 
