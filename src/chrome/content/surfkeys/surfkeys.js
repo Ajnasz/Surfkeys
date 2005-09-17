@@ -31,7 +31,7 @@
 ////////////////////////////////////////////////////////////////////////////////
 
 //var modified_flag = false;
-var isFirstTime = true;
+var sk_isFirstTime = true;
 var surfScroll = false;
 var SK_X = 0;
 var SK_Y = 1;
@@ -58,13 +58,13 @@ var SK_KEY_NEXTTAB = "o";
 var SK_KEY_PREVTAB = "u";
 var SK_KEY_PGUP = "p";
 var SK_KEY_PGDN = ";";
+var SK_KEY_PGDN2 = "ö";
 var SK_KEY_NEWTAB = "t";
 var SK_KEY_CLOSETAB = "y";
 
 var SK_KEY_STOP = "s";
 var SK_KEY_RELOAD = "r";
 
-//var SK_KEY_NEWTAB = "r";
 var SK_KEY_GOTOLOCATIONBAR = "g";
 var SK_KEY_CLOSEWINDOW = "w";
 
@@ -221,6 +221,7 @@ function surfkeysOnKeypress(event) {
     gBrowser.mTabContainer.advanceSelectedTab(-1);
     break;
   case SK_KEY_PGDN:
+  case SK_KEY_PGDN2:
     stopScroller();
     window._content.scrollByPages(1);
     break;
@@ -300,29 +301,27 @@ function surfkeysScrAccelerateScroller(dir, value) {
 
 function surfkeysLoad() {
 
-  if (isFirstTime) {
-    isFirstTime = false;
+  if (sk_isFirstTime) {
+    sk_isFirstTime = false;
     scrAccel[0] = 0;
     scrAccel[1] = 0;
     scrDelta[0] = 0;
     scrDelta[1] = 0;
     surfkeysPrefs.setDefaultPreferences();
-	
-	surfkeysStringbundle = document.getElementById("surfkeysstringbundle");
-	
-
-/*	var gBrowser = document.getElementById("content");
+    
+    surfkeysStringbundle = document.getElementById("surfkeysstringbundle");
+    
+    
+    /*	var gBrowser = document.getElementById("content");
   	if (gBrowser) {
-		var TabBox = document.getAnonymousNodes(gBrowser)[1];
-		var TabBar = TabBox.getElementsByAttribute('class', 'tabbrowser-tabs')[0];
+	var TabBox = document.getAnonymousNodes(gBrowser)[1];
+	var TabBar = TabBox.getElementsByAttribute('class', 'tabbrowser-tabs')[0];
 	//	TabBar.hidden = true;
 	}
-*/
-	var menu = window.document.getElementById("contentAreaContextMenu");
-	menu.addEventListener("popupshowing", surfkeysShowcontext, false);
-    menu.addEventListener("popuphiding", surfkeysEnable, false);
-
-
+    */
+    var menu = window.document.getElementById("contentAreaContextMenu");
+    menu.addEventListener("popupshowing", surfkeysShowcontext, false);
+    menu.addEventListener("popuphiding", surfkeysEnable, false); 
   }
 }
 
@@ -334,11 +333,11 @@ function surfkeysLoad() {
  */
 
 function surfkeysShowcontext() {
-	var sk_menuitem1 = document.getElementById("sk_markasnext");
-	sk_menuitem1.hidden = !gContextMenu.onLink;
-	var sk_menuitem2 = document.getElementById("sk_markasprev");
-    sk_menuitem2.hidden = !gContextMenu.onLink;
-	surfkeysDisable();
+  var sk_menuitem1 = document.getElementById("sk_markasnext");
+  sk_menuitem1.hidden = !gContextMenu.onLink;
+  var sk_menuitem2 = document.getElementById("sk_markasprev");
+  sk_menuitem2.hidden = !gContextMenu.onLink;
+  surfkeysDisable();
 }
 
 /**
@@ -352,51 +351,50 @@ function surfkeysShowcontext() {
  */
  
 function SurfKeysAddNextPrev(direction) {
-var modfied_flag;
-
-if(gContextMenu) {
-	var href = gContextMenu.linkURL(); 
-	var linktext = gContextMenu.linkText();
-	
+  var modfied_flag;
+  
+  if(gContextMenu) {
+    var href = gContextMenu.linkURL(); 
+    var linktext = gContextMenu.linkText();
+    
     var hrefstripped = href.substring(href.indexOf("//") + 2, href.length);
     var domain = hrefstripped.substring(0, hrefstripped.indexOf("/"));
-
-
-	var currloc = window._content.location.href;
-  var siteArray = surfkeysPrefs.get(SURFKEYS_PREFS.RESULTLINKS).split(";");
-	modified_flag = false;
-
-	for (s = 0; s < siteArray.length; s++) {
-		site = siteArray[s].split(":");
-		if ((currloc.indexOf(site[0]) != -1) && (site[0].length > 0) && (currloc.indexOf(domain)!=-1)) {
-			modified_flag = true;
-			site[direction] = linktext;
-			siteArray[s] = site.join(":");
-			alert(surfkeysStringbundle.getString("modifiedlink_for") + " " + domain + 
-				surfkeysStringbundle.getString("linktext") + " " + linktext)
-		}
-	}
-	
-	var siteList = siteArray.join(";");
-//	alert(modified_flag);
-//	alert(siteList);
-	if ((!modified_flag) && (currloc.indexOf(domain)!=-1)) {
-		
-		var linkToadd;
-		if (direction==1) { 
-			linkToadd = linktext + ":"; 
-		} else {
-			linkToadd = ":" + linktext;
-		}
-		alert(surfkeysStringbundle.getString("addedlink_for") + " " + 
-			domain + surfkeysStringbundle.getString("linktext") + " " + linktext);
-		siteList = siteList + ";" + domain + ":" + linkToadd;
-							
-	}
-
-	surfkeysPrefs.set(SURFKEYS_PREFS.RESULTLINKS, siteList)
-
-	}
+    
+    
+    var currloc = window._content.location.href;
+    var siteArray = surfkeysPrefs.get(SURFKEYS_PREFS.RESULTLINKS).split(";");
+    modified_flag = false;
+    
+    for (s = 0; s < siteArray.length; s++) {
+      site = siteArray[s].split(":");
+      if ((currloc.indexOf(site[0]) != -1) && (site[0].length > 0) && (currloc.indexOf(domain)!=-1)) {
+	modified_flag = true;
+	site[direction] = linktext;
+	siteArray[s] = site.join(":");
+	alert(surfkeysStringbundle.getString("modifiedlink_for") + " " + domain + 
+	      surfkeysStringbundle.getString("linktext") + " " + linktext);
+      }
+    }
+    
+    var siteList = siteArray.join(";");
+    //	alert(modified_flag);
+    //	alert(siteList);
+    if ((!modified_flag) && (currloc.indexOf(domain)!=-1)) {
+      
+      var linkToadd;
+      if (direction==1) { 
+	linkToadd = linktext + ":"; 
+      } else {
+	linkToadd = ":" + linktext;
+      }
+      alert(surfkeysStringbundle.getString("addedlink_for") + " " + 
+	    domain + surfkeysStringbundle.getString("linktext") + " " + linktext);
+      siteList = siteList + ";" + domain + ":" + linkToadd;
+      
+    }
+    
+    surfkeysPrefs.set(SURFKEYS_PREFS.RESULTLINKS, siteList);    
+  }
 }
 
 /**
