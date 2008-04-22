@@ -1,0 +1,55 @@
+<?xml version="1.0"?>
+
+<!DOCTYPE overlay SYSTEM "chrome://surfkeys/locale/surfkeys.dtd">
+
+<overlay id="surfkeysOverlay"
+    xmlns="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul">
+  
+  <script src="chrome://surfkeys/content/overlay.js"/>
+
+  <popup id="contentAreaContextMenu">
+	<menuitem id="sk_markasnext"
+	label="&surfkeys.markasnext.label;"
+	accesskey="&surfkeys.markasnext.key;"
+	insertafter="context-copylink"
+	oncommand="surfkeys.SurfKeysAddNextPrev(1);"/>
+
+	<menuitem id="sk_markasprev"
+	label="&surfkeys.markasprev.label;" 
+	accesskey="&surfkeys.markasprev.key;"
+	insertafter="context-copylink" 
+	oncommand="surfkeys.SurfKeysAddNextPrev(2);"/>
+  </popup>
+
+  <stringbundleset id="stringbundleset">
+	<stringbundle id="surfkeysstringbundle" src="chrome://surfkeys/locale/surfkeys.properties"/>
+  </stringbundleset>
+
+  <keyset id="mainKeyset">
+    <key id="skScrollUp" key="i" oncommand="surfkeys.scrollUp();" />
+    <key id="skScrollDown" key="k" oncommand="surfkeys.scrollDown();" />
+    <key id="skScrollLeft" key="j" oncommand="surfkeys.scrollLeft();" />
+    <key id="skScrollRight" key="l" oncommand="surfkeys.scrollRight();" />
+    <key id="skScrollPgDown" key=";" oncommand="surfkeys.pgDown();" />
+    <key id="skScrollPgUp" key="p" oncommand="surfkeys.pgUp();" />
+
+    <key id="skBrowserBack" key="," oncommand="surfkeys.back();" />
+    <key id="skBrowserForward" key="." oncommand="surfkeys.forward();" />
+    <key id="skBrowserStop" key="s" oncommand="surfkeys.stop();" />
+    <key id="skBrowserReload" key="r" oncommand="surfkeys.reload();" />
+    <key id="skNext" key="m" oncommand="surfkeys.next();" />
+    <key id="skPrevious" key="n" oncommand="surfkeys.previous();" />
+
+    <key id="skTabNew" key="t" oncommand="surfkeys.newTab();" />
+    <key id="skTabClose" key="w" oncommand="surfkeys.closeTab();" />
+    <key id="skTabNext" key="o" oncommand="surfkeys.nextTab();" />
+    <key id="skTabPrev" key="u" oncommand="surfkeys.prevTab();" />
+
+    <key id="skGotoLocationBar" key="g" oncommand="surfkeys.gotoLocationBar();" />
+
+
+    <key id="skMoveTabLeft" modifiers="shift" key="u" oncommand="surfkeys.moveLeft();" />
+    <key id="skMoveTabRight" modifiers="shift" key="o" oncommand="surfkeys.moveRight();" />
+
+  </keyset>
+</overlay>
