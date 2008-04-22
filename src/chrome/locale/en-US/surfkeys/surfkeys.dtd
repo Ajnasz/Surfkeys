@@ -1,7 +1,0 @@
-<!ENTITY settingsTitle.dialog		"Settings" >
-<!ENTITY enabled.checkbox		"Enable extension" >
-<!ENTITY resultLinktexts.label		"Result browsing patterns" >
-<!ENTITY surfkeys.markasnext.label	"Mark as next " >
-<!ENTITY surfkeys.markasnext.key	"2" >
-<!ENTITY surfkeys.markasprev.label	"Mark as previous " >
-<!ENTITY surfkeys.markasprev.key	"1" >
