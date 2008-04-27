@@ -1,19 +1,26 @@
-#!/bin/sh
+#!/bin/bash
 
-echo Creating SurfKeys installation package
-echo Extension jar package chrome.jar
-cd chrome
+if [ -z $1 ];then
+  SFVER='0.5.0';
+else
+  SFVER=$1;
+fi
+
+echo Creating SurfKeys installation package;
+echo Extension jar package chrome.jar;
+cd chrome;
 echo "delete jar";
-rm chrome.jar
-echo Install package surfkeys.xpi
-zip -r chrome.jar content/* -x CVS/*;
-zip -r chrome.jar locale/* -x CVS/*;
-zip -r chrome.jar skin/* -x CVS/*;
+rm chrome.jar;
+echo Build package surfkeys.jar
+zip -r chrome.jar content/* -x \*CVS/\*;
+zip -r chrome.jar locale/* -x \*CVS/\*;
+zip -r chrome.jar skin/* -x \*CVS/\*;
 
-cd ..
-rm ../downloads/surfkeys_$1.xpi
-echo Install package hah.xpi
+cd ..;
+echo Build package surfkeys.xpi;
 rm surfkeys.xpi;
-zip surfkeys.xpi chrome.manifest install.rdf chrome/chrome.jar defaults/preferences/prefs.js -x CVS/*
-# zip ../downloads/surfkeys_$1.xpi chrome/chrome.jar install.rdf
+zip surfkeys.xpi chrome.manifest install.rdf chrome/chrome.jar defaults/preferences/prefs.js -x \*CVS/\*;
+
+rm ../downloads/surfkeys_$SFVER.xpi;
+cp surfkeys.xpi ../downloads/surfkeys_$SFVER.xpi;
 echo Done!
