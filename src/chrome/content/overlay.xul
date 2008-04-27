@@ -41,7 +41,8 @@
     <key id="skPrevious" key="n" oncommand="surfkeys.previous();" />
 
     <key id="skTabNew" key="t" oncommand="surfkeys.newTab();" />
-    <key id="skTabClose" key="w" oncommand="surfkeys.closeTab();" />
+    <key id="skTabClose" key="y" oncommand="surfkeys.closeTab();" />
+    <key id="skTabClose" key="w" oncommand="surfkeys.closeWindow();" />
     <key id="skTabNext" key="o" oncommand="surfkeys.nextTab();" />
     <key id="skTabPrev" key="u" oncommand="surfkeys.prevTab();" />
 
