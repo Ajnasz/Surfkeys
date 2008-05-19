@@ -145,17 +145,37 @@ function surfkeys_() {
   };
 
 
+  /**
+   * @author ajnasz
+   */
   this.moveLeft = function() {
     stopScroller();
     if(gBrowser.mCurrentTab.previousSibling) {
       gBrowser.moveTabTo(gBrowser.mCurrentTab,gBrowser.mCurrentTab._tPos-1);
     }
   };
+  /**
+   * @author ajnasz
+   */
   this.moveRight = function() {
     stopScroller();
     if(gBrowser.mCurrentTab.nextSibling) {
       gBrowser.moveTabTo(gBrowser.mCurrentTab,gBrowser.mCurrentTab._tPos+1);
     }
+  };
+  /**
+   * @author ajnasz
+   */
+  this.moveToBeginning = function() {
+    stopScroller();
+    gBrowser.moveTabTo(gBrowser.mCurrentTab,0);
+  };
+  /**
+   * @author ajnasz
+   */
+  this.moveToEnd = function() {
+    stopScroller();
+    gBrowser.moveTabTo(gBrowser.mCurrentTab,gBrowser.mTabContainer.childNodes.length-1);
   };
 
   function getWindow() {

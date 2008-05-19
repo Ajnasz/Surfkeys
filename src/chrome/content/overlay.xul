@@ -51,6 +51,11 @@
 
     <key id="skMoveTabLeft" modifiers="shift" key="u" oncommand="surfkeys.moveLeft();" />
     <key id="skMoveTabRight" modifiers="shift" key="o" oncommand="surfkeys.moveRight();" />
+    <key id="skMoveTabBegin" key="b" oncommand="surfkeys.moveToBeginning();" />
+    <key id="skMoveTabRight" key="e" oncommand="surfkeys.moveToEnd();" />
+
+    <key id="skQuickFind" key="f" command="cmd_find" />
+    <key id="skGoToSearch" key="d" command="Tools:Search" />
 
   </keyset>
 </overlay>
