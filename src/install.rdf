@@ -8,7 +8,7 @@
                    em:locale="locale/en-US/surfkeys/" />
   <RDF:Description RDF:about="urn:mozilla:install-manifest"
                    em:id="{a44ef047-cd8d-406e-a354-b7101bd24735}"
-                   em:version="0.5.1b"
+                   em:version="0.5.1b080621115338"
                    em:name="SurfKeys"
                    em:description="Comfortable surfing with keyboard."
                    em:creator="Pekka Sillanpaa"
