@@ -54,7 +54,7 @@
     <key id="skMoveTabBegin" key="b" oncommand="surfkeys.moveToBeginning();" />
     <key id="skMoveTabEnd" key="e" oncommand="surfkeys.moveToEnd();" />
 
-    <key id="skQuickFind" key="f" command="cmd_find" />
+    <key id="skFind" key="f" command="cmd_find" />
     <key id="skGoToSearch" key="d" command="Tools:Search" />
 
   </keyset>
