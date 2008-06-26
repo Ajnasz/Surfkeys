@@ -72,12 +72,14 @@ function surfkeys_() {
 
   this.pgDown = function() {
       stopScroller();
-      window._content.scrollByPages(1);
+      // window._content.scrollByPages(1);
+      goDoCommand('cmd_scrollPageDown');
   };
 
   this.pgUp = function() {
       stopScroller();
-      window._content.scrollByPages(-1);
+      // window._content.scrollByPages(-1);
+      goDoCommand('cmd_scrollPageUp');
   };
 
   this.back = function() {
@@ -108,13 +110,14 @@ function surfkeys_() {
 
   this.nextTab = function() {
       stopScroller();
-
-      gBrowser.mTabContainer.advanceSelectedTab(1);
+      // gBrowser.mTabContainer.advanceSelectedTab(1);
+      gBrowser.mTabContainer.advanceSelectedTab(1, true);
   };
 
   this.prevTab = function() {
       stopScroller();
-      gBrowser.mTabContainer.advanceSelectedTab(-1);
+      // gBrowser.mTabContainer.advanceSelectedTab(-1);
+      gBrowser.mTabContainer.advanceSelectedTab(-1, true);
   };
 
   this.closeTab = function() {
