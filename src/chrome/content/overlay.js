@@ -351,6 +351,7 @@ function surfkeys_() {
       var menu = window.document.getElementById("contentAreaContextMenu");
       menu.addEventListener("popupshowing", surfkeysShowcontext, false);
       menu.addEventListener("popuphiding", surfkeysEnable, false);
+      setKeys();
     }
   }
 
@@ -441,6 +442,32 @@ function surfkeys_() {
     disableFlag = false;
   }
 
+  function setKeys() {
+    var keys = surfkeysPrefs.getCharPref('keys').split('||');
+    var modifiers = new Array();
+    var keyNode;
+    for(var k in keys) {
+      modifiers = new Array();
+      key = eval('(' + keys[k] + ')');
+      keyNode = document.getElementById(key.id);
+      if(keyNode) {
+        if(key.shift) {
+          modifiers.push('shift');
+        }
+        if(key.alt) {
+          modifiers.push('alt');
+        }
+        if(modifiers.length) {
+          modifiers = modifiers.join(' ');
+        } else {
+          modifiers = false;
+        }
+        keyNode.setAttribute('key', key.key);
+        if(modifiers)
+        keyNode.setAttribute('modifiers', modifiers);
+      }
+    }
+  }
   //  window.addEventListener("keypress", surfkeysOnKeypress, true);
 
   // listeners to suppress keyboard browsing when in menu
