@@ -1,7 +1,7 @@
 #!/bin/bash
 
 if [ -z $1 ];then
-  SFVER='0_5_1b';
+  SFVER='0_5_1';
 else
   SFVER=$1;
 fi
