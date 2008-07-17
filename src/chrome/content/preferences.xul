@@ -2,49 +2,63 @@
 
 <!DOCTYPE dialog SYSTEM "chrome://surfkeys/locale/surfkeys.dtd">
 
-<!-- 
- * ***** BEGIN LICENSE BLOCK *****
- * Version:  MPL 1.1
- *
- * The contents of this file are subject to the Mozilla Public License
- * Version 1.1  (the "License"); you may  not use this  file except in
- * compliance with the License.  You  may obtain a copy of the License
- * at http://www.mozilla.org/MPL/
- *
- * Software distributed under the License is distributed on an "AS IS"
- * basis, WITHOUT WARRANTY OF ANY KIND, either express or implied. See
- * the  License  for  the   specific  language  governing  rights  and
- * limitations under the License.
- *
- * The Original Code is the SurfKeys Mozilla extension.
- * The Initial Developer of the Original Code and the Idea is Pekka
- * P. Sillanpaa.  Portions created  by Initial Developer are Copyright
- * (C) 2004. All Rights Reserved.
- *
- * Contributor(s): Pekka P. Sillanpaa 
- * ***** END LICENSE BLOCK ***** -->
+<!--
+* ***** BEGIN LICENSE BLOCK *****
+* Version:  MPL 1.1
+*
+* The contents of this file are subject to the Mozilla Public License
+* Version 1.1  (the "License"); you may  not use this  file except in
+* compliance with the License.  You  may obtain a copy of the License
+* at http://www.mozilla.org/MPL/
+*
+* Software distributed under the License is distributed on an "AS IS"
+* basis, WITHOUT WARRANTY OF ANY KIND, either express or implied. See
+* the  License  for  the   specific  language  governing  rights  and
+* limitations under the License.
+*
+* The Original Code is the SurfKeys Mozilla extension.
+* The Initial Developer of the Original Code and the Idea is Pekka
+* P. Sillanpaa.  Portions created  by Initial Developer are Copyright
+* (C) 2004. All Rights Reserved.
+*
+* Contributor(s): Pekka P. Sillanpaa
+* ***** END LICENSE BLOCK ***** -->
 
 <?xml-stylesheet href="chrome://global/skin/global.css" type="text/css"?>
 
 <prefwindow id="surfkeysPreferences" title = "Surfkeys preferences"
-            xmlns="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul">
+  xmlns="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul">
 
-<prefpane id="pane1" label="Surfkeys">
-<preferences>
-<preference id="surfkeys.enabled" name="extensions.surfkeys.enabled" type="bool"/>
-<preference id="surfkeys.resultpattern" name="extensions.surfkeys.resultpattern" type="string"/>
-</preferences>
+  <prefpane id="pane1" label="Surfkeys">
+    <preferences>
+      <preference id="surfkeys.enabled" name="extensions.surfkeys.enabled" type="bool"/>
+      <preference id="surfkeys.resultpattern" name="extensions.surfkeys.resultpattern" type="string"/>
+      <preference id="surfkeys.keys" name="extensions.surfkeys.keys" type="string"/>
+    </preferences>
 
-<vbox>	
-<hbox>	
-<checkbox id="enabled" preference="surfkeys.enabled" label="&enabled.checkbox;"/>
-</hbox>
-</vbox>		  
+    <tabbox id="surfkeys-tabbox">
+      <tabs>
+        <tab label="General" />
+        <tab label="Keys" />
+      </tabs>
+      <tabpanels>
+        <tabpanel>
+          <vbox>
+            <hbox>
+              <checkbox id="enabled" preference="surfkeys.enabled" label="&enabled.checkbox;"/>
+            </hbox>
+          </vbox>
 
-<vbox>
-<label flex="1" value="&resultLinktexts.label;"/>
-<textbox id="resultpattern" preference="surfkeys.resultpattern" multiline="false" />
-</vbox>
-
-</prefpane>
+          <vbox>
+            <label flex="1" value="&resultLinktexts.label;"/>
+            <textbox id="resultpattern" preference="surfkeys.resultpattern" multiline="false" />
+          </vbox>
+        </tabpanel>
+        <tabpanel>
+          <label flex="1" value="Config keys" />
+          <textbox id="keys" preference="surfkeys.keys" multiline="true" />
+        </tabpanel>
+      </tabpanels>
+    </tabbox>
+  </prefpane>
 </prefwindow>
