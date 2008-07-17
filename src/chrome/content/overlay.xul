@@ -2,9 +2,7 @@
 
 <!DOCTYPE overlay SYSTEM "chrome://surfkeys/locale/surfkeys.dtd">
 
-<overlay id="surfkeysOverlay"
-    xmlns="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul">
-  
+<overlay id="surfkeysOverlay" xmlns="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul">
   <script src="chrome://surfkeys/content/overlay.js"/>
 
   <popup id="contentAreaContextMenu">
@@ -15,9 +13,9 @@
 	oncommand="surfkeys.SurfKeysAddNextPrev(1);"/>
 
 	<menuitem id="sk_markasprev"
-	label="&surfkeys.markasprev.label;" 
+	label="&surfkeys.markasprev.label;"
 	accesskey="&surfkeys.markasprev.key;"
-	insertafter="context-copylink" 
+	insertafter="context-copylink"
 	oncommand="surfkeys.SurfKeysAddNextPrev(2);"/>
   </popup>
 
