@@ -26,8 +26,8 @@
 
 <?xml-stylesheet href="chrome://global/skin/global.css" type="text/css"?>
 
-<prefwindow id="surfkeysPreferences" title = "Surfkeys preferences"
-  xmlns="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul">
+<prefwindow id="surfkeysPreferences" title = "Surfkeys preferences" xmlns="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul" onload="generateKeys();">
+  <script type="application/x-javascript" src="chrome://surfkeys/content/preferences.js" />
 
   <prefpane id="pane1" label="Surfkeys">
     <preferences>
@@ -55,8 +55,18 @@
           </vbox>
         </tabpanel>
         <tabpanel>
-          <label flex="1" value="Config keys" />
-          <textbox id="keys" preference="surfkeys.keys" multiline="true" />
+          <vbox>
+            <label flex="1" value="Config keys" />
+            <tree id="surfkeys-tree" flex="1" height="500" width="1000">
+              <treecols>
+                <treecol id="idcol" label="id" flex="1"/>
+                <treecol id="keycol" label="key" flex="1"/>
+                <treecol id="shiftcol" label="shift" flex="1"/>
+                <treecol id="altcol" label="alt" flex="1"/>
+              </treecols>
+              <treechildren/>
+            </tree>
+          </vbox>
         </tabpanel>
       </tabpanels>
     </tabbox>
