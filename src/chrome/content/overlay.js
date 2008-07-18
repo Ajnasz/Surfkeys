@@ -443,13 +443,13 @@ function surfkeys_() {
   }
 
   function setKeys() {
-    var keys = surfkeysPrefs.getCharPref('keys').split('||');
+    var keys = eval('(' + surfkeysPrefs.getCharPref('keys') + ')');
     var modifiers = new Array();
-    var keyNode;
+    var keyNode, key;
     for(var k in keys) {
+      key = keys[key];
       modifiers = new Array();
-      key = eval('(' + keys[k] + ')');
-      keyNode = document.getElementById(key.id);
+      keyNode = document.getElementById(k);
       if(keyNode) {
         if(key.shift) {
           modifiers.push('shift');
