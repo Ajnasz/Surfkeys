@@ -3,8 +3,10 @@ var surfkeysPrefs = Components.classes["@mozilla.org/preferences-service;1"].
 
 surfkeysPrefs = surfkeysPrefs.getBranch("extensions.surfkeys.");
 
-var generateKeys = function() {
-  var keys = eval('(' + surfkeysPrefs.getCharPref('keys') + ')');
+var generateKeys = function(keys, selection) {
+  if(!keys) {
+    var keys = eval('(' + surfkeysPrefs.getCharPref('keys') + ')');
+  }
   var _keys = new Array();
   for(key in keys) {
     keys[key].id = key;
@@ -41,5 +43,59 @@ var generateKeys = function() {
     getCellProperties: function(row,col,props){},
     getColumnProperties: function(colid,col,props){}
   };
-  document.getElementById('surfkeys-tree').view = treeView;
+  var tree = document.getElementById('surfkeys-tree');
+  tree.view = treeView;
+  if(!isNaN(selection)) {
+    tree.view.selection.select(selection);
+  } else {
+    tree.view.selection.select(0);
+  }
 };
+var keySelected = function() {
+  var keys = eval('(' + surfkeysPrefs.getCharPref('keys') + ')');
+  var tree = document.getElementById("surfkeys-tree");
+  var selectedKey  = {
+    id: tree.view.getCellText(tree.currentIndex, tree.columns.getColumnAt(0)),
+    key: tree.view.getCellText(tree.currentIndex, tree.columns.getColumnAt(1)),
+    shift: tree.view.getCellText(tree.currentIndex, tree.columns.getColumnAt(2)),
+    alt: tree.view.getCellText(tree.currentIndex, tree.columns.getColumnAt(3))
+  }
+  var currentKey = document.getElementById('current-key');
+  var currentShift = document.getElementById('current-shift');
+  var currentAlt = document.getElementById('current-alt');
+  currentKey.value = selectedKey.key;
+  currentShift.checked = (selectedKey.shift == 'false') ? false : true;
+  currentAlt.checked = (selectedKey.alt == 'false') ? false : true;
+}
+var setCurrentShift = function(val) {
+  var keys = eval('(' + surfkeysPrefs.getCharPref('keys') + ')');
+  var tree = document.getElementById('surfkeys-tree');
+  var currentId = tree.view.getCellText(tree.currentIndex, tree.columns.getColumnAt(0));
+  keys[currentId].shift = val;
+  generateKeys(keys, tree.currentIndex);
+  setKeyPreferences(keys);
+}
+var setCurrentAlt = function(val) {
+  var keys = eval('(' + surfkeysPrefs.getCharPref('keys') + ')');
+  var tree = document.getElementById('surfkeys-tree');
+  var currentId = tree.view.getCellText(tree.currentIndex, tree.columns.getColumnAt(0));
+  keys[currentId].alt = val;
+  generateKeys(keys, tree.currentIndex);
+  setKeyPreferences(keys);
+}
+var setCurrentKey = function(val) {
+  var keys = eval('(' + surfkeysPrefs.getCharPref('keys') + ')');
+  var tree = document.getElementById('surfkeys-tree');
+  var currentId = tree.view.getCellText(tree.currentIndex, tree.columns.getColumnAt(0));
+  keys[currentId].key = val;
+  generateKeys(keys, tree.currentIndex);
+  setKeyPreferences(keys);
+}
+var setKeyPreferences = function(keys) {
+  var json = new Array();
+  for(k in keys) {
+    json.push(k + ': {key:\'' + keys[k].key + '\',shift:' + keys[k].shift + ',alt:' + keys[k].alt + '}');
+  }
+  var json = '{' + json.join(',') + '}';
+  surfkeysPrefs.setCharPref('keys', json);
+}
