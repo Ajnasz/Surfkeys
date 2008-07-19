@@ -226,12 +226,6 @@ function surfkeys_() {
   // logging
   ////////////////////////////////////////////////////////////////////////////////
 
-  var gConsoleService = Components.classes['@mozilla.org/consoleservice;1']
-    .getService(Components.interfaces.nsIConsoleService);
-
-  function surfkeysLogMessage(aMessage) {
-    gConsoleService.logStringMessage('surfkeys: ' + aMessage);
-  }
 
   ////////////////////////////////////////////////////////////////////////////////
   // configuration and initialization related functions
@@ -447,7 +441,7 @@ function surfkeys_() {
     var modifiers = new Array();
     var keyNode, key;
     for(var k in keys) {
-      key = keys[key];
+      key = keys[k];
       modifiers = new Array();
       keyNode = document.getElementById(k);
       if(keyNode) {
@@ -478,7 +472,7 @@ function surfkeys_() {
   // surfkeysLoad was never called.
   window.addEventListener("load", surfkeysLoad, true);
 
-  surfkeysLogMessage("Initialized");
+  SKLog.log("Initialized");
 
 }
 
