@@ -30,7 +30,7 @@
 // Surf Keys
 ////////////////////////////////////////////////////////////////////////////////
 
-function surfkeys_() {
+function surfkeys_(reload) {
 
   //var modified_flag = false;
   var sk_isFirstTime = true;
@@ -55,96 +55,108 @@ function surfkeys_() {
   // public methods
 
   this.scrollUp = function() {
-      surfkeysScrAccelerateScroller(SK_Y, -1);
+    surfkeysScrAccelerateScroller(SK_Y, -1);
   };
 
   this.scrollDown = function() {
-      surfkeysScrAccelerateScroller(SK_Y, 1);
+    surfkeysScrAccelerateScroller(SK_Y, 1);
   };
 
   this.scrollLeft = function() {
-      surfkeysScrAccelerateScroller(SK_X, -1);
+    surfkeysScrAccelerateScroller(SK_X, -1);
   };
 
   this.scrollRight = function() {
-      surfkeysScrAccelerateScroller(SK_X, 1);
+    surfkeysScrAccelerateScroller(SK_X, 1);
   };
 
   this.pgDown = function() {
-      stopScroller();
-      // window._content.scrollByPages(1);
-      goDoCommand('cmd_scrollPageDown');
+    stopScroller();
+    // window._content.scrollByPages(1);
+    goDoCommand('cmd_scrollPageDown');
   };
 
   this.pgUp = function() {
-      stopScroller();
-      // window._content.scrollByPages(-1);
-      goDoCommand('cmd_scrollPageUp');
+    stopScroller();
+    // window._content.scrollByPages(-1);
+    goDoCommand('cmd_scrollPageUp');
   };
 
   this.back = function() {
-      stopScroller();
-      getWindow().back();
+    stopScroller();
+    getWindow().back();
   };
 
   this.forward = function() {
-      stopScroller();
-      getWindow().forward();
+    stopScroller();
+    getWindow().forward();
   };
 
   this.next = function() {
-      stopScroller();
-      surfkeysChangePage(window._content.location.href, 1);
+    stopScroller();
+    surfkeysChangePage(window._content.location.href, 1);
   };
 
   this.previous = function() {
-      stopScroller();
-      surfkeysChangePage(window._content.location.href, 2);
+    stopScroller();
+    surfkeysChangePage(window._content.location.href, 2);
   };
 
 
   this.newTab = function() {
-      stopScroller();
-      BrowserOpenTab();
+    stopScroller();
+    BrowserOpenTab();
   };
 
   this.nextTab = function() {
-      stopScroller();
-      // gBrowser.mTabContainer.advanceSelectedTab(1);
-      gBrowser.mTabContainer.advanceSelectedTab(1, true);
+    stopScroller();
+    // gBrowser.mTabContainer.advanceSelectedTab(1);
+    gBrowser.mTabContainer.advanceSelectedTab(1, true);
   };
 
   this.prevTab = function() {
-      stopScroller();
-      // gBrowser.mTabContainer.advanceSelectedTab(-1);
-      gBrowser.mTabContainer.advanceSelectedTab(-1, true);
+    stopScroller();
+    // gBrowser.mTabContainer.advanceSelectedTab(-1);
+    gBrowser.mTabContainer.advanceSelectedTab(-1, true);
+  };
+
+  this.focusFirst = function() {
+    stopScroller();
+    // gBrowser.mTabContainer.advanceSelectedTab(-1);
+    gBrowser.mTabContainer.selectedIndex = 0;
+  };
+
+  this.focusLast = function() {
+    stopScroller();
+    // gBrowser.mTabContainer.advanceSelectedTab(-1);
+    gBrowser.mTabContainer.selectedIndex = gBrowser.browsers.length-1;
   };
 
   this.closeTab = function() {
-      stopScroller();
-      gBrowser.removeTab(gBrowser.mCurrentTab);
+    stopScroller();
+    gBrowser.removeTab(gBrowser.mCurrentTab);
   };
 
   this.gotoLocationBar = function() {
-      stopScroller();
-      Urlbar = document.getElementById("urlbar");
-      Urlbar.focus();
-      Urlbar.select();
+    stopScroller();
+    Urlbar = document.getElementById("urlbar");
+    Urlbar.focus();
+    Urlbar.select();
   };
 
   this.closeWindow = function() {
-      stopScroller();
-      getWindow().close();
+    stopScroller();
+    getWindow().close();
   };
 
   this.stop = function() {
-      stopScroller();
-      getWindow().stop();
+    stopScroller();
+    getWindow().stop();
   };
 
   this.reload = function() {
-      stopScroller();
-      BrowserReload();
+    stopScroller();
+    BrowserReload();
   };
 
 
@@ -240,21 +252,21 @@ function surfkeys_() {
   }
 
   function sk_isFormElemFocused()
-    {
-      var elt = document.commandDispatcher.focusedElement;
-      if (elt == null) return false;
+  {
+    var elt = document.commandDispatcher.focusedElement;
+    if (elt == null) return false;
 
-      var tagName = elt.localName.toUpperCase();
+    var tagName = elt.localName.toUpperCase();
 
-      if (tagName == "INPUT" ||
-	  tagName == "TEXTAREA" ||
-	  tagName == "SELECT" ||
-	  tagName == "BUTTON" ||
-	  tagName == "ISINDEX")
-	return true;
+    if (tagName == "INPUT" ||
+        tagName == "TEXTAREA" ||
+        tagName == "SELECT" ||
+        tagName == "BUTTON" ||
+        tagName == "ISINDEX")
+      return true;
 
-      return false;
-    }
+    return false;
+  }
 
   ////////////////////////////////////////////////////////////////////////////////
   // surfkeys
@@ -277,22 +289,22 @@ function surfkeys_() {
     for (s = 0; s < siteArray.length; s++) {
       site = siteArray[s].split(":");
       if (url.indexOf(site[0]) != -1 || site[0] == "*") {
-	for (i = 0; i < linkArray.length; i++) {
-	  if (site[0] == "*") {
-	    var hrefstripped = url.substring(url.indexOf("//") + 2, url.length);
-	    var domain = hrefstripped.substring(0, hrefstripped.indexOf("/"));
-	    site[0] = domain;
-	  }
-	  var txt = linkArray[i].innerHTML;
-	  // we check that the text inside anchor matches the next/prev-text
-	  // defined for the site, and also verify that the link's href
-	  // is still in the same site (just to prevent a situation where
-	  // google's result link have a text "Previous" inside it)
-	  if (txt.indexOf(site[value]) != -1 && linkArray[i].href.indexOf(site[0]) != -1) {
-	    window._content.location.replace(linkArray[i].href);
-	    return;
-	  }
-	}
+        for (i = 0; i < linkArray.length; i++) {
+          if (site[0] == "*") {
+            var hrefstripped = url.substring(url.indexOf("//") + 2, url.length);
+            var domain = hrefstripped.substring(0, hrefstripped.indexOf("/"));
+            site[0] = domain;
+          }
+          var txt = linkArray[i].innerHTML;
+          // we check that the text inside anchor matches the next/prev-text
+          // defined for the site, and also verify that the link's href
+          // is still in the same site (just to prevent a situation where
+          // google's result link have a text "Previous" inside it)
+          if (txt.indexOf(site[value]) != -1 && linkArray[i].href.indexOf(site[0]) != -1) {
+            window._content.location.replace(linkArray[i].href);
+            return;
+          }
+        }
       }
     }
   }
@@ -335,12 +347,12 @@ function surfkeys_() {
       surfkeysStringbundle = document.getElementById("surfkeysstringbundle");
 
 
-      /*	var gBrowser = document.getElementById("content");
-		if (gBrowser) {
-		var TabBox = document.getAnonymousNodes(gBrowser)[1];
-		var TabBar = TabBox.getElementsByAttribute('class', 'tabbrowser-tabs')[0];
-		//	TabBar.hidden = true;
-		}
+      /*  var gBrowser = document.getElementById("content");
+          if (gBrowser) {
+          var TabBox = document.getAnonymousNodes(gBrowser)[1];
+          var TabBar = TabBox.getElementsByAttribute('class', 'tabbrowser-tabs')[0];
+      //  TabBar.hidden = true;
+      }
       */
       var menu = window.document.getElementById("contentAreaContextMenu");
       menu.addEventListener("popupshowing", surfkeysShowcontext, false);
@@ -353,7 +365,7 @@ function surfkeys_() {
    * Function called when context menu pops up, decides whether to show
    * option for adding as next/previous link.
    *
-   * @author				aeternus
+   * @author        aeternus
    */
 
   function surfkeysShowcontext() {
@@ -370,8 +382,8 @@ function surfkeys_() {
    * replaces the link text associated with the specified direction. If not, adds
    * a section for current domain.
    *
-   * @param direction		the direction of the link (1: next, 2: previous)
-   * @author				aeternus
+   * @param direction   the direction of the link (1: next, 2: previous)
+   * @author        aeternus
    */
 
   this.SurfKeysAddNextPrev = function(direction) {
@@ -398,7 +410,7 @@ function surfkeys_() {
           site[direction] = linktext;
           siteArray[s] = site.join(":");
           alert(surfkeysStringbundle.getString("modifiedlink_for") + " " + domain +
-          surfkeysStringbundle.getString("linktext") + " " + linktext);
+              surfkeysStringbundle.getString("linktext") + " " + linktext);
         }
       }
 
@@ -413,7 +425,7 @@ function surfkeys_() {
           linkToadd = ":" + linktext;
         }
         alert(surfkeysStringbundle.getString("addedlink_for") + " " +
-              domain + surfkeysStringbundle.getString("linktext") + " " + linktext);
+            domain + surfkeysStringbundle.getString("linktext") + " " + linktext);
         siteList = siteList + ";" + domain + ":" + linkToadd;
       }
 
@@ -424,7 +436,7 @@ function surfkeys_() {
   /**
    * Two functions to temporarily disable surfkeys, currently only when
    * a menu is shown, in the future: also when a buffer list is shown
-   * @author				aeternus
+   * @author        aeternus
    */
 
   function surfkeysDisable() {
@@ -440,6 +452,7 @@ function surfkeys_() {
     var keys = eval('(' + surfkeysPrefs.getCharPref('keys') + ')');
     var modifiers = new Array();
     var keyNode, key;
+    SKLog.log(keys)
     for(var k in keys) {
       key = keys[k];
       modifiers = new Array();
@@ -458,8 +471,10 @@ function surfkeys_() {
         }
         keyNode.setAttribute('key', key.key);
         if(modifiers)
-        keyNode.setAttribute('modifiers', modifiers);
+          keyNode.setAttribute('modifiers', modifiers);
       }
+      SKLog.log('shift: ', key.shift, 'alt:', key.alt, 'key:', key.key);
+      SKLog.log(keyNode.getAttribute('modifiers'), keyNode.getAttribute('key'));
     }
   }
   //  window.addEventListener("keypress", surfkeysOnKeypress, true);
@@ -470,11 +485,13 @@ function surfkeys_() {
 
   // applied to window, not window._content, since in the latter case
   // surfkeysLoad was never called.
-  window.addEventListener("load", surfkeysLoad, true);
-
+  if(reload) {
+    surfkeysLoad();
+  } else {
+    window.addEventListener("load", surfkeysLoad, true);
+  }
   SKLog.log("Initialized");
-
-}
+};
 
 var surfkeys = new surfkeys_()
 
