@@ -45,6 +45,9 @@
     <key id="skTabNext" key="o" oncommand="surfkeys.nextTab();" />
     <key id="skTabPrev" key="u" oncommand="surfkeys.prevTab();" />
 
+    <key id="skFocusFirst" key="f" oncommand="surfkeys.focusFirst();" />
+    <key id="skFocusLast" key="v" oncommand="surfkeys.focusLast();" />
+
     <key id="skGotoLocationBar" key="g" oncommand="surfkeys.gotoLocationBar();" />
 
     <key id="skMoveTabLeft" modifiers="shift" key="u" oncommand="surfkeys.moveLeft();" />
