@@ -99,3 +99,13 @@ var setKeyPreferences = function(keys) {
   var json = '{' + json.join(',') + '}';
   surfkeysPrefs.setCharPref('keys', json);
 }
+setAllWinKeys = function() {
+  var wm = Components.classes["@mozilla.org/appshell/window-mediator;1"].getService(Components.interfaces.nsIWindowMediator);
+  var enumerator = wm.getEnumerator('navigator:browser'), win;
+  while(enumerator.hasMoreElements()) {
+    win = enumerator.getNext();
+    if(win.surfkeys_) {
+      win.surfkeys = new win.surfkeys_(true);
+    }
+  }
+};
