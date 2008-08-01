@@ -15,9 +15,14 @@ var generateKeys = function(keys, selection) {
   var treeView = {
     rowCount: 23,
     getCellText : function(row,column) {
+      var bundle = document.getElementById('surfkeys-bundles');
       switch(column.id) {
         case 'idcol':
           return _keys[row].id;
+          break;
+
+        case 'namecol':
+          return bundle.getString(_keys[row].id);
           break;
 
         case 'keycol':
