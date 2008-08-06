@@ -108,27 +108,41 @@ function surfkeys_(reload) {
     BrowserOpenTab();
   };
 
+  /**
+   * Switch to next tab
+   * @author ajnasz, Rick-112
+   */
   this.nextTab = function() {
     stopScroller();
     // gBrowser.mTabContainer.advanceSelectedTab(1);
     gBrowser.mTabContainer.advanceSelectedTab(1, true);
   };
 
+  /**
+   * Switch to previous tab
+   * @author ajnasz, Rick-112
+   */
   this.prevTab = function() {
     stopScroller();
     // gBrowser.mTabContainer.advanceSelectedTab(-1);
     gBrowser.mTabContainer.advanceSelectedTab(-1, true);
   };
 
+  /**
+   * Focus to the first tab
+   * @author ajnasz
+   */
   this.focusFirst = function() {
     stopScroller();
-    // gBrowser.mTabContainer.advanceSelectedTab(-1);
     gBrowser.mTabContainer.selectedIndex = 0;
   };
 
+  /**
+   * Focus the last tab
+   * @author ajnasz
+   */
   this.focusLast = function() {
     stopScroller();
-    // gBrowser.mTabContainer.advanceSelectedTab(-1);
     gBrowser.mTabContainer.selectedIndex = gBrowser.browsers.length-1;
   };
 
@@ -448,11 +462,15 @@ function surfkeys_(reload) {
     disableFlag = false;
   }
 
+  /**
+   * A function to change the key bindings
+   * @author ajnasz
+   */
   function setKeys() {
     var keys = eval('(' + surfkeysPrefs.getCharPref('keys') + ')');
     var modifiers = new Array();
     var keyNode, key;
-    SKLog.log(keys)
+    SKLog.log(keys);
     for(var k in keys) {
       key = keys[k];
       modifiers = new Array();
@@ -493,5 +511,5 @@ function surfkeys_(reload) {
   SKLog.log("Initialized");
 };
 
-var surfkeys = new surfkeys_()
+var surfkeys = new surfkeys_();
 

@@ -60,57 +60,58 @@ var keySelected = function() {
   var keys = eval('(' + surfkeysPrefs.getCharPref('keys') + ')');
   var tree = document.getElementById("surfkeys-tree");
   var selectedKey  = {
-    id: tree.view.getCellText(tree.currentIndex, tree.columns.getColumnAt(0)),
-    key: tree.view.getCellText(tree.currentIndex, tree.columns.getColumnAt(1)),
-    shift: tree.view.getCellText(tree.currentIndex, tree.columns.getColumnAt(2)),
-    alt: tree.view.getCellText(tree.currentIndex, tree.columns.getColumnAt(3))
-  }
-  var currentKey = document.getElementById('current-key');
-  var currentShift = document.getElementById('current-shift');
-  var currentAlt = document.getElementById('current-alt');
-  currentKey.value = selectedKey.key;
-  currentShift.checked = (selectedKey.shift == 'false') ? false : true;
-  currentAlt.checked = (selectedKey.alt == 'false') ? false : true;
-}
-var setCurrentShift = function(val) {
-  var keys = eval('(' + surfkeysPrefs.getCharPref('keys') + ')');
-  var tree = document.getElementById('surfkeys-tree');
-  var currentId = tree.view.getCellText(tree.currentIndex, tree.columns.getColumnAt(0));
-  keys[currentId].shift = val;
-  generateKeys(keys, tree.currentIndex);
-  setKeyPreferences(keys);
-}
-var setCurrentAlt = function(val) {
-  var keys = eval('(' + surfkeysPrefs.getCharPref('keys') + ')');
-  var tree = document.getElementById('surfkeys-tree');
-  var currentId = tree.view.getCellText(tree.currentIndex, tree.columns.getColumnAt(0));
-  keys[currentId].alt = val;
-  generateKeys(keys, tree.currentIndex);
-  setKeyPreferences(keys);
-}
-var setCurrentKey = function(val) {
-  var keys = eval('(' + surfkeysPrefs.getCharPref('keys') + ')');
-  var tree = document.getElementById('surfkeys-tree');
-  var currentId = tree.view.getCellText(tree.currentIndex, tree.columns.getColumnAt(0));
-  keys[currentId].key = val;
-  generateKeys(keys, tree.currentIndex);
-  setKeyPreferences(keys);
-}
-var setKeyPreferences = function(keys) {
-  var json = new Array();
-  for(k in keys) {
-    json.push(k + ': {key:\'' + keys[k].key + '\',shift:' + keys[k].shift + ',alt:' + keys[k].alt + '}');
-  }
-  var json = '{' + json.join(',') + '}';
-  surfkeysPrefs.setCharPref('keys', json);
-}
-setAllWinKeys = function() {
-  var wm = Components.classes["@mozilla.org/appshell/window-mediator;1"].getService(Components.interfaces.nsIWindowMediator);
-  var enumerator = wm.getEnumerator('navigator:browser'), win;
-  while(enumerator.hasMoreElements()) {
-    win = enumerator.getNext();
-    if(win.surfkeys_) {
-      win.surfkeys = new win.surfkeys_(true);
+      id: tree.view.getCellText(tree.currentIndex, tree.columns.getColumnAt(0)),
+      name: tree.view.getCellText(tree.currentIndex, tree.columns.getColumnAt(1)),
+      key: tree.view.getCellText(tree.currentIndex, tree.columns.getColumnAt(2)),
+      shift: tree.view.getCellText(tree.currentIndex, tree.columns.getColumnAt(3)),
+      alt: tree.view.getCellText(tree.currentIndex, tree.columns.getColumnAt(4))
     }
+    var currentKey = document.getElementById('current-key');
+    var currentShift = document.getElementById('current-shift');
+    var currentAlt = document.getElementById('current-alt');
+    currentKey.value = selectedKey.key;
+    currentShift.checked = (selectedKey.shift == 'false') ? false : true;
+    currentAlt.checked = (selectedKey.alt == 'false') ? false : true;
+  }
+  var setCurrentShift = function(val) {
+    var keys = eval('(' + surfkeysPrefs.getCharPref('keys') + ')');
+    var tree = document.getElementById('surfkeys-tree');
+    var currentId = tree.view.getCellText(tree.currentIndex, tree.columns.getColumnAt(0));
+    keys[currentId].shift = val;
+    generateKeys(keys, tree.currentIndex);
+    setKeyPreferences(keys);
+  }
+  var setCurrentAlt = function(val) {
+    var keys = eval('(' + surfkeysPrefs.getCharPref('keys') + ')');
+    var tree = document.getElementById('surfkeys-tree');
+    var currentId = tree.view.getCellText(tree.currentIndex, tree.columns.getColumnAt(0));
+    keys[currentId].alt = val;
+    generateKeys(keys, tree.currentIndex);
+    setKeyPreferences(keys);
+  }
+  var setCurrentKey = function(val) {
+    var keys = eval('(' + surfkeysPrefs.getCharPref('keys') + ')');
+    var tree = document.getElementById('surfkeys-tree');
+    var currentId = tree.view.getCellText(tree.currentIndex, tree.columns.getColumnAt(0));
+    keys[currentId].key = val;
+    generateKeys(keys, tree.currentIndex);
+    setKeyPreferences(keys);
+  }
+  var setKeyPreferences = function(keys) {
+    var json = new Array();
+    for(k in keys) {
+      json.push(k + ': {key:\'' + keys[k].key + '\',shift:' + keys[k].shift + ',alt:' + keys[k].alt + '}');
+    }
+    var json = '{' + json.join(',') + '}';
+    surfkeysPrefs.setCharPref('keys', json);
+  }
+  setAllWinKeys = function() {
+    var wm = Components.classes["@mozilla.org/appshell/window-mediator;1"].getService(Components.interfaces.nsIWindowMediator);
+    var enumerator = wm.getEnumerator('navigator:browser'), win;
+    while(enumerator.hasMoreElements()) {
+      win = enumerator.getNext();
+      if(win.surfkeys_) {
+        win.surfkeys = new win.surfkeys_(true);
+      }
   }
 };
