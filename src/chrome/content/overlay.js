@@ -102,6 +102,24 @@ function surfkeys_(reload) {
     surfkeysChangePage(window._content.location.href, 2);
   };
 
+  this.nextRel = function() {
+    stopScroller();
+    var linkArray = window._content.document.getElementsByTagName('link');
+    for(var i = 0, l = linkArray.length; i < l; i++) {
+      if(linkArray[i].rel == 'next') {
+        window._content.document.location = linkArray[i].href;
+      }
+    }
+  }
+  this.previousRel = function() {
+    stopScroller();
+    var linkArray = window._content.document.getElementsByTagName('link');
+    for(var i = 0, l = linkArray.length; i < l; i++) {
+      if(linkArray[i].rel == 'previous') {
+        window._content.document.location = linkArray[i].href;
+      }
+    }
+  }
 
   this.newTab = function() {
     stopScroller();
@@ -488,8 +506,10 @@ function surfkeys_(reload) {
           modifiers = false;
         }
         keyNode.setAttribute('key', key.key);
-        if(modifiers)
+        if(modifiers) {
           keyNode.setAttribute('modifiers', modifiers);
+        }
+        keyNode.setAttribute('disabled', key.disabled);
       }
       SKLog.log('shift: ', key.shift, 'alt:', key.alt, 'key:', key.key);
       SKLog.log(keyNode.getAttribute('modifiers'), keyNode.getAttribute('key'));
