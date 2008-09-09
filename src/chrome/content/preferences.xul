@@ -53,6 +53,7 @@
               <label value="key" control="current-key" /><textbox id="current-key" size="1" onchange="setCurrentKey(this.value);" />
               <checkbox id="current-shift" label="shift" oncommand="setCurrentShift(this.checked);" />
               <checkbox id="current-alt" label="alt" oncommand="setCurrentAlt(this.checked);" />
+              <checkbox id="current-disabled" label="disabled" oncommand="setCurrentDisabled(this.checked);" />
             </hbox>
             <label flex="1" value="Config keys" />
             <tree id="surfkeys-tree" flex="1" height="500" width="700" onselect="keySelected();">
@@ -62,6 +63,7 @@
                 <treecol id="keycol" label="key" flex="1" />
                 <treecol id="shiftcol" label="shift" flex="1" />
                 <treecol id="altcol" label="alt" flex="1" />
+                <treecol id="disabledcol" label="disabled" flex="1" />
               </treecols>
               <treechildren/>
             </tree>
