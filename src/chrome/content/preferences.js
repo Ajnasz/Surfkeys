@@ -13,7 +13,7 @@ var generateKeys = function(keys, selection) {
     _keys.push(keys[key]);
   }
   var treeView = {
-    rowCount: 23,
+    rowCount: 27,
     getCellText : function(row,column) {
       var bundle = document.getElementById('surfkeys-bundles');
       switch(column.id) {
@@ -35,6 +35,10 @@ var generateKeys = function(keys, selection) {
 
         case 'altcol':
           return _keys[row].alt;
+          break;
+
+        case 'disabledcol':
+          return _keys[row].disabled;
           break;
       }
     },
@@ -64,14 +68,17 @@ var keySelected = function() {
       name: tree.view.getCellText(tree.currentIndex, tree.columns.getColumnAt(1)),
       key: tree.view.getCellText(tree.currentIndex, tree.columns.getColumnAt(2)),
       shift: tree.view.getCellText(tree.currentIndex, tree.columns.getColumnAt(3)),
-      alt: tree.view.getCellText(tree.currentIndex, tree.columns.getColumnAt(4))
+      alt: tree.view.getCellText(tree.currentIndex, tree.columns.getColumnAt(4)),
+      disabled: tree.view.getCellText(tree.currentIndex, tree.columns.getColumnAt(5))
     }
     var currentKey = document.getElementById('current-key');
     var currentShift = document.getElementById('current-shift');
     var currentAlt = document.getElementById('current-alt');
+    var currentDisabled = document.getElementById('current-disabled');
     currentKey.value = selectedKey.key;
     currentShift.checked = (selectedKey.shift == 'false') ? false : true;
     currentAlt.checked = (selectedKey.alt == 'false') ? false : true;
+    currentDisabled.checked = (selectedKey.disabled == 'false') ? false : true;
   }
   var setCurrentShift = function(val) {
     var keys = eval('(' + surfkeysPrefs.getCharPref('keys') + ')');
@@ -89,6 +96,14 @@ var keySelected = function() {
     generateKeys(keys, tree.currentIndex);
     setKeyPreferences(keys);
   }
+  var setCurrentDisabled = function(val) {
+    var keys = eval('(' + surfkeysPrefs.getCharPref('keys') + ')');
+    var tree = document.getElementById('surfkeys-tree');
+    var currentId = tree.view.getCellText(tree.currentIndex, tree.columns.getColumnAt(0));
+    keys[currentId].disabled = val;
+    generateKeys(keys, tree.currentIndex);
+    setKeyPreferences(keys);
+  }
   var setCurrentKey = function(val) {
     var keys = eval('(' + surfkeysPrefs.getCharPref('keys') + ')');
     var tree = document.getElementById('surfkeys-tree');
@@ -100,7 +115,7 @@ var keySelected = function() {
   var setKeyPreferences = function(keys) {
     var json = new Array();
     for(k in keys) {
-      json.push(k + ': {key:\'' + keys[k].key + '\',shift:' + keys[k].shift + ',alt:' + keys[k].alt + '}');
+      json.push(k + ': {key:\'' + keys[k].key + '\',shift:' + keys[k].shift + ',alt:' + keys[k].alt + ',disabled:' + keys[k].disabled + '}');
     }
     var json = '{' + json.join(',') + '}';
     surfkeysPrefs.setCharPref('keys', json);
