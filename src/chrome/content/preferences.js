@@ -15,6 +15,7 @@ var generateKeys = function(keys, selection) {
   var treeView = {
     rowCount: 27,
     getCellText : function(row,column) {
+      if(!_keys[row]) { return; }
       var bundle = document.getElementById('surfkeys-bundles');
       switch(column.id) {
         case 'idcol':
