@@ -38,9 +38,7 @@
     <key id="skBrowserReload" key="r" oncommand="surfkeys.reload();" />
     <key id="skNext" key="m" oncommand="surfkeys.next();" />
     <key id="skPrevious" key="n" oncommand="surfkeys.previous();" />
-
-    <key id="skPreviousRel" key="x" oncommand="surfkeys.previousRel();" />
-    <key id="skNextRel" key="c" oncommand="surfkeys.nextRel();" />
+    <key id="skUp" key="c" oncommand="surfkeys.up();" />
 
     <key id="skTabNew" key="t" oncommand="surfkeys.newTab();" />
     <key id="skTabClose" key="y" oncommand="surfkeys.closeTab();" />
