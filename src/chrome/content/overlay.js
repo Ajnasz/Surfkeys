@@ -94,32 +94,69 @@ function surfkeys_(reload) {
 
   this.next = function() {
     stopScroller();
-    surfkeysChangePage(window._content.location.href, 1);
+    if(!this.nextRel()) {
+      surfkeysChangePage(window._content.location.href, 1);
+    }
   };
 
   this.previous = function() {
     stopScroller();
-    surfkeysChangePage(window._content.location.href, 2);
+    if(!this.previousRel()) {
+      surfkeysChangePage(window._content.location.href, 2);
+    }
   };
 
+  /**
+   * search for <link...> tags which rel attribute is up
+   * if a link found, redirects to it's value
+   * @return true if link found false if not found
+   * @type Boolean
+   */
+  this.up = function() {
+    var linkArray = window._content.document.getElementsByTagName('link');
+    for(var i = 0, l = linkArray.length; i < l; i++) {
+      if(linkArray[i].rel == 'up' || linkArray[i].rel == 'contents') {
+        window._content.document.location.href = linkArray[i].href;
+        return true;
+      }
+    }
+    return false;
+  };
+
+  /**
+   * search for <link...> tags which rel attribute is next
+   * if a link found, redirects to it's value
+   * @return true if link found false if not found
+   * @type Boolean
+   */
   this.nextRel = function() {
-    stopScroller();
+    //stopScroller();
     var linkArray = window._content.document.getElementsByTagName('link');
     for(var i = 0, l = linkArray.length; i < l; i++) {
       if(linkArray[i].rel == 'next') {
-        window._content.document.location = linkArray[i].href;
+        window._content.document.location.href = linkArray[i].href;
+        return true;
       }
     }
-  }
+    return false;
+  };
+  /**
+   * search for <link...> tags which rel attribute is prev or previous
+   * if a link found, redirects to it's value
+   * @return true if link found false if not found
+   * @type Boolean
+   */
   this.previousRel = function() {
-    stopScroller();
+    //stopScroller();
     var linkArray = window._content.document.getElementsByTagName('link');
     for(var i = 0, l = linkArray.length; i < l; i++) {
-      if(linkArray[i].rel == 'previous') {
-        window._content.document.location = linkArray[i].href;
+      if(linkArray[i].rel == 'previous' || linkArray[i].rel == 'prev') {
+        window._content.document.location.href = linkArray[i].href;
+        return true;
       }
     }
-  }
+    return false;
+  };
 
   this.newTab = function() {
     stopScroller();
