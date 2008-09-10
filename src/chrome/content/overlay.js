@@ -524,13 +524,17 @@ function surfkeys_(reload) {
   function setKeys() {
     var keys = eval('(' + surfkeysPrefs.getCharPref('keys') + ')');
     var modifiers = new Array();
-    var keyNode, key;
-    SKLog.log(keys);
+    var keyNode, key, parent, command, oncommand;
     for(var k in keys) {
       key = keys[k];
       modifiers = new Array();
       keyNode = document.getElementById(k);
       if(keyNode) {
+        command = keyNode.getAttribute('command');
+        oncommand = keyNode.getAttribute('oncommand');
+        keyset = keyNode.parentNode;
+        keyset.removeChild(keyNode);
+        keyNode = document.createElement('key');
         if(key.shift) {
           modifiers.push('shift');
         }
@@ -546,10 +550,17 @@ function surfkeys_(reload) {
         if(modifiers) {
           keyNode.setAttribute('modifiers', modifiers);
         }
+        if(command) {
+          keyNode.setAttribute('command', command);
+        }
+        if(oncommand) {
+          keyNode.setAttribute('oncommand', oncommand);
+        }
         keyNode.setAttribute('disabled', key.disabled);
+        keyset.appendChild(keyNode);
+        oncommand = null;
+        command = null;
       }
-      SKLog.log('shift: ', key.shift, 'alt:', key.alt, 'key:', key.key);
-      SKLog.log(keyNode.getAttribute('modifiers'), keyNode.getAttribute('key'));
     }
   }
   //  window.addEventListener("keypress", surfkeysOnKeypress, true);
