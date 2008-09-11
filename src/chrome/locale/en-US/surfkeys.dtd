@@ -5,3 +5,4 @@
 <!ENTITY surfkeys.markasnext.key "2">
 <!ENTITY surfkeys.markasprev.label "Mark as previous ">
 <!ENTITY surfkeys.markasprev.key "1">
+<!ENTITY surfkeys.disableinsidebar "Disabel Surfkeys in sidebar">
