@@ -38,6 +38,7 @@
       <preference id="surfkeys.enabled" name="extensions.surfkeys.enabled" type="bool"/>
       <preference id="surfkeys.resultpattern" name="extensions.surfkeys.resultpattern" type="string"/>
       <preference id="surfkeys.keys" name="extensions.surfkeys.keys" type="string"/>
+      <preference id="surfkeys.disableinsidebar" name="extensions.surfkeys.disableinsidebar" type="bool"/>
     </preferences>
 
     <tabbox id="surfkeys-tabbox">
@@ -71,8 +72,13 @@
         </tabpanel>
         <tabpanel>
           <vbox>
-            <label flex="1" value="&resultLinktexts.label;"/>
-            <textbox id="resultpattern" preference="surfkeys.resultpattern" multiline="false" />
+            <hbox>
+              <label flex="1" value="&resultLinktexts.label;"/>
+              <textbox id="resultpattern" preference="surfkeys.resultpattern" multiline="false" />
+            </hbox>
+            <hbox>
+              <checkbox id="disableinsidebar" preference="surfkeys.disableinsidebar" label="&surfkeys.disableinsidebar;" />
+            </hbox>
           </vbox>
         </tabpanel>
       </tabpanels>
