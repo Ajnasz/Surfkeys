@@ -39,7 +39,6 @@ function surfkeys_(reload) {
   var SK_Y = 1;
   var scrDelta = Array(2);
   var scrAccel = Array(2);
-  var surfScrDelta = 2;
   var s;
   var maxScrAccel = 5;
   var disableFlag = false;
@@ -47,18 +46,18 @@ function surfkeys_(reload) {
   //var isHahModeEnabled = false; // in case hah isn't installed
   var surfkeysStringbundle;
 
-  var surfkeysPrefs = Components.classes["@mozilla.org/preferences-service;1"].
-    getService(Components.interfaces.nsIPrefService);
-
+  var surfkeysPrefs = Components.classes["@mozilla.org/preferences-service;1"].getService(Components.interfaces.nsIPrefService);
   surfkeysPrefs = surfkeysPrefs.getBranch("extensions.surfkeys.");
 
   // public methods
 
   this.scrollUp = function() {
+    if(isSidebarWindow()) {return;}
     surfkeysScrAccelerateScroller(SK_Y, -1);
   };
 
   this.scrollDown = function() {
+    if(isSidebarWindow()) {return;}
     surfkeysScrAccelerateScroller(SK_Y, 1);
   };
 
@@ -267,9 +266,6 @@ function surfkeys_(reload) {
   };
 
   this.scroller = function() {
-
-    frames = window._content.frames;
-
     var w = document.commandDispatcher.focusedWindow;
 
     var oScrollX = w.scrollX;
@@ -301,40 +297,6 @@ function surfkeys_(reload) {
       scrAccel[SK_Y] = 0;
     }
     return 1;
-  }
-
-  ////////////////////////////////////////////////////////////////////////////////
-  // logging
-  ////////////////////////////////////////////////////////////////////////////////
-
-
-  ////////////////////////////////////////////////////////////////////////////////
-  // configuration and initialization related functions
-  ////////////////////////////////////////////////////////////////////////////////
-
-  function quickDisable() {
-    surfkeysQuickDisabled = true;
-  }
-
-  function quickEnable() {
-    surfkeysQuickDisabled = false;
-  }
-
-  function sk_isFormElemFocused()
-  {
-    var elt = document.commandDispatcher.focusedElement;
-    if (elt == null) return false;
-
-    var tagName = elt.localName.toUpperCase();
-
-    if (tagName == "INPUT" ||
-        tagName == "TEXTAREA" ||
-        tagName == "SELECT" ||
-        tagName == "BUTTON" ||
-        tagName == "ISINDEX")
-      return true;
-
-    return false;
   }
 
   ////////////////////////////////////////////////////////////////////////////////
@@ -415,20 +377,19 @@ function surfkeys_(reload) {
 
       surfkeysStringbundle = document.getElementById("surfkeysstringbundle");
 
-
-      /*  var gBrowser = document.getElementById("content");
-          if (gBrowser) {
-          var TabBox = document.getAnonymousNodes(gBrowser)[1];
-          var TabBar = TabBox.getElementsByAttribute('class', 'tabbrowser-tabs')[0];
-      //  TabBar.hidden = true;
-      }
-      */
       var menu = window.document.getElementById("contentAreaContextMenu");
       menu.addEventListener("popupshowing", surfkeysShowcontext, false);
-      menu.addEventListener("popuphiding", surfkeysEnable, false);
+      // menu.addEventListener("popuphiding", surfkeysEnable, false);
       setKeys();
     }
   }
+
+  function isSidebarWindow() {
+    var focusedWindow = document.commandDispatcher.focusedWindow;
+    var sidebarWindow = document.getElementById("sidebar").contentWindow;
+    SKLog.log(focusedWindow, sidebarWindow, focusedWindow == sidebarWindow, surfkeysPrefs.getBoolPref('disableinsidebar'));
+    if(surfkeysPrefs.getBoolPref('disableinsidebar') && focusedWindow && focusedWindow == sidebarWindow) { return true; }
+  };
 
   /**
    * Function called when context menu pops up, decides whether to show
@@ -439,10 +400,10 @@ function surfkeys_(reload) {
 
   function surfkeysShowcontext() {
     var sk_menuitem1 = document.getElementById("sk_markasnext");
-    sk_menuitem1.hidden = !gContextMenu.onLink;
     var sk_menuitem2 = document.getElementById("sk_markasprev");
+    sk_menuitem1.hidden = !gContextMenu.onLink;
     sk_menuitem2.hidden = !gContextMenu.onLink;
-    surfkeysDisable();
+    stopScroller();
   }
 
   /**
@@ -501,22 +462,6 @@ function surfkeys_(reload) {
       surfkeysPrefs.setCharPref("resultpattern", siteList);
     }
   }
-
-  /**
-   * Two functions to temporarily disable surfkeys, currently only when
-   * a menu is shown, in the future: also when a buffer list is shown
-   * @author        aeternus
-   */
-
-  function surfkeysDisable() {
-    disableFlag = true;
-    stopScroller();
-  }
-
-  function surfkeysEnable() {
-    disableFlag = false;
-  }
-
   /**
    * A function to change the key bindings
    * @author ajnasz
@@ -566,8 +511,8 @@ function surfkeys_(reload) {
   //  window.addEventListener("keypress", surfkeysOnKeypress, true);
 
   // listeners to suppress keyboard browsing when in menu
-  window.addEventListener("DOMMenuItemActive", surfkeysDisable, true);
-  window.addEventListener("DOMMenuItemInactive", surfkeysEnable, true);
+  window.addEventListener("DOMMenuItemActive", stopScroller, true);
+  // window.addEventListener("DOMMenuItemInactive", surfkeysEnable, true);
 
   // applied to window, not window._content, since in the latter case
   // surfkeysLoad was never called.
