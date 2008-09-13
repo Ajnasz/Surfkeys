@@ -42,6 +42,7 @@ function surfkeys_(reload) {
   var s;
   var maxScrAccel = 5;
   var disableFlag = false;
+  var _this = this;
 
   //var isHahModeEnabled = false; // in case hah isn't installed
   var surfkeysStringbundle;
@@ -93,14 +94,14 @@ function surfkeys_(reload) {
 
   this.next = function() {
     stopScroller();
-    if(!this.nextRel()) {
+    if(!nextRel()) {
       surfkeysChangePage(window._content.location.href, 1);
     }
   };
 
   this.previous = function() {
     stopScroller();
-    if(!this.previousRel()) {
+    if(!previousRel()) {
       surfkeysChangePage(window._content.location.href, 2);
     }
   };
@@ -121,42 +122,6 @@ function surfkeys_(reload) {
     }
     return false;
   };
-
-  /**
-   * search for <link...> tags which rel attribute is next
-   * if a link found, redirects to it's value
-   * @return true if link found false if not found
-   * @type Boolean
-   */
-  this.nextRel = function() {
-    //stopScroller();
-    var linkArray = window._content.document.getElementsByTagName('link');
-    for(var i = 0, l = linkArray.length; i < l; i++) {
-      if(linkArray[i].rel == 'next') {
-        window._content.document.location.href = linkArray[i].href;
-        return true;
-      }
-    }
-    return false;
-  };
-  /**
-   * search for <link...> tags which rel attribute is prev or previous
-   * if a link found, redirects to it's value
-   * @return true if link found false if not found
-   * @type Boolean
-   */
-  this.previousRel = function() {
-    //stopScroller();
-    var linkArray = window._content.document.getElementsByTagName('link');
-    for(var i = 0, l = linkArray.length; i < l; i++) {
-      if(linkArray[i].rel == 'previous' || linkArray[i].rel == 'prev') {
-        window._content.document.location.href = linkArray[i].href;
-        return true;
-      }
-    }
-    return false;
-  };
-
   this.newTab = function() {
     stopScroller();
     BrowserOpenTab();
@@ -261,13 +226,46 @@ function surfkeys_(reload) {
     gBrowser.moveTabTo(gBrowser.mCurrentTab,gBrowser.mTabContainer.childNodes.length-1);
   };
 
+  /**
+   * search for <link...> tags which rel attribute is next
+   * if a link found, redirects to it's value
+   * @return true if link found false if not found
+   * @type Boolean
+   */
+  var nextRel = function() {
+    var linkArray = window._content.document.getElementsByTagName('link');
+    for(var i = 0, l = linkArray.length; i < l; i++) {
+      if(linkArray[i].rel == 'next') {
+        window._content.document.location.href = linkArray[i].href;
+        return true;
+      }
+    }
+    return false;
+  };
+  /**
+   * search for <link...> tags which rel attribute is prev or previous
+   * if a link found, redirects to it's value
+   * @return true if link found false if not found
+   * @type Boolean
+   */
+   var previousRel = function() {
+    var linkArray = window._content.document.getElementsByTagName('link');
+    for(var i = 0, l = linkArray.length; i < l; i++) {
+      if(linkArray[i].rel == 'previous' || linkArray[i].rel == 'prev') {
+        window._content.document.location.href = linkArray[i].href;
+        return true;
+      }
+    }
+    return false;
+  };
+
+
   function getWindow() {
     return document.commandDispatcher.focusedWindow;
   };
 
   this.scroller = function() {
-    var w = document.commandDispatcher.focusedWindow;
-
+    var w = getWindow();
     var oScrollX = w.scrollX;
     var oScrollY = w.scrollY;
     w.scrollBy(scrDelta[SK_X], 0);
@@ -282,7 +280,7 @@ function surfkeys_(reload) {
   function startScroller() {
     if (!surfScroll) {
       surfScroll = true;
-      s = window.setInterval("surfkeys.scroller()", 10);
+      s = window.setInterval(function(){_this.scroller()}, 10);
     }
     return 1;
   }
@@ -317,22 +315,23 @@ function surfkeys_(reload) {
     var linkArray = window._content.document.links;
     var siteArray = surfkeysPrefs.getCharPref("resultpattern").split(";");
 
-    for (s = 0; s < siteArray.length; s++) {
+    var site, hrefstripped, domain, txt;
+    for (var s = 0, sl = siteArray.length; s < sl; s++) {
       site = siteArray[s].split(":");
-      if (url.indexOf(site[0]) != -1 || site[0] == "*") {
-        for (i = 0; i < linkArray.length; i++) {
-          if (site[0] == "*") {
-            var hrefstripped = url.substring(url.indexOf("//") + 2, url.length);
-            var domain = hrefstripped.substring(0, hrefstripped.indexOf("/"));
+      if(url.indexOf(site[0]) != -1 || site[0] == "*") {
+        for(var i = 0, lr = linkArray.length; i < lr; i++) {
+          if(site[0] == "*") {
+            hrefstripped = url.substring(url.indexOf("//") + 2, url.length);
+            domain = hrefstripped.substring(0, hrefstripped.indexOf("/"));
             site[0] = domain;
           }
-          var txt = linkArray[i].innerHTML;
+          txt = linkArray[i].innerHTML;
           // we check that the text inside anchor matches the next/prev-text
           // defined for the site, and also verify that the link's href
           // is still in the same site (just to prevent a situation where
           // google's result link have a text "Previous" inside it)
           if (txt.indexOf(site[value]) != -1 && linkArray[i].href.indexOf(site[0]) != -1) {
-            window._content.location.replace(linkArray[i].href);
+            window._content.location.href = linkArray[i].href;
             return;
           }
         }
@@ -385,9 +384,9 @@ function surfkeys_(reload) {
   }
 
   function isSidebarWindow() {
-    var focusedWindow = document.commandDispatcher.focusedWindow;
+    var focusedWindow = getWindow();
     var sidebarWindow = document.getElementById("sidebar").contentWindow;
-    SKLog.log(focusedWindow, sidebarWindow, focusedWindow == sidebarWindow, surfkeysPrefs.getBoolPref('disableinsidebar'));
+    // SKLog.log(focusedWindow == sidebarWindow, focusedWindow.window == sidebarWindow);
     if(surfkeysPrefs.getBoolPref('disableinsidebar') && focusedWindow && focusedWindow == sidebarWindow) { return true; }
   };
 
@@ -439,24 +438,20 @@ function surfkeys_(reload) {
           modified_flag = true;
           site[direction] = linktext;
           siteArray[s] = site.join(":");
-          alert(surfkeysStringbundle.getString("modifiedlink_for") + " " + domain +
-              surfkeysStringbundle.getString("linktext") + " " + linktext);
+          // alert(surfkeysStringbundle.getString("modifiedlink_for") + " " + domain + surfkeysStringbundle.getString("linktext") + " " + linktext);
         }
       }
 
       var siteList = siteArray.join(";");
 
       if ((!modified_flag) && (currloc.indexOf(domain) != -1)) {
-
         var linkToadd;
         if (direction == 1) {
           linkToadd = linktext + ":";
         } else {
           linkToadd = ":" + linktext;
         }
-        alert(surfkeysStringbundle.getString("addedlink_for") + " " +
-            domain + surfkeysStringbundle.getString("linktext") + " " + linktext);
-        siteList = siteList + ";" + domain + ":" + linkToadd;
+        // alert(surfkeysStringbundle.getString("addedlink_for") + " " + domain + surfkeysStringbundle.getString("linktext") + " " + linktext); siteList = siteList + ";" + domain + ":" + linkToadd;
       }
 
       surfkeysPrefs.setCharPref("resultpattern", siteList);
