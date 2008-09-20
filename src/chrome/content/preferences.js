@@ -3,6 +3,63 @@ var surfkeysPrefs = Components.classes["@mozilla.org/preferences-service;1"].
 
 surfkeysPrefs = surfkeysPrefs.getBranch("extensions.surfkeys.");
 
+var generatePattern = function(patterns, selection) {
+  if(!patterns) {
+    var patterns = surfkeysPrefs.getCharPref("resultpattern")
+  }
+  var siteArray = patterns.split(";");
+  var sites = new Array();
+  for(var i = 0, sl = siteArray.length; i < sl; i++) {
+    site = siteArray[i].split(":");
+    sites.push({
+      site: site[0],
+      next: site[1],
+      prev: site[2]
+    });
+  }
+  /*
+  var _keys = new Array();
+  for(key in keys) {
+    keys[key].id = key;
+    _keys.push(keys[key]);
+  }
+  */
+  var treeView = {
+    rowCount: siteArray.length+1,
+    getCellText : function(row,column) {
+      if(!sites[row]) { return; }
+      switch(column.id) {
+        case 'sitecol':
+          return sites[row].site;
+          break;
+
+        case 'prevcol':
+          return sites[row].prev;
+          break;
+
+        case 'nextcol':
+          return sites[row].next;
+          break;
+      }
+    },
+    setTree: function(treebox){ this.treebox = treebox; },
+    isContainer: function(row){ return false; },
+    isSeparator: function(row){ return false; },
+    isSorted: function(){ return false; },
+    getLevel: function(row){ return 0; },
+    getImageSrc: function(row,col){ return null; },
+    getRowProperties: function(row,props){},
+    getCellProperties: function(row,col,props){},
+    getColumnProperties: function(colid,col,props){}
+  };
+  var tree = document.getElementById('sk-resultpattern-tree');
+  tree.view = treeView;
+  if(!isNaN(selection)) {
+    tree.view.selection.select(selection);
+  } else {
+    tree.view.selection.select(0);
+  }
+};
 var generateKeys = function(keys, selection) {
   if(!keys) {
     var keys = eval('(' + surfkeysPrefs.getCharPref('keys') + ')');
@@ -53,7 +110,7 @@ var generateKeys = function(keys, selection) {
     getCellProperties: function(row,col,props){},
     getColumnProperties: function(colid,col,props){}
   };
-  var tree = document.getElementById('surfkeys-tree');
+  var tree = document.getElementById('sk-keys-tree');
   tree.view = treeView;
   if(!isNaN(selection)) {
     tree.view.selection.select(selection);
@@ -62,66 +119,73 @@ var generateKeys = function(keys, selection) {
   }
 };
 var keySelected = function() {
+  generatePattern();
   var keys = eval('(' + surfkeysPrefs.getCharPref('keys') + ')');
-  var tree = document.getElementById("surfkeys-tree");
+  var tree = document.getElementById("sk-keys-tree");
   var selectedKey  = {
-      id: tree.view.getCellText(tree.currentIndex, tree.columns.getColumnAt(0)),
-      name: tree.view.getCellText(tree.currentIndex, tree.columns.getColumnAt(1)),
-      key: tree.view.getCellText(tree.currentIndex, tree.columns.getColumnAt(2)),
-      shift: tree.view.getCellText(tree.currentIndex, tree.columns.getColumnAt(3)),
-      alt: tree.view.getCellText(tree.currentIndex, tree.columns.getColumnAt(4)),
-      disabled: tree.view.getCellText(tree.currentIndex, tree.columns.getColumnAt(5))
-    }
-    var currentKey = document.getElementById('current-key');
-    var currentShift = document.getElementById('current-shift');
-    var currentAlt = document.getElementById('current-alt');
-    var currentDisabled = document.getElementById('current-disabled');
-    currentKey.value = selectedKey.key;
-    currentShift.checked = (selectedKey.shift == 'false') ? false : true;
-    currentAlt.checked = (selectedKey.alt == 'false') ? false : true;
-    currentDisabled.checked = (selectedKey.disabled == 'false') ? false : true;
+    id: tree.view.getCellText(tree.currentIndex, tree.columns.getColumnAt(0)),
+    name: tree.view.getCellText(tree.currentIndex, tree.columns.getColumnAt(1)),
+    key: tree.view.getCellText(tree.currentIndex, tree.columns.getColumnAt(2)),
+    shift: tree.view.getCellText(tree.currentIndex, tree.columns.getColumnAt(3)),
+    alt: tree.view.getCellText(tree.currentIndex, tree.columns.getColumnAt(4)),
+    disabled: tree.view.getCellText(tree.currentIndex, tree.columns.getColumnAt(5))
   }
-  var setCurrentShift = function(val) {
-    var keys = eval('(' + surfkeysPrefs.getCharPref('keys') + ')');
-    var tree = document.getElementById('surfkeys-tree');
-    var currentId = tree.view.getCellText(tree.currentIndex, tree.columns.getColumnAt(0));
-    keys[currentId].shift = val;
-    generateKeys(keys, tree.currentIndex);
-    setKeyPreferences(keys);
+  var currentKey = document.getElementById('current-key');
+  var currentShift = document.getElementById('current-shift');
+  var currentAlt = document.getElementById('current-alt');
+  var currentDisabled = document.getElementById('current-disabled');
+  currentKey.value = selectedKey.key;
+  currentShift.checked = (selectedKey.shift == 'false') ? false : true;
+  currentAlt.checked = (selectedKey.alt == 'false') ? false : true;
+  currentDisabled.checked = (selectedKey.disabled == 'false') ? false : true;
+};
+var setCurrentShift = function(val) {
+  var keys = eval('(' + surfkeysPrefs.getCharPref('keys') + ')');
+  var tree = document.getElementById('sk-keys-tree');
+  var currentId = tree.view.getCellText(tree.currentIndex, tree.columns.getColumnAt(0));
+  keys[currentId].shift = val;
+  generateKeys(keys, tree.currentIndex);
+  setKeyPreferences(keys);
+};
+var setCurrentAlt = function(val) {
+  var keys = eval('(' + surfkeysPrefs.getCharPref('keys') + ')');
+  var tree = document.getElementById('sk-keys-tree');
+  var currentId = tree.view.getCellText(tree.currentIndex, tree.columns.getColumnAt(0));
+  keys[currentId].alt = val;
+  generateKeys(keys, tree.currentIndex);
+  setKeyPreferences(keys);
+};
+var setCurrentDisabled = function(val) {
+  var keys = eval('(' + surfkeysPrefs.getCharPref('keys') + ')');
+  var tree = document.getElementById('sk-keys-tree');
+  var currentId = tree.view.getCellText(tree.currentIndex, tree.columns.getColumnAt(0));
+  keys[currentId].disabled = val;
+  generateKeys(keys, tree.currentIndex);
+  setKeyPreferences(keys);
+};
+var setCurrentKey = function(val) {
+  var keys = eval('(' + surfkeysPrefs.getCharPref('keys') + ')');
+  var tree = document.getElementById('sk-keys-tree');
+  var currentId = tree.view.getCellText(tree.currentIndex, tree.columns.getColumnAt(0));
+  keys[currentId].key = val;
+  generateKeys(keys, tree.currentIndex);
+  setKeyPreferences(keys);
+};
+var setCurrentSite = function(val) {
+};
+var setCurrentNext = function(val) {
+};
+var setCurrentPrev = function(val) {
+};
+var setKeyPreferences = function(keys) {
+  var json = new Array();
+  for(k in keys) {
+    json.push(k + ': {key:\'' + keys[k].key + '\',shift:' + keys[k].shift + ',alt:' + keys[k].alt + ',disabled:' + keys[k].disabled + '}');
   }
-  var setCurrentAlt = function(val) {
-    var keys = eval('(' + surfkeysPrefs.getCharPref('keys') + ')');
-    var tree = document.getElementById('surfkeys-tree');
-    var currentId = tree.view.getCellText(tree.currentIndex, tree.columns.getColumnAt(0));
-    keys[currentId].alt = val;
-    generateKeys(keys, tree.currentIndex);
-    setKeyPreferences(keys);
-  }
-  var setCurrentDisabled = function(val) {
-    var keys = eval('(' + surfkeysPrefs.getCharPref('keys') + ')');
-    var tree = document.getElementById('surfkeys-tree');
-    var currentId = tree.view.getCellText(tree.currentIndex, tree.columns.getColumnAt(0));
-    keys[currentId].disabled = val;
-    generateKeys(keys, tree.currentIndex);
-    setKeyPreferences(keys);
-  }
-  var setCurrentKey = function(val) {
-    var keys = eval('(' + surfkeysPrefs.getCharPref('keys') + ')');
-    var tree = document.getElementById('surfkeys-tree');
-    var currentId = tree.view.getCellText(tree.currentIndex, tree.columns.getColumnAt(0));
-    keys[currentId].key = val;
-    generateKeys(keys, tree.currentIndex);
-    setKeyPreferences(keys);
-  }
-  var setKeyPreferences = function(keys) {
-    var json = new Array();
-    for(k in keys) {
-      json.push(k + ': {key:\'' + keys[k].key + '\',shift:' + keys[k].shift + ',alt:' + keys[k].alt + ',disabled:' + keys[k].disabled + '}');
-    }
-    var json = '{' + json.join(',') + '}';
-    surfkeysPrefs.setCharPref('keys', json);
-  }
-  setAllWinKeys = function() {
+  var json = '{' + json.join(',') + '}';
+  surfkeysPrefs.setCharPref('keys', json);
+};
+var setAllWinKeys = function() {
     var wm = Components.classes["@mozilla.org/appshell/window-mediator;1"].getService(Components.interfaces.nsIWindowMediator);
     var enumerator = wm.getEnumerator('navigator:browser'), win;
     while(enumerator.hasMoreElements()) {
