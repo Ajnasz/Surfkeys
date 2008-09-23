@@ -135,6 +135,7 @@ function surfkeys_(reload) {
     stopScroller();
     // gBrowser.mTabContainer.advanceSelectedTab(1);
     gBrowser.mTabContainer.advanceSelectedTab(1, true);
+    focusCurrentContent();
   };
 
   /**
@@ -145,6 +146,7 @@ function surfkeys_(reload) {
     stopScroller();
     // gBrowser.mTabContainer.advanceSelectedTab(-1);
     gBrowser.mTabContainer.advanceSelectedTab(-1, true);
+    focusCurrentContent();
   };
 
   /**
@@ -154,6 +156,7 @@ function surfkeys_(reload) {
   this.focusFirst = function() {
     stopScroller();
     gBrowser.mTabContainer.selectedIndex = 0;
+    focusCurrentContent();
   };
 
   /**
@@ -163,6 +166,7 @@ function surfkeys_(reload) {
   this.focusLast = function() {
     stopScroller();
     gBrowser.mTabContainer.selectedIndex = gBrowser.browsers.length-1;
+    focusCurrentContent();
   };
 
   this.closeTab = function() {
@@ -301,6 +305,9 @@ function surfkeys_(reload) {
   // surfkeys
   ////////////////////////////////////////////////////////////////////////////////
 
+  function focusCurrentContent() {
+    gBrowser.getBrowserAtIndex(gBrowser.mTabContainer.selectedIndex).contentWindow.focus();
+  }
   /**
    * Changes page  to next / previous  page depending on the  URL of the
    * current  page. Check  from the  siteString what  are  the next/prev
