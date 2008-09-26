@@ -9,4 +9,8 @@
 <!ENTITY surfkeys.sites.site "Site">
 <!ENTITY surfkeys.sites.next "Next">
 <!ENTITY surfkeys.sites.prev "Previous">
+<!ENTITY surfkeys.sites.title.prev "Previous">
+<!ENTITY surfkeys.sites.title.next "Next">
+<!ENTITY surfkeys.sites.title.site "Site">
+<!ENTITY surfkeys.sites.add "Add site">
 
