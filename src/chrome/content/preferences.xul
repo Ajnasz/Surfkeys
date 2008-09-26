@@ -27,8 +27,9 @@
 
 
 <prefwindow id="surfkeysPreferences" title = "Surfkeys preferences" xmlns="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul"
-  onload="generateKeys();"
-  ondialogcancel="setAllWinKeys();">
+  onload="initPreferences();"
+  ondialogcancel="setAllWinKeys();"
+  persist="width,height">
   <stringbundle id="surfkeys-bundles" src="chrome://surfkeys/locale/surfkeys.properties" />
   <script type="application/x-javascript" src="chrome://surfkeys/content/log.js" />
   <script type="application/x-javascript" src="chrome://surfkeys/content/preferences.js" />
@@ -49,43 +50,51 @@
       <tabpanels>
 
         <tabpanel>
-          <vbox>
-            <hbox>
+          <vbox flex="1">
+            <hbox align="center" flex="1">
               <label value="key" control="current-key" /><textbox id="current-key" size="1" onchange="setCurrentKey(this.value);" />
               <checkbox id="current-shift" label="shift" oncommand="setCurrentShift(this.checked);" />
               <checkbox id="current-alt" label="alt" oncommand="setCurrentAlt(this.checked);" />
               <checkbox id="current-disabled" label="disabled" oncommand="setCurrentDisabled(this.checked);" />
             </hbox>
             <label flex="1" value="Config keys" />
-            <tree id="sk-keys-tree" flex="1" height="500" width="700" onselect="keySelected();">
+            <tree id="sk-keys-tree" flex="1" rows="20" onselect="keySelected();" class="tree">
               <treecols>
-                <treecol id="idcol" label="id" flex="1"/>
+                <treecol id="idcol" label="id" flex="1" hidden="true" />
                 <treecol id="namecol" label="name" flex="1"/>
+                <splitter class="tree-splitter"/>
                 <treecol id="keycol" label="key" flex="1" />
+                <splitter class="tree-splitter"/>
                 <treecol id="shiftcol" label="shift" flex="1" />
+                <splitter class="tree-splitter"/>
                 <treecol id="altcol" label="alt" flex="1" />
+                <splitter class="tree-splitter"/>
                 <treecol id="disabledcol" label="disabled" flex="1" />
+                <splitter class="tree-splitter"/>
               </treecols>
               <treechildren/>
             </tree>
           </vbox>
         </tabpanel>
         <tabpanel>
-          <vbox>
-            <hbox>
-              <vbox>
+          <vbox flex="1">
+            <hbox flex="1">
+              <vbox flex="1">
                 <label flex="1" value="&resultLinktexts.label;"/>
                 <textbox id="resultpattern" preference="surfkeys.resultpattern" multiline="false" />
-                <hbox>
-                  <label control="sk-site-name" value="&surfkeys.sites.site;"/><textbox id="sk-site-name" size="5" oncommand="setCurrentSite(this.value);" />
-                  <label control="sk-site-next" value="&surfkeys.sites.next;"/><textbox id="sk-site-next" size="5" oncommand="setCurrentNext(this.value);" />
-                  <label control="sk-site-prev" value="&surfkeys.sites.prev;"/><textbox id="sk-site-prev" size="5" oncommand="setCurrentPrev(this.value);" />
+                <hbox align="center" flex="1">
+                  <label control="sk-site-name" value="&surfkeys.sites.site;"/><textbox id="sk-site-name" size="5" onchange="SKSites.setCurrentSite(this.value);" />
+                  <label control="sk-site-next" value="&surfkeys.sites.next;"/><textbox id="sk-site-next" size="5" onchange="SKSites.setCurrentNext(this.value);" />
+                  <label control="sk-site-prev" value="&surfkeys.sites.prev;"/><textbox id="sk-site-prev" size="5" onchange="SKSites.setCurrentPrev(this.value);" />
+                  <button id="sk-site-add" class="dialog" label="&surfkeys.sites.add;" onclick="SKSites.addSite()" />
                 </hbox>
-                <tree id="sk-resultpattern-tree" height="400" width="700" flex="1">
+                <tree id="sk-resultpattern-tree" rows="20" flex="1" onselect="SKSites.siteSelected();" class="tree">
                   <treecols>
-                    <treecol id="sitecol" label="site" flex="1" />
-                    <treecol id="nextcol" label="next" flex="1" />
-                    <treecol id="prevcol" label="prev" flex="1" />
+                    <treecol id="sitecol" label="&surfkeys.sites.title.site;" flex="1" />
+                    <splitter class="tree-splitter"/>
+                    <treecol id="nextcol" label="&surfkeys.sites.title.next;" flex="2" />
+                    <splitter class="tree-splitter"/>
+                    <treecol id="prevcol" label="&surfkeys.sites.title.prev;" flex="2" />
                   </treecols>
                   <treechildren/>
                 </tree>
