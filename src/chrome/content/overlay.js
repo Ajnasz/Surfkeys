@@ -43,6 +43,7 @@ function surfkeys_(reload) {
   var maxScrAccel = 5;
   var disableFlag = false;
   var _this = this;
+  const SK_VERSION = '0.5.2';
 
   //var isHahModeEnabled = false; // in case hah isn't installed
   var surfkeysStringbundle;
@@ -320,6 +321,29 @@ function surfkeys_(reload) {
    */
   function surfkeysChangePage(url, value) {
     var linkArray = window._content.document.links;
+    try {
+      var sites = eval('(' + surfkeysPrefs.getCharPref("resultpattern") + ')');
+    } catch(e) {
+      var sites= {};
+    }
+    var currloc = window._content.location.href;
+    for(var i = 0, lr = linkArray.length, link, txt; i < lr; i++) {
+      txt = linkArray[i].innerHTML;
+      link = linkArray[i].href
+      if(sites[currloc] && ((sites[currloc].next == txt && value == 1) || (sites[currloc].prev == txt && value == 2))) {
+        window._content.location.href = linkArray[i].href;
+        return;
+      }
+    }
+    if(sites['*']) {
+      if(value == 1) {
+        window._content.location.href = sites['*'].next;
+      } else if(value == 2) {
+        window._content.location.href = sites['*'].prev;
+      }
+    }
+    return;
+    /*
     var siteArray = surfkeysPrefs.getCharPref("resultpattern").split(";");
 
     var site, hrefstripped, domain, txt;
@@ -344,6 +368,7 @@ function surfkeys_(reload) {
         }
       }
     }
+    */
   }
 
   /**
@@ -433,35 +458,52 @@ function surfkeys_(reload) {
       var domain = hrefstripped.substring(0, hrefstripped.indexOf("/"));
 
       var currloc = window._content.location.href;
-      var siteArray = surfkeysPrefs.getCharPref("resultpattern").split(";");
-
-      var modified_flag = false;
-
-      var site;
-
-      for (s = 0; s < siteArray.length; s++) {
-        site = siteArray[s].split(":");
-        if ((currloc.indexOf(site[0]) != -1) && (site[0].length > 0) && (currloc.indexOf(domain)!=-1)) {
-          modified_flag = true;
-          site[direction] = linktext;
-          siteArray[s] = site.join(":");
-          // alert(surfkeysStringbundle.getString("modifiedlink_for") + " " + domain + surfkeysStringbundle.getString("linktext") + " " + linktext);
-        }
+      try {
+        var sites = eval('(' + surfkeysPrefs.getCharPref("resultpattern") + ')');
+      } catch(e) {
+        var sites= {};
       }
 
-      var siteList = siteArray.join(";");
-
-      if ((!modified_flag) && (currloc.indexOf(domain) != -1)) {
-        var linkToadd;
-        if (direction == 1) {
-          linkToadd = linktext + ":";
-        } else {
-          linkToadd = ":" + linktext;
-        }
-        // alert(surfkeysStringbundle.getString("addedlink_for") + " " + domain + surfkeysStringbundle.getString("linktext") + " " + linktext); siteList = siteList + ";" + domain + ":" + linkToadd;
+      if(!sites[currloc]) {
+        sites[currloc] = {site: currloc};
       }
-
-      surfkeysPrefs.setCharPref("resultpattern", siteList);
+      if (direction == 1) {
+        sites[currloc].next = linktext;
+      } else {
+        sites[currloc].prev = linktext;
+      }
+      surfkeysPrefs.setCharPref('resultpattern', sitesToTxt(sites));
+      return;
+    }
+  }
+  function sitesToTxt(json) {
+    var sites = new Array(),next,prev;
+    for(site in json) {
+      next = json[site].next || '';
+      prev = json[site].prev || '';
+      sites.push('"' + site + '":{"site":"' + site + '","next":"' + next + '","prev":"' + prev + '"}');
+    }
+    return '{' + sites.join(',') + '}';
+  }
+  function postInstall() {
+    try {
+      var finished = surfkeysPrefs.getCharPref('version');
+    } catch(e){}
+    var convertSites = function() {
+      var patterns = surfkeysPrefs.getCharPref("resultpattern")
+      var siteArray = patterns.split(";");
+      var sites = new Array();
+      for(var i = 0, sl = siteArray.length, site; i < sl; i++) {
+        site = siteArray[i].split(":");
+        sites.push('"' + site[0] + '":{"site":"' + site[0] + '","next":"' + site[1] + '","prev":"' + site[2] + '"}');
+      }
+      surfkeysPrefs.setCharPref('resultpattern', '{' + sites.join(',') + '}');
+    }
+    if(finished != SK_VERSION) {
+      // Convert the old store format to the new one
+      SKLog.log('postinstall');
+      convertSites();
+      surfkeysPrefs.setCharPref('version', '0.5.2');
     }
   }
   /**
@@ -469,6 +511,7 @@ function surfkeys_(reload) {
    * @author ajnasz
    */
   function setKeys() {
+    postInstall();
     var keys = eval('(' + surfkeysPrefs.getCharPref('keys') + ')');
     var modifiers = new Array();
     var keyNode, key, parent, command, oncommand;
