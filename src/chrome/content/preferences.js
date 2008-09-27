@@ -172,20 +172,6 @@ var setKeyPreferences = function(keys) {
   var json = '{' + json.join(',') + '}';
   surfkeysPrefs.setCharPref('keys', json);
 };
-var setSitePreferencesFromArray = function(sites) {
-  var s = new Array();
-  for(var i = 0, sl = sites.length; i < sites.length; i++) {
-    s.push(sites[i].site + ':' + sites[i].next + ':' + sites[i].prev);
-  }
-  s = s.join(';');
-  surfkeysPrefs.setCharPref('resultpattern', s);
-};
-/**
- * @param {String} sites string sites
- */
-var setSitePreferences = function(sites) {
-  surfkeysPrefs.setCharPref('resultpattern', sites);
-}
 var setAllWinKeys = function() {
     var wm = Components.classes["@mozilla.org/appshell/window-mediator;1"].getService(Components.interfaces.nsIWindowMediator);
     var enumerator = wm.getEnumerator('navigator:browser'), win;
@@ -199,7 +185,6 @@ var setAllWinKeys = function() {
 SKSites = {
   tree: function(){return document.getElementById('sk-resultpattern-tree')},
   siteSelected: function() {
-    var patterns = surfkeysPrefs.getCharPref("resultpattern")
     var tree = this.tree();
     this.selectedSite  = {
       site: tree.view.getCellText(tree.currentIndex, tree.columns.getColumnAt(0)),
@@ -213,57 +198,49 @@ SKSites = {
     currentNext.value = this.selectedSite.next;
     currentPrev.value = this.selectedSite.prev;
   },
-  siteStringFromObj: function(sites) {
-    var s = new Array();
-    for(var i in sites) {
-      s.push(sites[i].site + ':' + sites[i].next + ':' + sites[i].prev);
+  siteStringFromObj: function(obj) {
+    var sites = new Array(),next,prev;
+    for(site in obj) {
+      next = obj[site].next || '';
+      prev = obj[site].prev || '';
+      sites.push('"' + site + '":{"site":"' + site + '","next":"' + next + '","prev":"' + prev + '"}');
     }
-    sites.sort(function(a, b){return a.site > b.site;});
-    return s.join(';');
+    return '{' + sites.join(',') + '}';
   },
   setSitePreferencesFromObject: function(sites) {
     surfkeysPrefs.setCharPref('resultpattern', this.siteStringFromObj(sites));
   },
   getSitesArray: function(pattern) {
-    if(!patterns) {
-      var patterns = surfkeysPrefs.getCharPref("resultpattern")
-    }
-    var siteArray = patterns.split(";");
+    pattern = this.getPatterns(pattern);
     var sites = new Array();
-    for(var i = 0, sl = siteArray.length; i < sl; i++) {
-      site = siteArray[i].split(":");
-      sites.push({
-        site: site[0],
-        next: site[1],
-        prev: site[2]
-      });
+    for(site in pattern) {
+      sites.push(pattern[site]);
     }
     return sites;
   },
-  getSitesObject: function(pattern) {
+  getPatterns: function(patterns) {
     if(!patterns) {
-      var patterns = surfkeysPrefs.getCharPref("resultpattern")
+      patterns = surfkeysPrefs.getCharPref("resultpattern");
     }
-    var siteArray = patterns.split(";");
-    var sites = new Array();
-    for(var i = 0, sl = siteArray.length; i < sl; i++) {
-      site = siteArray[i].split(":");
-      sites[site[0]] = {
-        site: site[0],
-        next: site[1],
-        prev: site[2]
-      };
+    SKLog.log(patterns);
+    try {
+      patterns = eval('(' + patterns + ')');
+      SKLog.log('eval done');
+    } catch(e) {
+      patterns = {};
+      SKLog.log('eval failed');
     }
-    return sites;
+    return patterns;
   },
   setCurrentSite: function(val) {
-    var sites = this.getSitesObject();
+    var sites = this.getPatterns();
+    SKLog.log(this.siteStringFromObj(sites));
     var tree = this.tree();
     var currentSite = tree.view.getCellText(tree.currentIndex, tree.columns.getColumnAt(0));
     if(val == '') {
       delete sites[this.selectedSite.site];
       var sites = this.siteStringFromObj(sites)
-      setSitePreferences(sites);
+      this.setSitePreferences(sites);
       generatePattern(sites, tree.currentIndex, val);
       return;
     }
@@ -279,33 +256,31 @@ SKSites = {
     }
     sites[val].site = val;
     var sites = this.siteStringFromObj(sites)
-    setSitePreferences(sites);
+    this.setSitePreferences(sites);
     generatePattern(sites, tree.currentIndex, val);
   },
   setCurrentNext: function(val) {
-    this.logSelected();
-    var sites = this.getSitesObject();
+    var sites = this.getPatterns();
     var tree = this.tree();
     var currentSite = tree.view.getCellText(tree.currentIndex, tree.columns.getColumnAt(0));
     sites[currentSite].next = val;
     var sites = this.siteStringFromObj(sites)
-    setSitePreferences(sites);
+    this.setSitePreferences(sites);
     generatePattern(sites, tree.currentIndex);
   },
   setCurrentPrev: function(val) {
-    var sites = this.getSitesObject();
+    var sites = this.getPatterns();
     var tree = this.tree();
     var currentSite = tree.view.getCellText(tree.currentIndex, tree.columns.getColumnAt(0));
     sites[currentSite].prev = val;
     var sites = this.siteStringFromObj(sites)
-    setSitePreferences(sites);
+    this.setSitePreferences(sites);
     generatePattern(sites, tree.currentIndex);
   },
   getSiteRow: function(site) {
     var tree = this.tree();
     var column = tree.columns.getColumnAt(0);
     for (var i = 0; i < tree.view.rowCount; i++){
-      SKLog.log(tree.view.getCellText(i, column), site);
       if(tree.view.getCellText(i, column) == site) {
         return i;
       }
@@ -316,6 +291,12 @@ SKSites = {
     var tree = this.tree();
     tree.view.selection.select(tree.view.rowCount-1);
     document.getElementById('sk-site-name').focus();
+  },
+  /**
+  * @param {String} sites string sites
+  */
+   setSitePreferences: function(sites) {
+    surfkeysPrefs.setCharPref('resultpattern', sites);
   },
   logSelected: function() {
     SKLog.log(this.selectedSite.site);
