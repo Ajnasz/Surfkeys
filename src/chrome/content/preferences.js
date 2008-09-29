@@ -20,6 +20,10 @@ var generatePattern = function(patterns, selection, val) {
     getCellText : function(row,column) {
       if(!sites[row] || !column) { return; }
       switch(column.id) {
+        case 'siteidcol':
+          return sites[row].id;
+          break;
+
         case 'sitecol':
           return sites[row].site;
           break;
@@ -182,126 +186,73 @@ var setAllWinKeys = function() {
       }
   }
 };
-SKSites = {
-  tree: function(){return document.getElementById('sk-resultpattern-tree')},
-  siteSelected: function() {
-    var tree = this.tree();
-    this.selectedSite  = {
-      site: tree.view.getCellText(tree.currentIndex, tree.columns.getColumnAt(0)),
-      next: tree.view.getCellText(tree.currentIndex, tree.columns.getColumnAt(1)),
-      prev: tree.view.getCellText(tree.currentIndex, tree.columns.getColumnAt(2))
-    }
-    var currentSite = document.getElementById('sk-site-name');
-    var currentNext = document.getElementById('sk-site-next');
-    var currentPrev = document.getElementById('sk-site-prev');
-    currentSite.value = this.selectedSite.site;
-    currentNext.value = this.selectedSite.next;
-    currentPrev.value = this.selectedSite.prev;
-  },
-  siteStringFromObj: function(obj) {
-    var sites = new Array(),next,prev;
-    for(site in obj) {
-      next = obj[site].next || '';
-      prev = obj[site].prev || '';
-      sites.push('"' + site + '":{"site":"' + site + '","next":"' + next + '","prev":"' + prev + '"}');
-    }
-    return '{' + sites.join(',') + '}';
-  },
-  setSitePreferencesFromObject: function(sites) {
-    surfkeysPrefs.setCharPref('resultpattern', this.siteStringFromObj(sites));
-  },
-  getSitesArray: function(pattern) {
-    pattern = this.getPatterns(pattern);
-    var sites = new Array();
-    for(site in pattern) {
-      sites.push(pattern[site]);
-    }
-    return sites;
-  },
-  getPatterns: function(patterns) {
-    if(!patterns) {
-      patterns = surfkeysPrefs.getCharPref("resultpattern");
-    }
-    SKLog.log(patterns);
-    try {
-      patterns = eval('(' + patterns + ')');
-      SKLog.log('eval done');
-    } catch(e) {
-      patterns = {};
-      SKLog.log('eval failed');
-    }
-    return patterns;
-  },
-  setCurrentSite: function(val) {
-    var sites = this.getPatterns();
-    SKLog.log(this.siteStringFromObj(sites));
-    var tree = this.tree();
-    var currentSite = tree.view.getCellText(tree.currentIndex, tree.columns.getColumnAt(0));
-    if(val == '') {
-      delete sites[this.selectedSite.site];
-      var sites = this.siteStringFromObj(sites)
-      this.setSitePreferences(sites);
-      generatePattern(sites, tree.currentIndex, val);
-      return;
-    }
-    if(sites[this.selectedSite.site]) {
-      sites[val] = sites[this.selectedSite.site];
-      delete sites[this.selectedSite.site];
-    } else {
-      sites[val] = {
-        next: '',
-        prev: '',
-        site: val
-      };
-    }
-    sites[val].site = val;
-    var sites = this.siteStringFromObj(sites)
-    this.setSitePreferences(sites);
-    generatePattern(sites, tree.currentIndex, val);
-  },
-  setCurrentNext: function(val) {
-    var sites = this.getPatterns();
-    var tree = this.tree();
-    var currentSite = tree.view.getCellText(tree.currentIndex, tree.columns.getColumnAt(0));
-    sites[currentSite].next = val;
-    var sites = this.siteStringFromObj(sites)
-    this.setSitePreferences(sites);
-    generatePattern(sites, tree.currentIndex);
-  },
-  setCurrentPrev: function(val) {
-    var sites = this.getPatterns();
-    var tree = this.tree();
-    var currentSite = tree.view.getCellText(tree.currentIndex, tree.columns.getColumnAt(0));
-    sites[currentSite].prev = val;
-    var sites = this.siteStringFromObj(sites)
-    this.setSitePreferences(sites);
-    generatePattern(sites, tree.currentIndex);
-  },
-  getSiteRow: function(site) {
-    var tree = this.tree();
-    var column = tree.columns.getColumnAt(0);
-    for (var i = 0; i < tree.view.rowCount; i++){
-      if(tree.view.getCellText(i, column) == site) {
-        return i;
-      }
-    }
-    return 0;
-  },
-  addSite: function() {
-    var tree = this.tree();
-    tree.view.selection.select(tree.view.rowCount-1);
-    document.getElementById('sk-site-name').focus();
-  },
-  /**
-  * @param {String} sites string sites
-  */
-   setSitePreferences: function(sites) {
-    surfkeysPrefs.setCharPref('resultpattern', sites);
-  },
-  logSelected: function() {
-    SKLog.log(this.selectedSite.site);
+/**
+ * Extending SKSites object for preferences window
+ */
+SKSites.tree = function(){return document.getElementById('sk-resultpattern-tree')};
+SKSites.siteSelected = function() {
+  var tree = this.tree();
+  this.selectedSite  = {
+    id: tree.view.getCellText(tree.currentIndex, tree.columns.getColumnAt(0)),
+    site: tree.view.getCellText(tree.currentIndex, tree.columns.getColumnAt(1)),
+    next: tree.view.getCellText(tree.currentIndex, tree.columns.getColumnAt(2)),
+    prev: tree.view.getCellText(tree.currentIndex, tree.columns.getColumnAt(3))
   }
+  var currentId = document.getElementById('sk-site-id');
+  var currentSite = document.getElementById('sk-site-name');
+  var currentNext = document.getElementById('sk-site-next');
+  var currentPrev = document.getElementById('sk-site-prev');
+  currentSite.value = this.selectedSite.site;
+  currentNext.value = this.selectedSite.next;
+  currentPrev.value = this.selectedSite.prev;
 };
+SKSites.setCurrentSite = function(val) {
+  this.siteSetCurrent('site', val);
+};
+SKSites.setCurrentNext = function(val) {
+  this.siteSetCurrent('next', val);
+};
+SKSites.setCurrentPrev = function(val) {
+  this.siteSetCurrent('prev', val);
+};
+SKSites.siteSetCurrent = function(field, val) {
+  var tree = this.tree();
+  var currentSite = tree.view.getCellText(tree.currentIndex, tree.columns.getColumnAt(0));
+  var site = SKSites.getSiteFromID(currentSite);
+  if(!site) {
+    site = {
+      site: '',
+      next: '',
+      prev: '',
+      id: false
+    }
+  }
+  site[field] = val;
+  if(site.site == '') {
+    SKSites.removeSite(site.id);
+  } else {
+    SKSites.addSite(site);
+  }
+  generatePattern(null, tree.currentIndex);
+};
+SKSites.getSiteRow = function(site) {
+  var tree = this.tree();
+  var column = tree.columns.getColumnAt(0);
+  for (var i = 0; i < tree.view.rowCount; i++){
+    if(tree.view.getCellText(i, column) == site) {
+      return i;
+    }
+  }
+  return 0;
+};
+/*
+SKSites.addSite = function() {
+  var tree = this.tree();
+  tree.view.selection.select(tree.view.rowCount-1);
+  document.getElementById('sk-site-name').focus();
+};
+*/
+
 var initPreferences = function() {
   generateKeys();
   generatePattern();
