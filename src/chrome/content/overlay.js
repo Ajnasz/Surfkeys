@@ -48,8 +48,6 @@ function surfkeys_(reload) {
   //var isHahModeEnabled = false; // in case hah isn't installed
   var surfkeysStringbundle;
 
-  var surfkeysPrefs = Components.classes["@mozilla.org/preferences-service;1"].getService(Components.interfaces.nsIPrefService);
-  surfkeysPrefs = surfkeysPrefs.getBranch("extensions.surfkeys.");
 
   // public methods
 
@@ -320,55 +318,39 @@ function surfkeys_(reload) {
    * @author       psillanp
    */
   function surfkeysChangePage(url, value) {
+    var win = getWindow();
+    var url = win.location.href;
     var linkArray = window._content.document.links;
     try {
-      var sites = eval('(' + surfkeysPrefs.getCharPref("resultpattern") + ')');
+      var sites = eval('(' + SKSites.surfkeysPrefs().getCharPref("resultpattern") + ')');
     } catch(e) {
-      var sites= {};
+      var sites= [];
     }
     var currloc = window._content.location.href;
-    for(var i = 0, lr = linkArray.length, link, txt; i < lr; i++) {
+    for(var i = 0, lr = linkArray.length, link, txt, rel, title; i < lr; i++) {
       txt = linkArray[i].innerHTML;
-      link = linkArray[i].href
-      if(sites[currloc] && ((sites[currloc].next == txt && value == 1) || (sites[currloc].prev == txt && value == 2))) {
-        window._content.location.href = linkArray[i].href;
-        return;
-      }
-    }
-    if(sites['*']) {
-      if(value == 1) {
-        window._content.location.href = sites['*'].next;
-      } else if(value == 2) {
-        window._content.location.href = sites['*'].prev;
-      }
-    }
-    return;
-    /*
-    var siteArray = surfkeysPrefs.getCharPref("resultpattern").split(";");
-
-    var site, hrefstripped, domain, txt;
-    for (var s = 0, sl = siteArray.length; s < sl; s++) {
-      site = siteArray[s].split(":");
-      if(url.indexOf(site[0]) != -1 || site[0] == "*") {
-        for(var i = 0, lr = linkArray.length; i < lr; i++) {
-          if(site[0] == "*") {
-            hrefstripped = url.substring(url.indexOf("//") + 2, url.length);
-            domain = hrefstripped.substring(0, hrefstripped.indexOf("/"));
-            site[0] = domain;
+      href = linkArray[i].href;
+      rel = linkArray[i].rel;
+      title = linkArray[i].title;
+      for(var j = 0, sl = sites.length, site, siter, rex; j < sl; j++) {
+        site = sites[j];
+        siter = new RegExp(site.site); // regexp for the url, to make possible the usage on sites like google.com/?search=.*
+        if(siter.test(currloc)) {
+          if(value == 1) {
+            rex = new RegExp('(?:\\b|^)' + site.next + '(?:\\b|$)');
+          } else if(value == 2) {
+            rex = new RegExp('(?:\\b|^)' + site.prev + '(?:\\b|$)');
           }
-          txt = linkArray[i].innerHTML;
-          // we check that the text inside anchor matches the next/prev-text
-          // defined for the site, and also verify that the link's href
-          // is still in the same site (just to prevent a situation where
-          // google's result link have a text "Previous" inside it)
-          if (txt.indexOf(site[value]) != -1 && linkArray[i].href.indexOf(site[0]) != -1) {
-            window._content.location.href = linkArray[i].href;
+          //RC NEW: Bypass onsite check if javascript link
+          if((rel && rex.test(rel) || title && rex.test(title) || txt && rex.test(txt))) {
+            win.location.href = href;
             return;
           }
         }
+        
       }
     }
-    */
+    return;
   }
 
   /**
@@ -419,7 +401,7 @@ function surfkeys_(reload) {
     var focusedWindow = getWindow();
     var sidebarWindow = document.getElementById("sidebar").contentWindow;
     // SKLog.log(focusedWindow == sidebarWindow, focusedWindow.window == sidebarWindow);
-    if(surfkeysPrefs.getBoolPref('disableinsidebar') && focusedWindow && focusedWindow == sidebarWindow) { return true; }
+    if(SKSites.surfkeysPrefs().getBoolPref('disableinsidebar') && focusedWindow && focusedWindow == sidebarWindow) { return true; }
   };
 
   /**
@@ -458,26 +440,28 @@ function surfkeys_(reload) {
       var domain = hrefstripped.substring(0, hrefstripped.indexOf("/"));
 
       var currloc = window._content.location.href;
-      try {
-        var sites = eval('(' + surfkeysPrefs.getCharPref("resultpattern") + ')');
-      } catch(e) {
-        var sites= {};
-      }
-
-      if(!sites[currloc]) {
-        sites[currloc] = {site: currloc};
+      var sites = SKSites.getSites();
+      var site = SKSites.getSiteFromURL(currloc);
+      SKLog.log(site.site, site.next, site.prev, site.id);
+      if(!site) {
+        site = {
+          site: currloc,
+          next: '',
+          prev: '',
+          id: false
+        };
       }
       if (direction == 1) {
-        sites[currloc].next = linktext;
+        site.next = linktext;
       } else {
-        sites[currloc].prev = linktext;
+        site.prev = linktext;
       }
-      surfkeysPrefs.setCharPref('resultpattern', sitesToTxt(sites));
+      SKSites.addSite(site);
       return;
     }
   }
   function sitesToTxt(json) {
-    var sites = new Array(),next,prev;
+    var sites = new Array(), next, prev;
     for(site in json) {
       next = json[site].next || '';
       prev = json[site].prev || '';
@@ -487,23 +471,24 @@ function surfkeys_(reload) {
   }
   function postInstall() {
     try {
-      var finished = surfkeysPrefs.getCharPref('version');
+      var finished = SKSites.surfkeysPrefs().getCharPref('version');
     } catch(e){}
     var convertSites = function() {
-      var patterns = surfkeysPrefs.getCharPref("resultpattern")
+      var patterns = SKSites.surfkeysPrefs().getCharPref("resultpattern")
       var siteArray = patterns.split(";");
       var sites = new Array();
       for(var i = 0, sl = siteArray.length, site; i < sl; i++) {
         site = siteArray[i].split(":");
-        sites.push('"' + site[0] + '":{"site":"' + site[0] + '","next":"' + site[1] + '","prev":"' + site[2] + '"}');
+        sites.push(SKSites.createSiteStr(site[0], site[1], site[2]));
+        // sites.push('"' + site[0] + '":{"site":"' + site[0] + '","next":"' + site[1] + '","prev":"' + site[2] + '"}');
       }
-      surfkeysPrefs.setCharPref('resultpattern', '{' + sites.join(',') + '}');
+      SKSites.surfkeysPrefs().setCharPref('resultpattern', '[' + sites.join(',') + ']');
     }
     if(finished != SK_VERSION) {
       // Convert the old store format to the new one
       SKLog.log('postinstall');
       convertSites();
-      surfkeysPrefs.setCharPref('version', '0.5.2');
+      SKSites.surfkeysPrefs().setCharPref('version', '0.5.2');
     }
   }
   /**
@@ -512,7 +497,7 @@ function surfkeys_(reload) {
    */
   function setKeys() {
     postInstall();
-    var keys = eval('(' + surfkeysPrefs.getCharPref('keys') + ')');
+    var keys = eval('(' + SKSites.surfkeysPrefs().getCharPref('keys') + ')');
     var modifiers = new Array();
     var keyNode, key, parent, command, oncommand;
     for(var k in keys) {
