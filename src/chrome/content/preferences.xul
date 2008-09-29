@@ -32,6 +32,7 @@
   persist="width,height">
   <stringbundle id="surfkeys-bundles" src="chrome://surfkeys/locale/surfkeys.properties" />
   <script type="application/x-javascript" src="chrome://surfkeys/content/log.js" />
+  <script type="application/x-javascript" src="chrome://surfkeys/content/sites.js" />
   <script type="application/x-javascript" src="chrome://surfkeys/content/preferences.js" />
 
   <prefpane id="pane1" label="Surfkeys">
@@ -90,6 +91,7 @@
                 </hbox>
                 <tree id="sk-resultpattern-tree" rows="20" flex="1" onselect="SKSites.siteSelected();" class="tree">
                   <treecols>
+                    <treecol id="siteidcol" hidden="true" label="id" />
                     <treecol id="sitecol" label="&surfkeys.sites.title.site;" flex="1" />
                     <splitter class="tree-splitter"/>
                     <treecol id="nextcol" label="&surfkeys.sites.title.next;" flex="2" />
