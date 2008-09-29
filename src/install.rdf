@@ -1,25 +1,20 @@
 <?xml version="1.0"?>
-<RDF:RDF xmlns:em="http://www.mozilla.org/2004/em-rdf#"
-         xmlns:NC="http://home.netscape.com/NC-rdf#"
-         xmlns:RDF="http://www.w3.org/1999/02/22-rdf-syntax-ns#">
-  <RDF:Description RDF:about="urn:mozilla:extension:file:surfkeys.jar"
-                   em:package="content/surfkeys/"
-                   em:skin="skin/classic/surfkeys/"
-                   em:locale="locale/en-US/surfkeys/" />
-  <RDF:Description RDF:about="urn:mozilla:install-manifest"
-                   em:id="{a44ef047-cd8d-406e-a354-b7101bd24735}"
-                   em:version="0.5.2b"
-                   em:name="SurfKeys"
-                   em:description="Comfortable surfing with keyboard."
-                   em:creator="Pekka Sillanpaa"
-                   em:homepageURL="http://surfkeys.mozdev.org"
-                   em:iconURL="chrome://surfkeys/skin/icon.png"
-                   em:optionsURL="chrome://surfkeys/content/preferences.xul"
-                   em:type="2">
+<RDF:RDF xmlns:em="http://www.mozilla.org/2004/em-rdf#" xmlns:NC="http://home.netscape.com/NC-rdf#" xmlns:RDF="http://www.w3.org/1999/02/22-rdf-syntax-ns#">
+  <RDF:Description RDF:about="urn:mozilla:extension:file:surfkeys.jar" em:package="content/surfkeys/" em:skin="skin/classic/surfkeys/" em:locale="locale/en-US/surfkeys/" />
+  <RDF:Description RDF:about="urn:mozilla:install-manifest">
+    <em:id>{a44ef047-cd8d-406e-a354-b7101bd24735}</em:id>
+    <em:version>0.5.2b</em:version>
+    <em:name>SurfKeys</em:name>
+    <em:description>Comfortable surfing with keyboard.</em:description>
+    <em:creator>Pekka Sillanpaa</em:creator>
+    <em:homepageURL>http://surfkeys.mozdev.org</em:homepageURL>
+    <em:iconURL>chrome://surfkeys/skin/icon.png</em:iconURL>
+    <em:optionsURL>chrome://surfkeys/content/preferences.xul</em:optionsURL>
+    <em:type>2</em:type>
     <em:targetApplication RDF:resource="rdf:#$LbmeB"/>
     <em:targetApplication>
       <Description>
-      <!--Prism-->
+        <!--Prism-->
         <em:id>prism@developer.mozilla.org</em:id>
         <em:minVersion>0.1</em:minVersion>
         <em:maxVersion>10.0</em:maxVersion>
@@ -27,8 +22,5 @@
     </em:targetApplication>
     <em:file RDF:resource="urn:mozilla:extension:file:surfkeys.jar"/>
   </RDF:Description>
-  <RDF:Description RDF:about="rdf:#$LbmeB"
-                   em:id="{ec8030f7-c20a-464f-9b0e-13a3a9e97384}"
-                   em:minVersion="1.5"
-                   em:maxVersion="3.1b1pre" />
+  <RDF:Description RDF:about="rdf:#$LbmeB" em:id="{ec8030f7-c20a-464f-9b0e-13a3a9e97384}" em:minVersion="1.5" em:maxVersion="3.1b1pre" />
 </RDF:RDF>
