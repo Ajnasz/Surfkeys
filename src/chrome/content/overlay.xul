@@ -4,7 +4,7 @@
 
 <overlay id="surfkeysOverlay" xmlns="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul">
   <script src="chrome://surfkeys/content/log.js"/>
-  <script src="chrome://surfkeys/content/sites.js"/>
+  <script src="chrome://surfkeys/content/sk.js"/>
   <script src="chrome://surfkeys/content/overlay.js"/>
 
   <popup id="contentAreaContextMenu">
