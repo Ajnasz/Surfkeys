@@ -322,7 +322,7 @@ function surfkeys_(reload) {
     var url = win.location.href;
     var linkArray = window._content.document.links;
     try {
-      var sites = eval('(' + SKSites.surfkeysPrefs().getCharPref("resultpattern") + ')');
+      var sites = eval('(' + SK.Prefs().getCharPref("resultpattern") + ')');
     } catch(e) {
       var sites= [];
     }
@@ -401,7 +401,7 @@ function surfkeys_(reload) {
     var focusedWindow = getWindow();
     var sidebarWindow = document.getElementById("sidebar").contentWindow;
     // SKLog.log(focusedWindow == sidebarWindow, focusedWindow.window == sidebarWindow);
-    if(SKSites.surfkeysPrefs().getBoolPref('disableinsidebar') && focusedWindow && focusedWindow == sidebarWindow) { return true; }
+    if(SK.Prefs().getBoolPref('disableinsidebar') && focusedWindow && focusedWindow == sidebarWindow) { return true; }
   };
 
   /**
@@ -440,8 +440,8 @@ function surfkeys_(reload) {
       var domain = hrefstripped.substring(0, hrefstripped.indexOf("/"));
 
       var currloc = window._content.location.href;
-      var sites = SKSites.getSites();
-      var site = SKSites.getSiteFromURL(currloc);
+      var sites = SK.Sites.getSites();
+      var site = SK.Sites.getSiteFromURL(currloc);
       SKLog.log(site.site, site.next, site.prev, site.id);
       if(!site) {
         site = {
@@ -456,7 +456,7 @@ function surfkeys_(reload) {
       } else {
         site.prev = linktext;
       }
-      SKSites.addSite(site);
+      SK.Sites.addSite(site);
       return;
     }
   }
@@ -471,24 +471,23 @@ function surfkeys_(reload) {
   }
   function postInstall() {
     try {
-      var finished = SKSites.surfkeysPrefs().getCharPref('version');
+      var finished = SK.Prefs().getCharPref('version');
     } catch(e){}
     var convertSites = function() {
-      var patterns = SKSites.surfkeysPrefs().getCharPref("resultpattern")
+      var patterns = SK.Prefs().getCharPref("resultpattern")
       var siteArray = patterns.split(";");
       var sites = new Array();
       for(var i = 0, sl = siteArray.length, site; i < sl; i++) {
         site = siteArray[i].split(":");
-        sites.push(SKSites.createSiteStr(site[0], site[1], site[2]));
-        // sites.push('"' + site[0] + '":{"site":"' + site[0] + '","next":"' + site[1] + '","prev":"' + site[2] + '"}');
+        sites.push(SK.Sites.createSiteStr(site[0], site[1], site[2]));
       }
-      SKSites.surfkeysPrefs().setCharPref('resultpattern', '[' + sites.join(',') + ']');
+      SK.Sites.setSites('[' + sites.join(',') + ']');
     }
     if(finished != SK_VERSION) {
       // Convert the old store format to the new one
       SKLog.log('postinstall');
       convertSites();
-      SKSites.surfkeysPrefs().setCharPref('version', '0.5.2');
+      SK.Prefs().setCharPref('version', '0.5.2');
     }
   }
   /**
@@ -497,7 +496,7 @@ function surfkeys_(reload) {
    */
   function setKeys() {
     postInstall();
-    var keys = eval('(' + SKSites.surfkeysPrefs().getCharPref('keys') + ')');
+    var keys = SK.Keys.getKeys();
     var modifiers = new Array();
     var keyNode, key, parent, command, oncommand;
     for(var k in keys) {
