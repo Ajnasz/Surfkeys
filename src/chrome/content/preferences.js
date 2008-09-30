@@ -1,20 +1,8 @@
-var surfkeysPrefs = Components.classes["@mozilla.org/preferences-service;1"].
-  getService(Components.interfaces.nsIPrefService);
-
-surfkeysPrefs = surfkeysPrefs.getBranch("extensions.surfkeys.");
-
 var generatePattern = function(patterns, selection, val) {
   if(!patterns) {
     patterns = false;
   }
-  var sites = SKSites.getSitesArray(patterns);
-  /*
-  var _keys = new Array();
-  for(key in keys) {
-    keys[key].id = key;
-    _keys.push(keys[key]);
-  }
-  */
+  var sites = SK.Sites.getSites(patterns);
   var treeView = {
     rowCount: sites.length+1,
     getCellText : function(row,column) {
@@ -47,11 +35,11 @@ var generatePattern = function(patterns, selection, val) {
     getCellProperties: function(row,col,props){},
     getColumnProperties: function(colid,col,props){}
   };
-  var tree = document.getElementById('sk-resultpattern-tree');
+  var tree = SK.Sites.tree();
   tree.view = treeView;
 
   if(val) {
-    var row = SKSites.getSiteRow(val);
+    var row = SK.Sites.getSiteRow(val);
     tree.view.selection.select(row);
   } else if(!isNaN(selection)) {
     tree.view.selection.select(selection);
@@ -61,7 +49,7 @@ var generatePattern = function(patterns, selection, val) {
 };
 var generateKeys = function(keys, selection) {
   if(!keys) {
-    var keys = eval('(' + surfkeysPrefs.getCharPref('keys') + ')');
+    var keys = SK.Keys.getKeys(keys);
   }
   var _keys = new Array();
   for(key in keys) {
@@ -109,7 +97,7 @@ var generateKeys = function(keys, selection) {
     getCellProperties: function(row,col,props){},
     getColumnProperties: function(colid,col,props){}
   };
-  var tree = document.getElementById('sk-keys-tree');
+  var tree = SK.Keys.tree();
   tree.view = treeView;
   if(!isNaN(selection)) {
     tree.view.selection.select(selection);
@@ -117,8 +105,19 @@ var generateKeys = function(keys, selection) {
     tree.view.selection.select(0);
   }
 };
-var keySelected = function() {
-  var tree = document.getElementById("sk-keys-tree");
+var setAllWinKeys = function() {
+  var wm = Components.classes["@mozilla.org/appshell/window-mediator;1"].getService(Components.interfaces.nsIWindowMediator);
+  var enumerator = wm.getEnumerator('navigator:browser'), win;
+  while(enumerator.hasMoreElements()) {
+    win = enumerator.getNext();
+    if(win.surfkeys_) {
+      win.surfkeys = new win.surfkeys_(true);
+    }
+  }
+};
+SK.Keys.tree =  function() {return document.getElementById('sk-keys-tree');};
+SK.Keys.keySelected = function() {
+  var tree = SK.Keys.tree();
   var selectedKey  = {
     id: tree.view.getCellText(tree.currentIndex, tree.columns.getColumnAt(0)),
     name: tree.view.getCellText(tree.currentIndex, tree.columns.getColumnAt(1)),
@@ -136,61 +135,43 @@ var keySelected = function() {
   currentAlt.checked = (selectedKey.alt == 'false') ? false : true;
   currentDisabled.checked = (selectedKey.disabled == 'false') ? false : true;
 };
-var setCurrentShift = function(val) {
-  var keys = eval('(' + surfkeysPrefs.getCharPref('keys') + ')');
-  var tree = document.getElementById('sk-keys-tree');
-  var currentId = tree.view.getCellText(tree.currentIndex, tree.columns.getColumnAt(0));
-  keys[currentId].shift = val;
-  generateKeys(keys, tree.currentIndex);
-  setKeyPreferences(keys);
-};
-var setCurrentAlt = function(val) {
-  var keys = eval('(' + surfkeysPrefs.getCharPref('keys') + ')');
-  var tree = document.getElementById('sk-keys-tree');
-  var currentId = tree.view.getCellText(tree.currentIndex, tree.columns.getColumnAt(0));
-  keys[currentId].alt = val;
-  generateKeys(keys, tree.currentIndex);
-  setKeyPreferences(keys);
-};
-var setCurrentDisabled = function(val) {
-  var keys = eval('(' + surfkeysPrefs.getCharPref('keys') + ')');
-  var tree = document.getElementById('sk-keys-tree');
-  var currentId = tree.view.getCellText(tree.currentIndex, tree.columns.getColumnAt(0));
-  keys[currentId].disabled = val;
-  generateKeys(keys, tree.currentIndex);
-  setKeyPreferences(keys);
-};
-var setCurrentKey = function(val) {
-  var keys = eval('(' + surfkeysPrefs.getCharPref('keys') + ')');
-  var tree = document.getElementById('sk-keys-tree');
+SK.Keys.setCurrentKey = function(val) {
+  var keys = this.getKeys();
+  var tree = this.tree();
   var currentId = tree.view.getCellText(tree.currentIndex, tree.columns.getColumnAt(0));
   keys[currentId].key = val;
   generateKeys(keys, tree.currentIndex);
-  setKeyPreferences(keys);
+  this.setKeys(keys);
 };
-var setKeyPreferences = function(keys) {
-  var json = new Array();
-  for(k in keys) {
-    json.push(k + ': {key:\'' + keys[k].key + '\',shift:' + keys[k].shift + ',alt:' + keys[k].alt + ',disabled:' + keys[k].disabled + '}');
-  }
-  var json = '{' + json.join(',') + '}';
-  surfkeysPrefs.setCharPref('keys', json);
+SK.Keys.setCurrentDisabled = function(val) {
+  var keys = this.getKeys();
+  var tree = this.tree();
+  var currentId = tree.view.getCellText(tree.currentIndex, tree.columns.getColumnAt(0));
+  keys[currentId].disabled = val;
+  generateKeys(keys, tree.currentIndex);
+  this.setKeys(keys);
 };
-var setAllWinKeys = function() {
-    var wm = Components.classes["@mozilla.org/appshell/window-mediator;1"].getService(Components.interfaces.nsIWindowMediator);
-    var enumerator = wm.getEnumerator('navigator:browser'), win;
-    while(enumerator.hasMoreElements()) {
-      win = enumerator.getNext();
-      if(win.surfkeys_) {
-        win.surfkeys = new win.surfkeys_(true);
-      }
-  }
+SK.Keys.setCurrentShift = function(val) {
+  var keys = this.getKeys();
+  var tree = this.tree();
+  var currentId = tree.view.getCellText(tree.currentIndex, tree.columns.getColumnAt(0));
+  keys[currentId].shift = val;
+  generateKeys(keys, tree.currentIndex);
+  this.setKeys(keys);
+};
+SK.Keys.setCurrentAlt = function(val) {
+  var keys = this.getKeys();
+  var tree = this.tree();
+  var currentId = tree.view.getCellText(tree.currentIndex, tree.columns.getColumnAt(0));
+  keys[currentId].alt = val;
+  generateKeys(keys, tree.currentIndex);
+  this.setKeys(keys);
 };
 /**
- * Extending SKSites object for preferences window
+ * Extending SK.Sites object for preferences window
  */
-SKSites.tree = function(){return document.getElementById('sk-resultpattern-tree')};
-SKSites.siteSelected = function() {
+SK.Sites.tree = function(){return document.getElementById('sk-resultpattern-tree')};
+SK.Sites.siteSelected = function() {
   var tree = this.tree();
   this.selectedSite  = {
     id: tree.view.getCellText(tree.currentIndex, tree.columns.getColumnAt(0)),
@@ -206,19 +187,19 @@ SKSites.siteSelected = function() {
   currentNext.value = this.selectedSite.next;
   currentPrev.value = this.selectedSite.prev;
 };
-SKSites.setCurrentSite = function(val) {
+SK.Sites.setCurrentSite = function(val) {
   this.siteSetCurrent('site', val);
 };
-SKSites.setCurrentNext = function(val) {
+SK.Sites.setCurrentNext = function(val) {
   this.siteSetCurrent('next', val);
 };
-SKSites.setCurrentPrev = function(val) {
+SK.Sites.setCurrentPrev = function(val) {
   this.siteSetCurrent('prev', val);
 };
-SKSites.siteSetCurrent = function(field, val) {
+SK.Sites.siteSetCurrent = function(field, val) {
   var tree = this.tree();
   var currentSite = tree.view.getCellText(tree.currentIndex, tree.columns.getColumnAt(0));
-  var site = SKSites.getSiteFromID(currentSite);
+  var site = SK.Sites.getSiteFromID(currentSite);
   if(!site) {
     site = {
       site: '',
@@ -229,13 +210,13 @@ SKSites.siteSetCurrent = function(field, val) {
   }
   site[field] = val;
   if(site.site == '') {
-    SKSites.removeSite(site.id);
+    SK.Sites.removeSite(site.id);
   } else {
-    SKSites.addSite(site);
+    SK.Sites.addSite(site);
   }
   generatePattern(null, tree.currentIndex);
 };
-SKSites.getSiteRow = function(site) {
+SK.Sites.getSiteRow = function(site) {
   var tree = this.tree();
   var column = tree.columns.getColumnAt(0);
   for (var i = 0; i < tree.view.rowCount; i++){
@@ -245,14 +226,6 @@ SKSites.getSiteRow = function(site) {
   }
   return 0;
 };
-/*
-SKSites.addSite = function() {
-  var tree = this.tree();
-  tree.view.selection.select(tree.view.rowCount-1);
-  document.getElementById('sk-site-name').focus();
-};
-*/
-
 var initPreferences = function() {
   generateKeys();
   generatePattern();
