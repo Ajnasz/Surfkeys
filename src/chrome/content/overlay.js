@@ -31,80 +31,77 @@
 ////////////////////////////////////////////////////////////////////////////////
 
 function surfkeys_(reload) {
-
-  //var modified_flag = false;
   var sk_isFirstTime = true;
   var surfScroll = false;
   var SK_X = 0;
   var SK_Y = 1;
   var scrDelta = Array(2);
   var scrAccel = Array(2);
-  var s;
+  var s; // scroll interval
   var maxScrAccel = 5;
-  var disableFlag = false;
   var _this = this;
   const SK_VERSION = '0.5.2';
-
   //var isHahModeEnabled = false; // in case hah isn't installed
   var surfkeysStringbundle;
-
-
   // public methods
-
   this.scrollUp = function() {
     if(isSidebarWindow()) {return;}
     surfkeysScrAccelerateScroller(SK_Y, -1);
   };
-
   this.scrollDown = function() {
     if(isSidebarWindow()) {return;}
     surfkeysScrAccelerateScroller(SK_Y, 1);
   };
-
   this.scrollLeft = function() {
     surfkeysScrAccelerateScroller(SK_X, -1);
   };
-
   this.scrollRight = function() {
     surfkeysScrAccelerateScroller(SK_X, 1);
   };
-
   this.pgDown = function() {
     stopScroller();
     // window._content.scrollByPages(1);
     goDoCommand('cmd_scrollPageDown');
   };
-
   this.pgUp = function() {
     stopScroller();
     // window._content.scrollByPages(-1);
     goDoCommand('cmd_scrollPageUp');
   };
-
+  /**
+   * go back one page in the history
+   */
   this.back = function() {
     stopScroller();
     getWindow().back();
   };
-
+  /**
+   * go forward one page in the history
+   */
   this.forward = function() {
     stopScroller();
     getWindow().forward();
   };
-
+  /**
+   * Try to the find a 'next' link in the header, if not found,
+   * search for a matching site from the 'resultpattern'
+   */
   this.next = function() {
     stopScroller();
     if(!nextRel()) {
       surfkeysChangePage(window._content.location.href, 1);
     }
   };
-
+  /**
+   * Try to the find a 'prev' link in the header, if not found,
+   * search for a matching site from the 'resultpattern'
+   */
   this.previous = function() {
     stopScroller();
     if(!previousRel()) {
       surfkeysChangePage(window._content.location.href, 2);
     }
   };
-
   /**
    * search for <link...> tags which rel attribute is up
    * if a link found, redirects to it's value
@@ -121,11 +118,13 @@ function surfkeys_(reload) {
     }
     return false;
   };
+  /**
+   * open a new browser tab
+   */
   this.newTab = function() {
     stopScroller();
     BrowserOpenTab();
   };
-
   /**
    * Switch to next tab
    * @author ajnasz, Rick-112
@@ -136,7 +135,6 @@ function surfkeys_(reload) {
     gBrowser.mTabContainer.advanceSelectedTab(1, true);
     focusCurrentContent();
   };
-
   /**
    * Switch to previous tab
    * @author ajnasz, Rick-112
@@ -147,7 +145,6 @@ function surfkeys_(reload) {
     gBrowser.mTabContainer.advanceSelectedTab(-1, true);
     focusCurrentContent();
   };
-
   /**
    * Focus to the first tab
    * @author ajnasz
@@ -157,7 +154,6 @@ function surfkeys_(reload) {
     gBrowser.mTabContainer.selectedIndex = 0;
     focusCurrentContent();
   };
-
   /**
    * Focus the last tab
    * @author ajnasz
@@ -167,36 +163,45 @@ function surfkeys_(reload) {
     gBrowser.mTabContainer.selectedIndex = gBrowser.browsers.length-1;
     focusCurrentContent();
   };
-
+  /**
+   * close the current tab
+   */
   this.closeTab = function() {
     stopScroller();
-    gBrowser.removeTab(gBrowser.mCurrentTab);
+    BrowserCloseTabOrWindow();
   };
-
+  /**
+   * focus to the location bar
+   */
   this.gotoLocationBar = function() {
     stopScroller();
     Urlbar = document.getElementById("urlbar");
     Urlbar.focus();
     Urlbar.select();
   };
-
+  /**
+   * close the firefox window
+   */
   this.closeWindow = function() {
     stopScroller();
-    getWindow().close();
+    BrowserTryToCloseWindow();
   };
-
+  /**
+   * stop the loading and/or scrolling
+   */
   this.stop = function() {
     stopScroller();
     getWindow().stop();
   };
-
+  /**
+   * reload the current page
+   */
   this.reload = function() {
     stopScroller();
     BrowserReload();
   };
-
-
   /**
+   * Move the current tab to left
    * @author ajnasz
    */
   this.moveLeft = function() {
@@ -206,6 +211,7 @@ function surfkeys_(reload) {
     }
   };
   /**
+   * Move the current tab to right
    * @author ajnasz
    */
   this.moveRight = function() {
@@ -215,6 +221,7 @@ function surfkeys_(reload) {
     }
   };
   /**
+   * Move the current tab to the beginnin of the tabbar
    * @author ajnasz
    */
   this.moveToBeginning = function() {
@@ -222,13 +229,13 @@ function surfkeys_(reload) {
     gBrowser.moveTabTo(gBrowser.mCurrentTab,0);
   };
   /**
+   * Move the current tab to the end of the tabbar
    * @author ajnasz
    */
   this.moveToEnd = function() {
     stopScroller();
     gBrowser.moveTabTo(gBrowser.mCurrentTab,gBrowser.mTabContainer.childNodes.length-1);
   };
-
   /**
    * search for <link...> tags which rel attribute is next
    * if a link found, redirects to it's value
@@ -251,7 +258,7 @@ function surfkeys_(reload) {
    * @return true if link found false if not found
    * @type Boolean
    */
-   var previousRel = function() {
+  var previousRel = function() {
     var linkArray = window._content.document.getElementsByTagName('link');
     for(var i = 0, l = linkArray.length; i < l; i++) {
       if(linkArray[i].rel == 'previous' || linkArray[i].rel == 'prev') {
@@ -261,12 +268,6 @@ function surfkeys_(reload) {
     }
     return false;
   };
-
-
-  function getWindow() {
-    return document.commandDispatcher.focusedWindow;
-  };
-
   this.scroller = function() {
     var w = getWindow();
     var oScrollX = w.scrollX;
@@ -277,148 +278,6 @@ function surfkeys_(reload) {
     if (w.scrollY == oScrollY) scrDelta[SK_Y] = 0;
     if (scrDelta[SK_X] == 0 && scrDelta[SK_Y] == 0) stopScroller();
   };
-
-  // private methods
-
-  function startScroller() {
-    if (!surfScroll) {
-      surfScroll = true;
-      s = window.setInterval(function(){_this.scroller()}, 10);
-    }
-    return 1;
-  }
-
-  function stopScroller() {
-    if (surfScroll) {
-      window.clearInterval(s);
-      surfScroll = false;
-      scrDelta[SK_X] = 0;
-      scrDelta[SK_Y] = 0;
-      scrAccel[SK_X] = 0;
-      scrAccel[SK_Y] = 0;
-    }
-    return 1;
-  }
-
-  ////////////////////////////////////////////////////////////////////////////////
-  // surfkeys
-  ////////////////////////////////////////////////////////////////////////////////
-
-  function focusCurrentContent() {
-    gBrowser.getBrowserAtIndex(gBrowser.mTabContainer.selectedIndex).contentWindow.focus();
-  }
-  /**
-   * Changes page  to next / previous  page depending on the  URL of the
-   * current  page. Check  from the  siteString what  are  the next/prev
-   * strings on  each page  that have  to be looked  for from  the links
-   * texts.  When found, the page url is replaced to the links href
-   *
-   * @param url    the url of the current page
-   * @param value  the direction of the change (1: next, 2: previous)
-   * @author       psillanp
-   */
-  function surfkeysChangePage(url, value) {
-    var win = getWindow();
-    var url = win.location.href;
-    var linkArray = window._content.document.links;
-    try {
-      var sites = eval('(' + SK.Prefs().getCharPref("resultpattern") + ')');
-    } catch(e) {
-      var sites= [];
-    }
-    var currloc = window._content.location.href;
-    for(var i = 0, lr = linkArray.length, link, txt, rel, title; i < lr; i++) {
-      txt = linkArray[i].innerHTML;
-      href = linkArray[i].href;
-      rel = linkArray[i].rel;
-      title = linkArray[i].title;
-      for(var j = 0, sl = sites.length, site, siter, rex; j < sl; j++) {
-        site = sites[j];
-        siter = new RegExp(site.site); // regexp for the url, to make possible the usage on sites like google.com/?search=.*
-        if(siter.test(currloc)) {
-          if(value == 1) {
-            rex = new RegExp('(?:\\b|^)' + site.next + '(?:\\b|$)');
-          } else if(value == 2) {
-            rex = new RegExp('(?:\\b|^)' + site.prev + '(?:\\b|$)');
-          }
-          //RC NEW: Bypass onsite check if javascript link
-          if((rel && rex.test(rel) || title && rex.test(title) || txt && rex.test(txt))) {
-            win.location.href = href;
-            return;
-          }
-        }
-        
-      }
-    }
-    return;
-  }
-
-  /**
-   * ScrAccelerates the scroller either horizontally or vertically
-   * by the given value
-   *
-   * @param dir    direction, either SK_X or SK_Y
-   * @param value  value indicating the amount how much to scrAccelerate
-   * @author       psillanp
-   */
-  function surfkeysScrAccelerateScroller(dir, value) {
-
-    scrAccel[dir] += value;
-
-    if (scrAccel[dir] > maxScrAccel) {
-      scrAccel[dir] = maxScrAccel;
-    } else if (scrAccel[dir] < -maxScrAccel) {
-      scrAccel[dir] = -maxScrAccel;
-    } else if (scrAccel[dir] == 0) {
-      scrDelta[dir] = 0;
-    } else {
-      scrDelta[dir] = Math.pow(2, Math.abs(scrAccel[dir]));
-      if (scrAccel[dir] < 0) scrDelta[dir] = -scrDelta[dir];
-    }
-
-    startScroller();
-  }
-
-  function surfkeysLoad() {
-
-    if (sk_isFirstTime) {
-      sk_isFirstTime = false;
-      scrAccel[0] = 0;
-      scrAccel[1] = 0;
-      scrDelta[0] = 0;
-      scrDelta[1] = 0;
-
-      surfkeysStringbundle = document.getElementById("surfkeysstringbundle");
-
-      var menu = window.document.getElementById("contentAreaContextMenu");
-      menu.addEventListener("popupshowing", surfkeysShowcontext, false);
-      // menu.addEventListener("popuphiding", surfkeysEnable, false);
-      setKeys();
-    }
-  }
-
-  function isSidebarWindow() {
-    var focusedWindow = getWindow();
-    var sidebarWindow = document.getElementById("sidebar").contentWindow;
-    // SKLog.log(focusedWindow == sidebarWindow, focusedWindow.window == sidebarWindow);
-    if(SK.Prefs().getBoolPref('disableinsidebar') && focusedWindow && focusedWindow == sidebarWindow) { return true; }
-  };
-
-  /**
-   * Function called when context menu pops up, decides whether to show
-   * option for adding as next/previous link.
-   *
-   * @author        aeternus
-   */
-
-  function surfkeysShowcontext() {
-    var sk_menuitem1 = document.getElementById("sk_markasnext");
-    var sk_menuitem2 = document.getElementById("sk_markasprev");
-    sk_menuitem1.hidden = !gContextMenu.onLink;
-    sk_menuitem2.hidden = !gContextMenu.onLink;
-    stopScroller();
-  }
-
   /**
    * Allows to add/modify next/previous links, called by items in context menu.
    * First checks if there is an entry for the domain in the urlbar. If yes,
@@ -428,7 +287,6 @@ function surfkeys_(reload) {
    * @param direction   the direction of the link (1: next, 2: previous)
    * @author        aeternus
    */
-
   this.SurfKeysAddNextPrev = function(direction) {
     var modfied_flag;
 
@@ -460,14 +318,132 @@ function surfkeys_(reload) {
       return;
     }
   }
-  function sitesToTxt(json) {
-    var sites = new Array(), next, prev;
-    for(site in json) {
-      next = json[site].next || '';
-      prev = json[site].prev || '';
-      sites.push('"' + site + '":{"site":"' + site + '","next":"' + next + '","prev":"' + prev + '"}');
+  // private methods
+  function getWindow() {
+    return document.commandDispatcher.focusedWindow;
+  };
+  function startScroller() {
+    if (!surfScroll) {
+      surfScroll = true;
+      s = window.setInterval(function(){_this.scroller()}, 10);
     }
-    return '{' + sites.join(',') + '}';
+    return 1;
+  }
+  function stopScroller() {
+    if (surfScroll) {
+      window.clearInterval(s);
+      surfScroll = false;
+      scrDelta[SK_X] = 0;
+      scrDelta[SK_Y] = 0;
+      scrAccel[SK_X] = 0;
+      scrAccel[SK_Y] = 0;
+    }
+    return 1;
+  }
+  function focusCurrentContent() {
+    gBrowser.getBrowserAtIndex(gBrowser.mTabContainer.selectedIndex).contentWindow.focus();
+  }
+  /**
+   * Changes page  to next / previous  page depending on the  URL of the
+   * current  page. Check  from the  siteString what  are  the next/prev
+   * strings on  each page  that have  to be looked  for from  the links
+   * texts.  When found, the page url is replaced to the links href
+   *
+   * @param url    the url of the current page
+   * @param value  the direction of the change (1: next, 2: previous)
+   * @author       psillanp
+   */
+  function surfkeysChangePage(url, value) {
+    var win = getWindow(), url = win.location.href, linkArray = win.document.links, currloc = win.location.href;
+    try {
+      var sites = eval('(' + SK.Prefs().getCharPref("resultpattern") + ')');
+    } catch(e) {
+      var sites= [];
+    }
+    for(var i = 0, lr = linkArray.length, link, txt, rel, title; i < lr; i++) {
+      txt = linkArray[i].innerHTML;
+      href = linkArray[i].href;
+      rel = linkArray[i].rel;
+      title = linkArray[i].title;
+      for(var j = 0, sl = sites.length, site, siter, rex; j < sl; j++) {
+        site = sites[j];
+        siter = new RegExp(site.site); // regexp for the url, to make possible the usage on sites like google.com/?search=.*
+        if(siter.test(currloc)) {
+          if(value == 1) {
+            rex = new RegExp('(?:\\b|^)' + site.next + '(?:\\b|$)');
+          } else if(value == 2) {
+            rex = new RegExp('(?:\\b|^)' + site.prev + '(?:\\b|$)');
+          }
+          //RC NEW: Bypass onsite check if javascript link
+          if((rel && rex.test(rel) || title && rex.test(title) || txt && rex.test(txt) && !/^javascript:/.test(href))) {
+            win.location.href = href;
+            return;
+          }
+        }
+      }
+    }
+    return;
+  }
+  /**
+   * ScrAccelerates the scroller either horizontally or vertically
+   * by the given value
+   *
+   * @param dir    direction, either SK_X or SK_Y
+   * @param value  value indicating the amount how much to scrAccelerate
+   * @author       psillanp
+   */
+  function surfkeysScrAccelerateScroller(dir, value) {
+
+    scrAccel[dir] += value;
+
+    if (scrAccel[dir] > maxScrAccel) {
+      scrAccel[dir] = maxScrAccel;
+    } else if (scrAccel[dir] < -maxScrAccel) {
+      scrAccel[dir] = -maxScrAccel;
+    } else if (scrAccel[dir] == 0) {
+      scrDelta[dir] = 0;
+    } else {
+      scrDelta[dir] = Math.pow(2, Math.abs(scrAccel[dir]));
+      if (scrAccel[dir] < 0) scrDelta[dir] = -scrDelta[dir];
+    }
+
+    startScroller();
+  }
+  function surfkeysLoad() {
+
+    if (sk_isFirstTime) {
+      sk_isFirstTime = false;
+      scrAccel[0] = 0;
+      scrAccel[1] = 0;
+      scrDelta[0] = 0;
+      scrDelta[1] = 0;
+
+      surfkeysStringbundle = document.getElementById("surfkeysstringbundle");
+
+      var menu = window.document.getElementById("contentAreaContextMenu");
+      menu.addEventListener("popupshowing", surfkeysShowcontext, false);
+      // menu.addEventListener("popuphiding", surfkeysEnable, false);
+      setKeys();
+    }
+  }
+  function isSidebarWindow() {
+    var focusedWindow = getWindow();
+    var sidebarWindow = document.getElementById("sidebar").contentWindow;
+    // SKLog.log(focusedWindow == sidebarWindow, focusedWindow.window == sidebarWindow);
+    if(SK.Prefs().getBoolPref('disableinsidebar') && focusedWindow && focusedWindow == sidebarWindow) { return true; }
+  };
+  /**
+   * Function called when context menu pops up, decides whether to show
+   * option for adding as next/previous link.
+   *
+   * @author        aeternus
+   */
+  function surfkeysShowcontext() {
+    var sk_menuitem1 = document.getElementById("sk_markasnext");
+    var sk_menuitem2 = document.getElementById("sk_markasprev");
+    sk_menuitem1.hidden = !gContextMenu.onLink;
+    sk_menuitem2.hidden = !gContextMenu.onLink;
+    stopScroller();
   }
   function postInstall() {
     try {
@@ -515,11 +491,7 @@ function surfkeys_(reload) {
         if(key.alt) {
           modifiers.push('alt');
         }
-        if(modifiers.length) {
-          modifiers = modifiers.join(' ');
-        } else {
-          modifiers = false;
-        }
+        modifiers = (modifiers.length) ? modifiers.join(' ') : false;
         keyNode.setAttribute('key', key.key);
         if(modifiers) {
           keyNode.setAttribute('modifiers', modifiers);
@@ -538,18 +510,12 @@ function surfkeys_(reload) {
     }
   }
   //  window.addEventListener("keypress", surfkeysOnKeypress, true);
-
   // listeners to suppress keyboard browsing when in menu
   window.addEventListener("DOMMenuItemActive", stopScroller, true);
   // window.addEventListener("DOMMenuItemInactive", surfkeysEnable, true);
-
   // applied to window, not window._content, since in the latter case
   // surfkeysLoad was never called.
-  if(reload) {
-    surfkeysLoad();
-  } else {
-    window.addEventListener("load", surfkeysLoad, true);
-  }
+  (reload) ?  surfkeysLoad() : window.addEventListener("load", surfkeysLoad, true);
   SKLog.log("Initialized");
 };
 
