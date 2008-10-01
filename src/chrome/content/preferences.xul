@@ -88,6 +88,7 @@
                   <label control="sk-site-next" value="&surfkeys.sites.next;"/><textbox id="sk-site-next" size="5" onchange="SK.Sites.setCurrentNext(this.value);" />
                   <label control="sk-site-prev" value="&surfkeys.sites.prev;"/><textbox id="sk-site-prev" size="5" onchange="SK.Sites.setCurrentPrev(this.value);" />
                   <button id="sk-site-add" class="dialog" label="&surfkeys.sites.add;" onclick="SK.Sites.addSiteRow();" />
+                  <button id="sk-site-add" class="dialog" label="&surfkeys.sites.del;" onclick="SK.Sites.delSiteRow();" />
                 </hbox>
                 <tree id="sk-resultpattern-tree" rows="20" flex="1" onselect="SK.Sites.siteSelected();" class="tree">
                   <treecols>

@@ -220,7 +220,9 @@ SK.Sites.addSiteRow = function() {
   generatePattern();
   var tree = this.tree();
   tree.view.selection.select(tree.view.rowCount - 1);
-
+}
+SK.Sites.delSiteRow = function() {
+  this.setCurrentSite('');
 }
 SK.Sites.getSiteRow = function(site) {
   var tree = this.tree();

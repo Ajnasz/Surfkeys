@@ -13,4 +13,5 @@
 <!ENTITY surfkeys.sites.title.next "Next">
 <!ENTITY surfkeys.sites.title.site "Site">
 <!ENTITY surfkeys.sites.add "Add site">
+<!ENTITY surfkeys.sites.del "Delete site">
 
