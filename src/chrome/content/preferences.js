@@ -216,6 +216,12 @@ SK.Sites.siteSetCurrent = function(field, val) {
   }
   generatePattern(null, tree.currentIndex);
 };
+SK.Sites.addSiteRow = function() {
+  generatePattern();
+  var tree = this.tree();
+  tree.view.selection.select(tree.view.rowCount - 1);
+
+}
 SK.Sites.getSiteRow = function(site) {
   var tree = this.tree();
   var column = tree.columns.getColumnAt(0);
