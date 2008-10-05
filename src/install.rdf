@@ -3,7 +3,7 @@
   <RDF:Description RDF:about="urn:mozilla:extension:file:surfkeys.jar" em:package="content/surfkeys/" em:skin="skin/classic/surfkeys/" em:locale="locale/en-US/surfkeys/" />
   <RDF:Description RDF:about="urn:mozilla:install-manifest">
     <em:id>{a44ef047-cd8d-406e-a354-b7101bd24735}</em:id>
-    <em:version>0.5.2b</em:version>
+    <em:version>###VERSION###</em:version>
     <em:name>SurfKeys</em:name>
     <em:description>Comfortable surfing with keyboard.</em:description>
     <em:creator>Pekka Sillanpaa</em:creator>
