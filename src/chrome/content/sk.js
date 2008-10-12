@@ -18,8 +18,9 @@ SK.Sites = {
   },
   getSites: function(patterns) {
     if(!patterns) {
-      patterns = SK.Prefs().getCharPref("resultpattern");
+      patterns = SK.Prefs().getCharPref('resultpattern');
     }
+    patterns = decodeURIComponent(patterns);
     try {
       patterns = eval('(' + patterns + ')');
     } catch(e) {
@@ -97,7 +98,7 @@ SK.Sites = {
   * @param {String} sites string sites
   */
   setSites: function(sites) {
-    SK.Prefs().setCharPref('resultpattern', sites);
+    SK.Prefs().setCharPref('resultpattern', encodeURIComponent(sites));
   },
   logSelected: function() {
     SKLog.log(this.selectedSite.site);
