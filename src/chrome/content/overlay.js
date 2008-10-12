@@ -354,12 +354,7 @@ function surfkeys_(reload) {
    * @author       psillanp
    */
   function surfkeysChangePage(url, value) {
-    var win = getWindow(), url = win.location.href, linkArray = win.document.links, currloc = win.location.href;
-    try {
-      var sites = eval('(' + SK.Prefs().getCharPref("resultpattern") + ')');
-    } catch(e) {
-      var sites= [];
-    }
+    var win = getWindow(), url = win.location.href, linkArray = win.document.links, currloc = win.location.href, sites = SK.Sites.getSites();
     for(var i = 0, lr = linkArray.length, link, txt, rel, title; i < lr; i++) {
       txt = linkArray[i].innerHTML;
       href = linkArray[i].href;
