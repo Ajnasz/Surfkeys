@@ -29,6 +29,8 @@
 <prefwindow id="surfkeysPreferences" title = "Surfkeys preferences" xmlns="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul"
   onload="initPreferences();"
   ondialogcancel="setAllWinKeys();"
+  height="400"
+  width="600"
   persist="width,height">
   <stringbundle id="surfkeys-bundles" src="chrome://surfkeys/locale/surfkeys.properties" />
   <script type="application/x-javascript" src="chrome://surfkeys/content/log.js" />
@@ -80,7 +82,7 @@
               <vbox flex="1">
                 <label flex="1" value="&resultLinktexts.label;"/>
                 <hbox align="center" flex="1">
-                  <label control="sk-site-name" value="&surfkeys.sites.site;"/><textbox id="sk-site-name" size="5" onchange="SK.Sites.setCurrentSite(this.value);" />
+                  <label control="sk-site-name" value="&surfkeys.sites.site;"/><textbox id="sk-site-name" size="5" flex="1" onchange="SK.Sites.setCurrentSite(this.value);" />
                   <label control="sk-site-next" value="&surfkeys.sites.next;"/><textbox id="sk-site-next" size="5" onchange="SK.Sites.setCurrentNext(this.value);" />
                   <label control="sk-site-prev" value="&surfkeys.sites.prev;"/><textbox id="sk-site-prev" size="5" onchange="SK.Sites.setCurrentPrev(this.value);" />
                   <button id="sk-site-add" class="dialog" label="&surfkeys.sites.add;" onclick="SK.Sites.addSiteRow();" />
