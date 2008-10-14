@@ -22,10 +22,10 @@ function buildXPI {
   zip surfkeys.xpi chrome.manifest install.rdf chrome/chrome.jar defaults/preferences/prefs.js -x \*CVS/\*;
 
   echo "Replace old XPIs with the new one";
-  if [ -f $START_DIR/../downloads/surfkeys_$SFFVER.xpi ];then
-    rm $START_DIR/../downloads/surfkeys_$SFFVER.xpi;
+  if [ -f $DOWNLOAD_DIR/surfkeys_$SFFVER.xpi ];then
+    rm $DOWNLOAD_DIR/surfkeys_$SFFVER.xpi;
   fi;
-  cp surfkeys.xpi $START_DIR/../downloads/surfkeys_$SFFVER.xpi;
+  cp surfkeys.xpi $DOWNLOAD_DIR/surfkeys_$SFFVER.xpi;
   if [ -f $START_DIR/surfkeys.xpi ];then
     rm $START_DIR/surfkeys.xpi;
   fi;
@@ -47,8 +47,10 @@ else
   SFVER=$1;
 fi
 
+########################## Configuration ################################
 SFFVER=`echo $SFVER | sed 's/\./_/g'`;
 START_DIR=`pwd`;
+DOWNLOAD_DIR='/var/www/surfkeys/cvs/downloads';
 TMP_DIR=/tmp;
 BUILD_DIR=$TMP_DIR/surfkeys_$SFVER;
 
