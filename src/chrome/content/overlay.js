@@ -202,22 +202,24 @@ function surfkeys_(reload) {
   };
   /**
    * Move the current tab to left
-   * @author ajnasz
    */
   this.moveLeft = function() {
     stopScroller();
     if(gBrowser.mCurrentTab.previousSibling) {
       gBrowser.moveTabTo(gBrowser.mCurrentTab,gBrowser.mCurrentTab._tPos-1);
+    } else {
+      gBrowser.moveTabTo(gBrowser.mCurrentTab,gBrowser.mTabContainer.childNodes.length-1);
     }
   };
   /**
    * Move the current tab to right
-   * @author ajnasz
    */
   this.moveRight = function() {
     stopScroller();
     if(gBrowser.mCurrentTab.nextSibling) {
       gBrowser.moveTabTo(gBrowser.mCurrentTab,gBrowser.mCurrentTab._tPos+1);
+    } else {
+      gBrowser.moveTabTo(gBrowser.mCurrentTab,0);
     }
   };
   /**
