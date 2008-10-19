@@ -68,6 +68,15 @@ function surfkeys_(reload) {
     // window._content.scrollByPages(-1);
     goDoCommand('cmd_scrollPageUp');
   };
+  this.top = function() {
+    stopScroller();
+    getWindow().scrollTo(getWindow().scrollX,0);
+  }
+  this.bottom = function() {
+    SKLog.log('bottom-run');
+    stopScroller();
+    getWindow().scrollTo(getWindow().scrollX,getWindow().scrollMaxY);
+  }
   /**
    * go back one page in the history
    */
@@ -89,7 +98,7 @@ function surfkeys_(reload) {
   this.next = function() {
     stopScroller();
     if(!nextRel()) {
-      surfkeysChangePage(window._content.location.href, 1);
+      surfkeysChangePage(getContent().location.href, 1);
     }
   };
   /**
@@ -99,7 +108,7 @@ function surfkeys_(reload) {
   this.previous = function() {
     stopScroller();
     if(!previousRel()) {
-      surfkeysChangePage(window._content.location.href, 2);
+      surfkeysChangePage(getContent().location.href, 2);
     }
   };
   /**
@@ -109,10 +118,10 @@ function surfkeys_(reload) {
    * @type Boolean
    */
   this.up = function() {
-    var linkArray = window._content.document.getElementsByTagName('link');
+    var linkArray = getContent().document.getElementsByTagName('link');
     for(var i = 0, l = linkArray.length; i < l; i++) {
       if(linkArray[i].rel == 'up' || linkArray[i].rel == 'contents') {
-        window._content.document.location.href = linkArray[i].href;
+        getContent().document.location.href = linkArray[i].href;
         return true;
       }
     }
@@ -245,10 +254,10 @@ function surfkeys_(reload) {
    * @type Boolean
    */
   var nextRel = function() {
-    var linkArray = window._content.document.getElementsByTagName('link');
+    var linkArray = getContent().document.getElementsByTagName('link');
     for(var i = 0, l = linkArray.length; i < l; i++) {
       if(linkArray[i].rel == 'next') {
-        window._content.document.location.href = linkArray[i].href;
+        getContent().document.location.href = linkArray[i].href;
         return true;
       }
     }
@@ -261,10 +270,10 @@ function surfkeys_(reload) {
    * @type Boolean
    */
   var previousRel = function() {
-    var linkArray = window._content.document.getElementsByTagName('link');
+    var linkArray = getContent().document.getElementsByTagName('link');
     for(var i = 0, l = linkArray.length; i < l; i++) {
       if(linkArray[i].rel == 'previous' || linkArray[i].rel == 'prev') {
-        window._content.document.location.href = linkArray[i].href;
+        getContent().document.location.href = linkArray[i].href;
         return true;
       }
     }
@@ -299,7 +308,7 @@ function surfkeys_(reload) {
       var hrefstripped = href.substring(href.indexOf("//") + 2, href.length);
       var domain = hrefstripped.substring(0, hrefstripped.indexOf("/"));
 
-      var currloc = window._content.location.href;
+      var currloc = getContent().location.href;
       var sites = SK.Sites.getSites();
       var site = SK.Sites.getSiteFromURL(currloc);
       SKLog.log(site.site, site.next, site.prev, site.id);
@@ -323,6 +332,9 @@ function surfkeys_(reload) {
   // private methods
   function getWindow() {
     return document.commandDispatcher.focusedWindow;
+  };
+  function getContent() {
+    return window._content;
   };
   function startScroller() {
     if (!surfScroll) {
