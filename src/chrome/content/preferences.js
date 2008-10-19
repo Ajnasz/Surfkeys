@@ -57,7 +57,7 @@ var generateKeys = function(keys, selection) {
     _keys.push(keys[key]);
   }
   var treeView = {
-    rowCount: 27,
+    rowCount: _keys.length,
     getCellText : function(row,column) {
       if(!_keys[row]) { return; }
       var bundle = document.getElementById('surfkeys-bundles');
