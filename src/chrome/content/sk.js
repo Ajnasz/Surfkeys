@@ -2,6 +2,9 @@ SK = {};
 SK.Prefs = function() {
   return Components.classes["@mozilla.org/preferences-service;1"].getService(Components.interfaces.nsIPrefService).getBranch("extensions.surfkeys.");
 }
+SK.DefaultPrefs = function() {
+  return Components.classes["@mozilla.org/preferences-service;1"].getService(Components.interfaces.nsIPrefService).getDefaultBranch("extensions.surfkeys.");
+}
 SK.Sites = {
   /**
    * @param {String} site the url or regexp for a site
@@ -113,6 +116,16 @@ SK.Keys = {
       keys = eval('(' + keys + ')');
     } catch(e) {
       keys = {};
+    }
+    try {
+      var defaults = eval('(' + SK.DefaultPrefs().getCharPref('keys') + ')');
+    } catch(e) {
+      var defaults = {};
+    }
+    for(var i in defaults) {
+      if(typeof keys[i] == 'undefined') {
+        keys[i] = defaults[i];
+      }
     }
     return keys;
   },
