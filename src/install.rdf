@@ -8,7 +8,7 @@
     <em:description>Comfortable surfing with keyboard.</em:description>
     <em:creator>Pekka Sillanpaa</em:creator>
     <em:homepageURL>http://surfkeys.mozdev.org</em:homepageURL>
-    <em:iconURL>chrome://surfkeys/skin/icon.png</em:iconURL>
+    <em:iconURL>chrome://surfkeys/skin/surfkeys-icon.png</em:iconURL>
     <em:optionsURL>chrome://surfkeys/content/preferences.xul</em:optionsURL>
     <em:type>2</em:type>
     <em:targetApplication RDF:resource="rdf:#$LbmeB"/>
