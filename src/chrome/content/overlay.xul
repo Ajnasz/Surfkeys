@@ -32,6 +32,8 @@
     <key id="skScrollRight" key="l" oncommand="surfkeys.scrollRight();" />
     <key id="skScrollPgDown" key=";" oncommand="surfkeys.pgDown();" />
     <key id="skScrollPgUp" key="p" oncommand="surfkeys.pgUp();" />
+    <key id="skBottom" modifiers="shift" key=":" oncommand="surfkeys.bottom();" />
+    <key id="skTop" modifiers="shift" key="p" oncommand="surfkeys.top();" />
 
     <key id="skBrowserBack" key="," oncommand="surfkeys.back();" />
     <key id="skBrowserForward" key="." oncommand="surfkeys.forward();" />
