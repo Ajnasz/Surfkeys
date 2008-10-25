@@ -139,33 +139,61 @@ SK.Keys.setCurrentKey = function(val) {
   var keys = this.getKeys();
   var tree = this.tree();
   var currentId = tree.view.getCellText(tree.currentIndex, tree.columns.getColumnAt(0));
-  keys[currentId].key = val;
-  generateKeys(keys, tree.currentIndex);
-  this.setKeys(keys);
+  var newKeys = keys;
+  newKeys[currentId].key = val;
+  if(SK.Keys.isConflict(newKeys)) {
+    alert('key already used');
+    tree.view.selection.clearSelection();
+    tree.view.selection.select(tree.currentIndex);
+    return;
+  }
+  generateKeys(newKeys, tree.currentIndex);
+  this.setKeys(newKeys);
 };
 SK.Keys.setCurrentDisabled = function(val) {
   var keys = this.getKeys();
   var tree = this.tree();
   var currentId = tree.view.getCellText(tree.currentIndex, tree.columns.getColumnAt(0));
-  keys[currentId].disabled = val;
-  generateKeys(keys, tree.currentIndex);
-  this.setKeys(keys);
+  var newKeys = keys;
+  newKeys[currentId].disabled = val;
+  if(SK.Keys.isConflict(newKeys)) {
+    alert('key already used');
+    tree.view.selection.clearSelection();
+    tree.view.selection.select(tree.currentIndex);
+    return;
+  }
+  generateKeys(newKeys, tree.currentIndex);
+  this.setKeys(newKeys);
 };
 SK.Keys.setCurrentShift = function(val) {
   var keys = this.getKeys();
   var tree = this.tree();
   var currentId = tree.view.getCellText(tree.currentIndex, tree.columns.getColumnAt(0));
-  keys[currentId].shift = val;
-  generateKeys(keys, tree.currentIndex);
-  this.setKeys(keys);
+  var newKeys = keys;
+  newKeys[currentId].shift = val;
+  if(SK.Keys.isConflict(newKeys)) {
+    alert('key config already used');
+    tree.view.selection.clearSelection();
+    tree.view.selection.select(tree.currentIndex);
+    return;
+  }
+  generateKeys(newKeys, tree.currentIndex);
+  this.setKeys(newKeys);
 };
 SK.Keys.setCurrentAlt = function(val) {
   var keys = this.getKeys();
   var tree = this.tree();
   var currentId = tree.view.getCellText(tree.currentIndex, tree.columns.getColumnAt(0));
-  keys[currentId].alt = val;
-  generateKeys(keys, tree.currentIndex);
-  this.setKeys(keys);
+  var newKeys = keys;
+  newKeys[currentId].alt = val;
+  if(SK.Keys.isConflict(newKeys)) {
+    alert('key config already used');
+    tree.view.selection.clearSelection();
+    tree.view.selection.select(tree.currentIndex);
+    return;
+  }
+  generateKeys(newKeys, tree.currentIndex);
+  this.setKeys(newKeys);
 };
 /**
  * Extending SK.Sites object for preferences window
@@ -178,7 +206,7 @@ SK.Sites.siteSelected = function() {
     site: tree.view.getCellText(tree.currentIndex, tree.columns.getColumnAt(1)),
     next: tree.view.getCellText(tree.currentIndex, tree.columns.getColumnAt(2)),
     prev: tree.view.getCellText(tree.currentIndex, tree.columns.getColumnAt(3))
-  }
+  };
   var currentId = document.getElementById('sk-site-id');
   var currentSite = document.getElementById('sk-site-name');
   var currentNext = document.getElementById('sk-site-next');
@@ -206,7 +234,7 @@ SK.Sites.siteSetCurrent = function(field, val) {
       next: '',
       prev: '',
       id: false
-    }
+    };
   }
   site[field] = val;
   if(site.site == '') {
