@@ -73,7 +73,6 @@ function surfkeys_(reload) {
     getWindow().scrollTo(getWindow().scrollX,0);
   }
   this.bottom = function() {
-    SKLog.log('bottom-run');
     stopScroller();
     getWindow().scrollTo(getWindow().scrollX,getWindow().scrollMaxY);
   }
@@ -311,7 +310,6 @@ function surfkeys_(reload) {
       var currloc = getContent().location.href;
       var sites = SK.Sites.getSites();
       var site = SK.Sites.getSiteFromURL(currloc);
-      SKLog.log(site.site, site.next, site.prev, site.id);
       if(!site) {
         site = {
           site: currloc,
