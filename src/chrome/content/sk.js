@@ -104,7 +104,7 @@ SK.Sites = {
     SK.Prefs().setCharPref('resultpattern', encodeURIComponent(sites));
   },
   logSelected: function() {
-    SKLog.log(this.selectedSite.site);
+    SKLog.log('logselected: ', this.selectedSite.site);
   }
 };
 SK.Keys = {
@@ -136,14 +136,23 @@ SK.Keys = {
     SK.Prefs().setCharPref('keys', keys);
   },
   createKeyStr: function(id, key, shift, alt, disabled) {
-    return '' + id + ': {key:"' + key + '",shift:' + shift + ',alt:' + alt + ',disabled:' + disabled + '}';
+    return id + ': {key:"' + key + '",shift:' + shift + ',alt:' + alt + ',disabled:' + disabled + '}';
   },
   keysToString: function(keys) {
     var str = new Array();
     for(k in keys) {
-    SKLog.log(k, keys[k].key);
       str.push(SK.Keys.createKeyStr(k, keys[k].key, keys[k].shift, keys[k].alt, keys[k].disabled));
     }
     return  '{' + str.join(',') + '}';
+  },
+  isConflict: function(keys) {
+    var o = {};
+    for(var i in keys) {
+      for(var j in o) {
+        if(j != i && keys[i].key == o[j].key && keys[i].alt == o[j].alt && keys[i].shift == o[j].shift && keys[i].disabled == o[j].disabled) {return true};
+      }
+      o[i] = keys[i];
+    }
+    return false;
   }
 };
