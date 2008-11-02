@@ -19,6 +19,12 @@ SK.Sites = {
     SK.Prefs().setIntPref('lastsiteid', lastid);
     return '{"id":"' + lastid + '","site":"' + site + '","next":"' + next + '","prev":"' + prev + '"}';
   },
+  /**
+   * Generate javascript object from a JSON string
+   * @param {String} [patterns]
+   * @return a the javascript object which generated from the pattern
+   * @type Array
+   */
   getSites: function(patterns) {
     if(!patterns) {
       patterns = SK.Prefs().getCharPref('resultpattern');
@@ -138,6 +144,10 @@ SK.Keys = {
   createKeyStr: function(id, key, shift, alt, disabled) {
     return id + ': {key:"' + key + '",shift:' + shift + ',alt:' + alt + ',disabled:' + disabled + '}';
   },
+  /**
+   * @param {Object} keys JS object
+   * @type String
+   */
   keysToString: function(keys) {
     var str = new Array();
     for(k in keys) {
@@ -145,6 +155,12 @@ SK.Keys = {
     }
     return  '{' + str.join(',') + '}';
   },
+  /**
+   * Check for items, which are the same in the paramter object
+   * @param {Object} keys
+   * @return true if the keys contains conflicting items
+   * @type Boolean
+   */
   isConflict: function(keys) {
     var o = {};
     for(var i in keys) {
