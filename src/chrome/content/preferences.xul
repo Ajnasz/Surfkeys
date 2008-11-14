@@ -56,6 +56,7 @@
               <checkbox id="current-shift" label="shift" oncommand="SK.Keys.setCurrentShift(this.checked);" />
               <checkbox id="current-alt" label="alt" oncommand="SK.Keys.setCurrentAlt(this.checked);" />
               <checkbox id="current-disabled" label="disabled" oncommand="SK.Keys.setCurrentDisabled(this.checked);" />
+              <button id="sk-site-openkeygrab" class="dialog" label="Grab key" onclick="window.openDialog('chrome://surfkeys/content/keygrab.xul', 'sk_keygrab', 'chrome,title,toolbar,centerscreen,modal')" />
             </hbox>
             <label flex="1" value="Config keys" />
             <tree id="sk-keys-tree" flex="1" rows="20" onselect="SK.Keys.keySelected();" class="tree">
