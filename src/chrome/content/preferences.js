@@ -71,19 +71,27 @@ var generateKeys = function(keys, selection) {
           break;
 
         case 'keycol':
-          return _keys[row].key;
+          return _keys[row].key.toUpperCase();
           break;
 
         case 'shiftcol':
-          return _keys[row].shift;
+          return _keys[row].shift || false;
           break;
 
         case 'altcol':
-          return _keys[row].alt;
+          return _keys[row].alt || false;
+          break;
+
+        case 'controlcol':
+          return _keys[row].control || false;
+          break;
+
+        case 'metacol':
+          return _keys[row].meta || false;
           break;
 
         case 'disabledcol':
-          return _keys[row].disabled;
+          return _keys[row].disabled || false;
           break;
       }
     },
@@ -124,15 +132,35 @@ SK.Keys.keySelected = function() {
     key: tree.view.getCellText(tree.currentIndex, tree.columns.getColumnAt(2)),
     shift: tree.view.getCellText(tree.currentIndex, tree.columns.getColumnAt(3)),
     alt: tree.view.getCellText(tree.currentIndex, tree.columns.getColumnAt(4)),
-    disabled: tree.view.getCellText(tree.currentIndex, tree.columns.getColumnAt(5))
+    control: tree.view.getCellText(tree.currentIndex, tree.columns.getColumnAt(5)),
+    meta: tree.view.getCellText(tree.currentIndex, tree.columns.getColumnAt(6)),
+    disabled: tree.view.getCellText(tree.currentIndex, tree.columns.getColumnAt(7))
   }
   var currentKey = document.getElementById('current-key');
-  var currentShift = document.getElementById('current-shift');
-  var currentAlt = document.getElementById('current-alt');
   var currentDisabled = document.getElementById('current-disabled');
-  currentKey.value = selectedKey.key;
-  currentShift.checked = (selectedKey.shift == 'false') ? false : true;
-  currentAlt.checked = (selectedKey.alt == 'false') ? false : true;
+  
+  var modifiers = new Array();
+  if(selectedKey.shift == 'true') {
+    modifiers.push('SHIFT');
+  }
+  if(selectedKey.alt == 'true') {
+    modifiers.push('ALT');
+  }
+  if(selectedKey.control == 'true') {
+    modifiers.push('CTRL');
+  }
+  if(selectedKey.meta == 'true') {
+    modifiers.push('META');
+  }
+  SKLog.log(selectedKey.control);
+
+  //var currentShift = document.getElementById('current-shift');
+  //var currentAlt = document.getElementById('current-alt');
+  currentKey.value = '';
+  if(modifiers.length) currentKey.value += modifiers.join(' + ') + ' + ';
+  currentKey.value += selectedKey.key.toUpperCase();
+  //currentShift.checked = (selectedKey.shift == 'false') ? false : true;
+  //currentAlt.checked = (selectedKey.alt == 'false') ? false : true;
   currentDisabled.checked = (selectedKey.disabled == 'false') ? false : true;
 };
 SK.Keys.setCurrentKey = function(val) {
@@ -194,6 +222,61 @@ SK.Keys.setCurrentAlt = function(val) {
   }
   generateKeys(newKeys, tree.currentIndex);
   this.setKeys(newKeys);
+};
+SK.Keys.setCurrent = function(obj) {
+  var keys = this.getKeys();
+  var tree = this.tree();
+  var currentId = tree.view.getCellText(tree.currentIndex, tree.columns.getColumnAt(0));
+  var newKeys = keys;
+  newKeys[currentId].key = obj.key;
+  newKeys[currentId].shift = obj.shift;
+  newKeys[currentId].alt = obj.alt;
+  newKeys[currentId].control = obj.control;
+  newKeys[currentId].meta = obj.meta;
+  if(SK.Keys.isConflict(newKeys)) {
+    alert('key config already used');
+    tree.view.selection.clearSelection();
+    tree.view.selection.select(tree.currentIndex);
+    return;
+  }
+  generateKeys(newKeys, tree.currentIndex);
+  this.setKeys(newKeys);
+
+};
+SK.Keys.grabKey = function(event) {
+  event.preventDefault();
+  event.stopPropagation();
+  var key = null, keycode = null, keys = {
+    key: null, shift: false, alt: false, control: false, meta: false
+  }
+  if(event.charCode) {
+    key = String.fromCharCode(event.charCode).toUpperCase();
+    keys.key =  key;
+  } else {
+    return;
+  }
+  var element = event.originalTarget;
+  var modifiers = new Array();
+  if(event.shiftKey) {
+    modifiers.push('Shift');
+    keys.shift = true;
+  };
+  if(event.altKey) {
+    modifiers.push('Alt');
+    keys.alt = true;
+  }
+  if(event.ctrlKey) {
+    modifiers.push('Ctrl');
+    keys.control = true;
+  }
+  if(event.metaKey) {
+    modifiers.push("meta");
+    keys.meta = true;
+  }
+  element.value = modifiers.length ? modifiers.join(' + ') + ' + ' : '';
+  element.value += key.toUpperCase();
+  SK.Keys.setCurrent(keys);
+  return false;
 };
 /**
  * Extending SK.Sites object for preferences window
@@ -265,4 +348,5 @@ SK.Sites.getSiteRow = function(site) {
 var initPreferences = function() {
   generateKeys();
   generatePattern();
+  document.getElementById('current-key').addEventListener('keypress', SK.Keys.grabKey, true);
 }
