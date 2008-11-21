@@ -498,6 +498,12 @@ function surfkeys_(reload) {
         if(key.alt) {
           modifiers.push('alt');
         }
+        if(key.control) {
+          modifiers.push('control');
+        }
+        if(key.meta) {
+          modifiers.push('meta');
+        }
         modifiers = (modifiers.length) ? modifiers.join(' ') : false;
         keyNode.setAttribute('key', key.key);
         if(modifiers) {
