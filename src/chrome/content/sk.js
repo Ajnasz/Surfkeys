@@ -141,8 +141,8 @@ SK.Keys = {
     }
     SK.Prefs().setCharPref('keys', keys);
   },
-  createKeyStr: function(id, key, shift, alt, disabled) {
-    return id + ': {key:"' + key + '",shift:' + shift + ',alt:' + alt + ',disabled:' + disabled + '}';
+  createKeyStr: function(id, key, shift, alt, control, disabled) {
+    return id + ': {key:"' + key + '",shift:' + shift + ',alt:' + alt + ',control:' + control + ',disabled:' + disabled + '}';
   },
   /**
    * @param {Object} keys JS object
@@ -151,7 +151,7 @@ SK.Keys = {
   keysToString: function(keys) {
     var str = new Array();
     for(k in keys) {
-      str.push(SK.Keys.createKeyStr(k, keys[k].key, keys[k].shift, keys[k].alt, keys[k].disabled));
+      str.push(SK.Keys.createKeyStr(k, keys[k].key, keys[k].shift, keys[k].alt, keys[k].control, keys[k].disabled));
     }
     return  '{' + str.join(',') + '}';
   },
