@@ -323,9 +323,13 @@ function surfkeys_(reload) {
       } else {
         site.prev = linktext;
       }
+      openPathWindow(site.site)
       SK.Sites.addSite(site);
       return;
     }
+  }
+  function openPathWindow(currentPath) {
+    var pathWin = window.openDialog("chrome://surfkeys/content/edit-path.xul", 'Surfkeys Edit Path', 'chrome,titlebar,toolbar,centerscreen,modal', 'miho', 'iho');
   }
   // private methods
   function getWindow() {
@@ -528,7 +532,7 @@ function surfkeys_(reload) {
   // window.addEventListener("DOMMenuItemInactive", surfkeysEnable, true);
   // applied to window, not window._content, since in the latter case
   // surfkeysLoad was never called.
-  (reload) ?  surfkeysLoad() : window.addEventListener("load", surfkeysLoad, true);
+  reload ? surfkeysLoad() : window.addEventListener("load", surfkeysLoad, true);
   SKLog.log("Initialized");
 };
 
