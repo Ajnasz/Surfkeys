@@ -307,12 +307,13 @@ function surfkeys_(reload) {
       var hrefstripped = href.substring(href.indexOf("//") + 2, href.length);
       var domain = hrefstripped.substring(0, hrefstripped.indexOf("/"));
 
-      var currloc = getContent().location.href;
+      var currloc = {loc: getContent().location.href}; // use an object here to make possible to change it's value in the dialog
+      window.openDialog("chrome://surfkeys/content/edit-path.xul", 'Surfkeys Edit Path', 'chrome,titlebar,toolbar,centerscreen,modal', currloc);
       var sites = SK.Sites.getSites();
-      var site = SK.Sites.getSiteFromURL(currloc);
+      var site = SK.Sites.getSiteFromURL(currloc.loc);
       if(!site) {
         site = {
-          site: currloc,
+          site: currloc.loc,
           next: '',
           prev: '',
           id: false
@@ -323,13 +324,9 @@ function surfkeys_(reload) {
       } else {
         site.prev = linktext;
       }
-      openPathWindow(site.site)
       SK.Sites.addSite(site);
       return;
     }
-  }
-  function openPathWindow(currentPath) {
-    var pathWin = window.openDialog("chrome://surfkeys/content/edit-path.xul", 'Surfkeys Edit Path', 'chrome,titlebar,toolbar,centerscreen,modal', 'miho', 'iho');
   }
   // private methods
   function getWindow() {
