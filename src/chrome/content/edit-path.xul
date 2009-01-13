@@ -8,7 +8,6 @@
   id="surfkeys-edit-path"
   title="&surfkeys.editpath.title;"
   buttons="accept,cancel"
-  ondialogaccept="EditPath.save();"
   flex="1"
   xmlns="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul">
   <script type="application/x-javascript" src="chrome://surfkeys/content/log.js" />
@@ -18,6 +17,7 @@
   <script type="application/x-javascript">
   <![CDATA[
     window.addEventListener('load', EditPath.init, false);
+    window.addEventListener('dialogaccept', EditPath.save, false);
   ]]>
   </script>
   <label value="&surfkeys.editpath.pathlabel;" control="path" /><textbox id="path" flex="1"/>
