@@ -1,18 +1,13 @@
 var EditPath = {
   init: function() {
     var input = document.getElementById('path');
-    this.initPath = input.value;
-    for(var i in window) {
-      SKLog.log(i, window[i]);
-      try {
-        for(j in window[i]) {
-          SKLog.log(j, window[i][j]);
-        }
-      } catch(e) {}
-    }
+    var currloc = window.arguments[0];
+    input.value = currloc.loc;
   },
   save: function() {
     var input = document.getElementById('path');
-    SKLog.log(input.value);
+    var currloc = window.arguments[0];
+    currloc.loc = input.value;
+    return true;
   }
 };
