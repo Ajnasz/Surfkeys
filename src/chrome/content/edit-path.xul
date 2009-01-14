@@ -20,5 +20,12 @@
     window.addEventListener('dialogaccept', EditPath.save, false);
   ]]>
   </script>
-  <label value="&surfkeys.editpath.pathlabel;" control="path" /><textbox id="path" flex="1"/>
+  <label value="url" control="path"/><textbox id="path" flex="1" size="50" disabled="true" />
+  <radiogroup>
+    <radio id="original" label="" />
+    <radio id="extended" label="" />
+    <radio id="domain" label="" />
+    <radio id="custom" label="custom" />
+  </radiogroup>
+  <label value="&surfkeys.editpath.pathlabel;" control="custom-path" /><textbox id="custom-path" flex="1" disabled="true" />
 </dialog>
