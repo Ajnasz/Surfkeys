@@ -84,9 +84,9 @@
               <vbox flex="1">
                 <label flex="1" value="&resultLinktexts.label;"/>
                 <hbox align="center" flex="1">
-                  <label control="sk-site-name" value="&surfkeys.sites.site;"/><textbox id="sk-site-name" size="5" flex="1" onchange="SK.Sites.setCurrentSite(this.value);" />
-                  <label control="sk-site-next" value="&surfkeys.sites.next;"/><textbox id="sk-site-next" size="5" onchange="SK.Sites.setCurrentNext(this.value);" />
-                  <label control="sk-site-prev" value="&surfkeys.sites.prev;"/><textbox id="sk-site-prev" size="5" onchange="SK.Sites.setCurrentPrev(this.value);" />
+                  <label control="sk-site-name" value="&surfkeys.sites.site;"/><textbox id="sk-site-name" size="5" flex="1" onkeyup="SK.Sites.setCurrentSite(this.value);" />
+                  <label control="sk-site-next" value="&surfkeys.sites.next;"/><textbox id="sk-site-next" size="5" onkeyup="SK.Sites.setCurrentNext(this.value);" />
+                  <label control="sk-site-prev" value="&surfkeys.sites.prev;"/><textbox id="sk-site-prev" size="5" onkeyup="SK.Sites.setCurrentPrev(this.value);" />
                   <button id="sk-site-add" class="dialog" label="&surfkeys.sites.add;" onclick="SK.Sites.addSiteRow();" />
                   <button id="sk-site-add" class="dialog" label="&surfkeys.sites.del;" onclick="SK.Sites.delSiteRow();" />
                 </hbox>
