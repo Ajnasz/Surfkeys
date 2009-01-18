@@ -309,6 +309,7 @@ function surfkeys_(reload) {
 
       var currloc = {loc: getContent().location.href}; // use an object here to make possible to change it's value in the dialog
       window.openDialog("chrome://surfkeys/content/edit-path.xul", 'Surfkeys Edit Path', 'chrome,titlebar,toolbar,centerscreen,modal', currloc);
+      if(currloc.loc === false) return;
       var sites = SK.Sites.getSites();
       var site = SK.Sites.getSiteFromURL(currloc.loc);
       if(!site) {

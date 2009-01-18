@@ -18,6 +18,7 @@
   <![CDATA[
     window.addEventListener('load', SK.EditPath.init, false);
     window.addEventListener('dialogaccept', SK.EditPath.save, false);
+    window.addEventListener('dialogcancel', SK.EditPath.cancel, false);
   ]]>
   </script>
   <label value="url" control="path"/><textbox id="path" flex="1" size="50" disabled="true" />

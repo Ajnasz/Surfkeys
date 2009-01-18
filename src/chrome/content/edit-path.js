@@ -90,5 +90,10 @@ SK.EditPath = {
     var currloc = window.arguments[0];
     currloc.loc = input.value;
     return true;
+  },
+  cancel: function() {
+    var currloc = window.arguments[0];
+    currloc.loc = false;
+    return true;
   }
 };
