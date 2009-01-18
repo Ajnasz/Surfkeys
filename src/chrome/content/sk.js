@@ -7,9 +7,13 @@ SK.DefaultPrefs = function() {
 }
 SK.Sites = {
   /**
+   * @namespace SK.Sites
+   * @method createSiteStr
    * @param {String} site the url or regexp for a site
-   * @param {String,Null} next pattern for the "next" link
-   * @param {String,Null} next pattern for the "prev" link
+   * @param {String,Null} [next] pattern for the "next" link
+   * @param {String,Null} pnextrev pattern for the "prev" link
+   * @param {} lastid
+   * @type String
    */
   createSiteStr: function(site, next, prev, lastid) {
     if(!lastid) {
