@@ -65,15 +65,18 @@ var generateKeys = function(keys, selection) {
         case 'idcol':
           return _keys[row].id;
           break;
-
         case 'namecol':
           return bundle.getString(_keys[row].id);
           break;
-
         case 'keycol':
           return _keys[row].key.toUpperCase();
           break;
-
+      };
+    },
+    getCellValue: function(row, column) {
+      if(!_keys[row]) { return; }
+      var bundle = document.getElementById('surfkeys-bundles');
+      switch(column.id) {
         case 'shiftcol':
           return _keys[row].shift || false;
           break;
@@ -93,7 +96,7 @@ var generateKeys = function(keys, selection) {
         case 'disabledcol':
           return _keys[row].disabled || false;
           break;
-      }
+      };
     },
     setTree: function(treebox){ this.treebox = treebox; },
     isContainer: function(row){ return false; },
@@ -124,21 +127,23 @@ var setAllWinKeys = function() {
   }
 };
 SK.Keys.tree =  function() {return document.getElementById('sk-keys-tree');};
+/**
+ * runs when select a row in a tree
+ */
 SK.Keys.keySelected = function() {
   var tree = SK.Keys.tree();
   var selectedKey  = {
     id: tree.view.getCellText(tree.currentIndex, tree.columns.getColumnAt(0)),
     name: tree.view.getCellText(tree.currentIndex, tree.columns.getColumnAt(1)),
     key: tree.view.getCellText(tree.currentIndex, tree.columns.getColumnAt(2)),
-    shift: tree.view.getCellText(tree.currentIndex, tree.columns.getColumnAt(3)),
-    alt: tree.view.getCellText(tree.currentIndex, tree.columns.getColumnAt(4)),
-    control: tree.view.getCellText(tree.currentIndex, tree.columns.getColumnAt(5)),
-    meta: tree.view.getCellText(tree.currentIndex, tree.columns.getColumnAt(6)),
-    disabled: tree.view.getCellText(tree.currentIndex, tree.columns.getColumnAt(7))
+    shift: tree.view.getCellValue(tree.currentIndex, tree.columns.getColumnAt(3)),
+    alt: tree.view.getCellValue(tree.currentIndex, tree.columns.getColumnAt(4)),
+    control: tree.view.getCellValue(tree.currentIndex, tree.columns.getColumnAt(5)),
+    meta: tree.view.getCellValue(tree.currentIndex, tree.columns.getColumnAt(6)),
+    disabled: tree.view.getCellValue(tree.currentIndex, tree.columns.getColumnAt(7))
   }
   var currentKey = document.getElementById('current-key');
   var currentDisabled = document.getElementById('current-disabled');
-  
   var modifiers = new Array();
   if(selectedKey.shift == 'true') {
     modifiers.push('SHIFT');
@@ -152,15 +157,10 @@ SK.Keys.keySelected = function() {
   if(selectedKey.meta == 'true') {
     modifiers.push('META');
   }
-  SKLog.log(selectedKey.control);
 
-  //var currentShift = document.getElementById('current-shift');
-  //var currentAlt = document.getElementById('current-alt');
   currentKey.value = '';
   if(modifiers.length) currentKey.value += modifiers.join(' + ') + ' + ';
   currentKey.value += selectedKey.key.toUpperCase();
-  //currentShift.checked = (selectedKey.shift == 'false') ? false : true;
-  //currentAlt.checked = (selectedKey.alt == 'false') ? false : true;
   currentDisabled.checked = (selectedKey.disabled == 'false') ? false : true;
 };
 SK.Keys.setCurrentKey = function(val) {
@@ -181,7 +181,7 @@ SK.Keys.setCurrentKey = function(val) {
 SK.Keys.setCurrentDisabled = function(val) {
   var keys = this.getKeys();
   var tree = this.tree();
-  var currentId = tree.view.getCellText(tree.currentIndex, tree.columns.getColumnAt(0));
+  var currentId = tree.view.getCellValue(tree.currentIndex, tree.columns.getColumnAt(0));
   var newKeys = keys;
   newKeys[currentId].disabled = val;
   if(SK.Keys.isConflict(newKeys)) {
@@ -196,7 +196,7 @@ SK.Keys.setCurrentDisabled = function(val) {
 SK.Keys.setCurrentShift = function(val) {
   var keys = this.getKeys();
   var tree = this.tree();
-  var currentId = tree.view.getCellText(tree.currentIndex, tree.columns.getColumnAt(0));
+  var currentId = tree.view.getCellValue(tree.currentIndex, tree.columns.getColumnAt(0));
   var newKeys = keys;
   newKeys[currentId].shift = val;
   if(SK.Keys.isConflict(newKeys)) {
@@ -211,7 +211,7 @@ SK.Keys.setCurrentShift = function(val) {
 SK.Keys.setCurrentAlt = function(val) {
   var keys = this.getKeys();
   var tree = this.tree();
-  var currentId = tree.view.getCellText(tree.currentIndex, tree.columns.getColumnAt(0));
+  var currentId = tree.view.getCellValue(tree.currentIndex, tree.columns.getColumnAt(0));
   var newKeys = keys;
   newKeys[currentId].alt = val;
   if(SK.Keys.isConflict(newKeys)) {
@@ -227,20 +227,19 @@ SK.Keys.setCurrent = function(obj) {
   var keys = this.getKeys();
   var tree = this.tree();
   var currentId = tree.view.getCellText(tree.currentIndex, tree.columns.getColumnAt(0));
-  var newKeys = keys;
-  newKeys[currentId].key = obj.key;
-  newKeys[currentId].shift = obj.shift;
-  newKeys[currentId].alt = obj.alt;
-  newKeys[currentId].control = obj.control;
-  newKeys[currentId].meta = obj.meta;
-  if(SK.Keys.isConflict(newKeys)) {
+  keys[currentId].key = obj.key;
+  keys[currentId].shift = obj.shift;
+  keys[currentId].alt = obj.alt;
+  keys[currentId].control = obj.control;
+  keys[currentId].meta = obj.meta;
+  if(SK.Keys.isConflict(keys)) {
     alert('key config already used');
     tree.view.selection.clearSelection();
     tree.view.selection.select(tree.currentIndex);
     return;
   }
-  generateKeys(newKeys, tree.currentIndex);
-  this.setKeys(newKeys);
+  generateKeys(keys, tree.currentIndex);
+  this.setKeys(keys);
 
 };
 SK.Keys.grabKey = function(event) {
