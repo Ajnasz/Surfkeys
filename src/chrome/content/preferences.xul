@@ -99,6 +99,7 @@
                     <treecol id="nextcol" label="&surfkeys.sites.title.next;" flex="2" />
                     <splitter class="tree-splitter"/>
                     <treecol id="prevcol" label="&surfkeys.sites.title.prev;" flex="2" />
+                    <splitter class="tree-splitter"/>
                   </treecols>
                   <treechildren/>
                 </tree>
