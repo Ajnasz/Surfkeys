@@ -145,8 +145,17 @@ SK.Keys = {
     }
     SK.Prefs().setCharPref('keys', keys);
   },
+  /**
+   * @param {String} id The ID of the hotkey
+   * @param {String} key The key of the hotkey
+   * @param {Boolean} shift Shift modifier on/off
+   * @param {Boolean} alt Alt modifier on/off
+   * @param {Boolean} control Control modifier on/off
+   * @param {Boolean} disabled Enabled/disabled hotkey
+   * @type String
+   */
   createKeyStr: function(id, key, shift, alt, control, disabled) {
-    return id + ': {key:"' + key + '",shift:' + shift + ',alt:' + alt + ',control:' + control + ',disabled:' + disabled + '}';
+    return id + ':{key:"' + key + '",shift:' + shift + ',alt:' + alt + ',control:' + control + ',disabled:' + disabled + '}';
   },
   /**
    * @param {Object} keys JS object
