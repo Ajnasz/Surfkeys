@@ -181,41 +181,11 @@ SK.Keys.setCurrentKey = function(val) {
 SK.Keys.setCurrentDisabled = function(val) {
   var keys = this.getKeys();
   var tree = this.tree();
-  var currentId = tree.view.getCellValue(tree.currentIndex, tree.columns.getColumnAt(0));
+  var currentId = tree.view.getCellText(tree.currentIndex, tree.columns.getColumnAt(0));
   var newKeys = keys;
   newKeys[currentId].disabled = val;
   if(SK.Keys.isConflict(newKeys)) {
     alert('key already used');
-    tree.view.selection.clearSelection();
-    tree.view.selection.select(tree.currentIndex);
-    return;
-  }
-  generateKeys(newKeys, tree.currentIndex);
-  this.setKeys(newKeys);
-};
-SK.Keys.setCurrentShift = function(val) {
-  var keys = this.getKeys();
-  var tree = this.tree();
-  var currentId = tree.view.getCellValue(tree.currentIndex, tree.columns.getColumnAt(0));
-  var newKeys = keys;
-  newKeys[currentId].shift = val;
-  if(SK.Keys.isConflict(newKeys)) {
-    alert('key config already used');
-    tree.view.selection.clearSelection();
-    tree.view.selection.select(tree.currentIndex);
-    return;
-  }
-  generateKeys(newKeys, tree.currentIndex);
-  this.setKeys(newKeys);
-};
-SK.Keys.setCurrentAlt = function(val) {
-  var keys = this.getKeys();
-  var tree = this.tree();
-  var currentId = tree.view.getCellValue(tree.currentIndex, tree.columns.getColumnAt(0));
-  var newKeys = keys;
-  newKeys[currentId].alt = val;
-  if(SK.Keys.isConflict(newKeys)) {
-    alert('key config already used');
     tree.view.selection.clearSelection();
     tree.view.selection.select(tree.currentIndex);
     return;
