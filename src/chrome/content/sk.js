@@ -1,10 +1,26 @@
+/**
+ * @module SK
+ */
 SK = {};
+/**
+ * Method to access to the preferences of the surfkeys
+ * @namespace SK
+ * @method Prefs
+ */
 SK.Prefs = function() {
   return Components.classes["@mozilla.org/preferences-service;1"].getService(Components.interfaces.nsIPrefService).getBranch("extensions.surfkeys.");
 }
+/**
+ * Method to access to the default preferences of the surfkeys
+ * @namespace SK
+ * @method Prefs
+ */
 SK.DefaultPrefs = function() {
   return Components.classes["@mozilla.org/preferences-service;1"].getService(Components.interfaces.nsIPrefService).getDefaultBranch("extensions.surfkeys.");
 }
+/**
+ * @namespace SK
+ */
 SK.Sites = {
   /**
    * @namespace SK.Sites
@@ -83,6 +99,12 @@ SK.Sites = {
     }
     return sites;
   },
+  /**
+   * converts all the sites object to string
+   * @param {Array} sites 
+   * @returns the sites as a string to make possible to stor them
+   * @type String
+   */
   sitesToString: function(sites) {
     var str = new Array();
     for(var i = 0, sl = sites.length; i < sl; i++) {
@@ -91,13 +113,16 @@ SK.Sites = {
     return  '[' + str.join(',') + ']';
   },
   /**
-   * @param Object site a site object {site: foo, next: bar, prev: baz, [id:foobar]}
+   * @param Object site A site object {site: foo, next: bar, prev: baz, [id:foobar]}
    */
   addSite: function(site) {
     var sites = this.addSiteToArray(site);
     this.setSites(this.sitesToString(sites));
   },
   removeSite: function(id) {
+    /**
+     * @private
+     */
     var sites = this.getSites();
     for(var i = 0, sl = sites.length; i < sl; i++) {
       if(sites[i].id == id) {
@@ -108,8 +133,9 @@ SK.Sites = {
     this.setSites(this.sitesToString(sites));
   },
   /**
-  * @param {String} sites string sites
-  */
+   * Update the site preference
+   * @param {String} sites string sites
+   */
   setSites: function(sites) {
     SK.Prefs().setCharPref('resultpattern', encodeURIComponent(sites));
   },

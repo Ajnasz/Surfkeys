@@ -1,9 +1,15 @@
+/**
+ * generates the rows to the tree on the site matching tab
+ * @param {Object} [patterns]
+ * @param {Integer} [selection]
+ * @param {String} [val]
+ */
 var generatePattern = function(patterns, selection, val) {
   if(!patterns) {
     patterns = false;
   }
-  var sites = SK.Sites.getSites(patterns);
-  var treeView = {
+  var sites = SK.Sites.getSites(patterns),
+  treeView = {
     rowCount: sites.length+1,
     getCellText : function(row,column) {
       if(!sites[row] || !column) { return; }
@@ -39,14 +45,18 @@ var generatePattern = function(patterns, selection, val) {
   tree.view = treeView;
 
   if(val) {
-    var row = SK.Sites.getSiteRow(val);
-    tree.view.selection.select(row);
+    tree.view.selection.select(SK.Sites.getSiteRow(val));
   } else if(!isNaN(selection)) {
     tree.view.selection.select(selection);
   } else {
     tree.view.selection.select(0);
   }
 };
+/**
+ * generates the rows to the tree on the key configuration tab
+ * @param {Object} [keys]
+ * @param {Integer} [selection]
+ */
 var generateKeys = function(keys, selection) {
   if(!keys) {
     var keys = SK.Keys.getKeys(keys);
@@ -116,9 +126,22 @@ var generateKeys = function(keys, selection) {
     tree.view.selection.select(0);
   }
 };
+/**
+ * creates surfkeys instance for all window
+ * @method setAllWinKeys
+ */
 var setAllWinKeys = function() {
-  var wm = Components.classes["@mozilla.org/appshell/window-mediator;1"].getService(Components.interfaces.nsIWindowMediator);
-  var enumerator = wm.getEnumerator('navigator:browser'), win;
+  /**
+   * @private
+   */
+  var enumerator = Components.classes["@mozilla.org/appshell/window-mediator;1"].
+                    getService(Components.interfaces.nsIWindowMediator).
+                    getEnumerator('navigator:browser'),
+  /**
+   * variable to store the window objects
+   * @private
+   */
+  win;
   while(enumerator.hasMoreElements()) {
     win = enumerator.getNext();
     if(win.surfkeys_) {
@@ -131,8 +154,16 @@ SK.Keys.tree =  function() {return document.getElementById('sk-keys-tree');};
  * runs when select a row in a tree
  */
 SK.Keys.keySelected = function() {
-  var tree = SK.Keys.tree();
-  var selectedKey  = {
+  /**
+   * tree object
+   * @private
+   */
+  var tree = SK.Keys.tree(),
+  /**
+   * the properties of the currently selected command
+   * @private
+   */
+  selectedKey  = {
     id: tree.view.getCellText(tree.currentIndex, tree.columns.getColumnAt(0)),
     name: tree.view.getCellText(tree.currentIndex, tree.columns.getColumnAt(1)),
     key: tree.view.getCellText(tree.currentIndex, tree.columns.getColumnAt(2)),
@@ -141,10 +172,22 @@ SK.Keys.keySelected = function() {
     control: tree.view.getCellValue(tree.currentIndex, tree.columns.getColumnAt(5)),
     meta: tree.view.getCellValue(tree.currentIndex, tree.columns.getColumnAt(6)),
     disabled: tree.view.getCellValue(tree.currentIndex, tree.columns.getColumnAt(7))
-  }
-  var currentKey = document.getElementById('current-key');
-  var currentDisabled = document.getElementById('current-disabled');
-  var modifiers = new Array();
+  },
+  /**
+   * input field where the key combo is displayed
+   * @param
+   */
+  currentKey = document.getElementById('current-key'),
+  /**
+   * the disabler checkbox
+   * @param
+   */
+  currentDisabled = document.getElementById('current-disabled'),
+  /**
+   * an array to store the active modifiers
+   * @param
+   */
+  modifiers = new Array();
   if(selectedKey.shift == 'true') {
     modifiers.push('SHIFT');
   }
@@ -163,40 +206,93 @@ SK.Keys.keySelected = function() {
   currentKey.value += selectedKey.key.toUpperCase();
   currentDisabled.checked = (selectedKey.disabled == 'false') ? false : true;
 };
+/**
+ * Sets the the current key value
+ * @namespace SK.Keys
+ * @method setCurrentKey
+ * @param {String} val the letter of the current key
+ */
 SK.Keys.setCurrentKey = function(val) {
-  var keys = this.getKeys();
-  var tree = this.tree();
-  var currentId = tree.view.getCellText(tree.currentIndex, tree.columns.getColumnAt(0));
-  var newKeys = keys;
-  newKeys[currentId].key = val;
-  if(SK.Keys.isConflict(newKeys)) {
+  /**
+   * all of the keys
+   * @private
+   */
+  var keys = this.getKeys(),
+  /**
+   * tree object
+   * @private
+   */
+  tree = this.tree(),
+  /**
+   * The id of the selected key
+   * @private
+   */
+  currentId = tree.view.getCellText(tree.currentIndex, tree.columns.getColumnAt(0)),
+  keys[currentId].key = val;
+  if(SK.Keys.isConflict(keys)) {
     alert('key already used');
     tree.view.selection.clearSelection();
     tree.view.selection.select(tree.currentIndex);
     return;
   }
-  generateKeys(newKeys, tree.currentIndex);
-  this.setKeys(newKeys);
+  generateKeys(keys, tree.currentIndex);
+  this.setKeys(keys);
 };
+/**
+ * Changes the disable state of the currently selected key
+ * @namespace SK.Keys
+ * @method setCurrentDisabled
+ * @param {Boolean} val
+ */
 SK.Keys.setCurrentDisabled = function(val) {
-  var keys = this.getKeys();
-  var tree = this.tree();
-  var currentId = tree.view.getCellText(tree.currentIndex, tree.columns.getColumnAt(0));
-  var newKeys = keys;
-  newKeys[currentId].disabled = val;
-  if(SK.Keys.isConflict(newKeys)) {
+  /**
+   * all of the keys
+   * @private
+   */
+  var keys = this.getKeys(),
+  /**
+   * tree object
+   * @private
+   */
+  tree = this.tree(),
+  /**
+   * The id of the selected key
+   * @private
+   */
+  currentId = tree.view.getCellText(tree.currentIndex, tree.columns.getColumnAt(0)),
+
+  keys[currentId].disabled = val;
+  if(SK.Keys.isConflict(keys)) {
     alert('key already used');
     tree.view.selection.clearSelection();
     tree.view.selection.select(tree.currentIndex);
     return;
   }
-  generateKeys(newKeys, tree.currentIndex);
-  this.setKeys(newKeys);
+  generateKeys(keys, tree.currentIndex);
+  this.setKeys(keys);
 };
+/**
+ * Updates all value of the current key
+ * @namespace SK.Keys
+ * @method setCurrent
+ * @param {Object} obj
+ */
 SK.Keys.setCurrent = function(obj) {
-  var keys = this.getKeys();
-  var tree = this.tree();
-  var currentId = tree.view.getCellText(tree.currentIndex, tree.columns.getColumnAt(0));
+  /**
+   * All of the keys
+   * @private
+   */
+  var keys = this.getKeys(),
+  /**
+   * tree object
+   * @private
+   */
+  tree = this.tree(),
+  /**
+   * The id of the selected key row
+   * @private
+   */
+  currentId = tree.view.getCellText(tree.currentIndex, tree.columns.getColumnAt(0));
   keys[currentId].key = obj.key;
   keys[currentId].shift = obj.shift;
   keys[currentId].alt = obj.alt;
@@ -206,26 +302,43 @@ SK.Keys.setCurrent = function(obj) {
     alert('key config already used');
     tree.view.selection.clearSelection();
     tree.view.selection.select(tree.currentIndex);
-    return;
+  } else {
+    generateKeys(keys, tree.currentIndex);
+    this.setKeys(keys);
   }
-  generateKeys(keys, tree.currentIndex);
-  this.setKeys(keys);
-
 };
+/**
+ * Grabs pressed key combo and set to it the current command
+ * @namespace Sk.Keys
+ * @method grabKey
+ * @param {Event} event A keypress event
+ */
 SK.Keys.grabKey = function(event) {
   event.preventDefault();
   event.stopPropagation();
-  var key = null, keycode = null, keys = {
+  /**
+   * The target element of the event
+   * @private
+   */
+  var element = event.originalTarget,
+  /**
+   * An array to store wich modifiers are set
+   * @private
+   */
+  modifiers = new Array(),
+  /**
+   * A key object
+   * @private
+   */
+  keys = {
     key: null, shift: false, alt: false, control: false, meta: false
   }
   if(event.charCode) {
-    key = String.fromCharCode(event.charCode).toUpperCase();
+    var key = String.fromCharCode(event.charCode).toUpperCase();
     keys.key =  key;
   } else {
     return;
   }
-  var element = event.originalTarget;
-  var modifiers = new Array();
   if(event.shiftKey) {
     modifiers.push('Shift');
     keys.shift = true;
@@ -267,46 +380,86 @@ SK.Sites.siteSelected = function() {
   currentNext.value = this.selectedSite.next;
   currentPrev.value = this.selectedSite.prev;
 };
+/**
+ * Sets the current value for the site
+ * @param {String} val The url what should be the current site
+ */
 SK.Sites.setCurrentSite = function(val) {
   this.siteSetCurrent('site', val);
 };
+/**
+ * Sets the current value of the next property
+ * @param {String} val the inner text of the next link
+ */
 SK.Sites.setCurrentNext = function(val) {
   this.siteSetCurrent('next', val);
 };
+/**
+ * Sets the current value of the previous property
+ * @param {String} val the inner text of the previous link
+ */
 SK.Sites.setCurrentPrev = function(val) {
   this.siteSetCurrent('prev', val);
 };
+/**
+ * Sets the value for a specified field
+ * @param {String} field The field name what should be changed
+ * @param {String} value The new value
+ */
 SK.Sites.siteSetCurrent = function(field, val) {
-  var tree = this.tree();
-  var currentSite = tree.view.getCellText(tree.currentIndex, tree.columns.getColumnAt(0));
-  var site = SK.Sites.getSiteFromID(currentSite);
-  if(!site) {
-    site = {
-      site: '',
-      next: '',
-      prev: '',
-      id: false
-    };
+  /**
+   * tree object
+   * @private
+   */
+  var tree = this.tree(),
+  /**
+   * current site id
+   * @private
+   */
+  currentSite = tree.view.getCellText(tree.currentIndex, tree.columns.getColumnAt(0)),
+  /**
+   * The current site object
+   * @private
+   */
+  site = SK.Sites.getSiteFromID(currentSite) || {site:'',next:'',prev:'',id:false};
+  if(['site', 'next', 'prev', 'id'].indexOf(field) != -1) {
+    site[field] = val;
+    if(site.site == '') {
+      SK.Sites.removeSite(site.id);
+    } else {
+      SK.Sites.addSite(site);
+    }
+    generatePattern(null, tree.currentIndex);
   }
-  site[field] = val;
-  if(site.site == '') {
-    SK.Sites.removeSite(site.id);
-  } else {
-    SK.Sites.addSite(site);
-  }
-  generatePattern(null, tree.currentIndex);
 };
+/**
+ * Adds row to the tree
+ */
 SK.Sites.addSiteRow = function() {
   generatePattern();
   var tree = this.tree();
   tree.view.selection.select(tree.view.rowCount - 1);
-}
+};
+/**
+ * Deletes a row from the tree
+ */
 SK.Sites.delSiteRow = function() {
   this.setCurrentSite('');
-}
+};
+/**
+ * @param {String} site
+ */
 SK.Sites.getSiteRow = function(site) {
-  var tree = this.tree();
-  var column = tree.columns.getColumnAt(0);
+  /**
+   * tree object
+   * @private
+   */
+  var tree = this.tree(),
+  /**
+   * first column of the tree object
+   * @private
+   */
+  column = tree.columns.getColumnAt(0);
   for (var i = 0; i < tree.view.rowCount; i++){
     if(tree.view.getCellText(i, column) == site) {
       return i;
@@ -314,8 +467,11 @@ SK.Sites.getSiteRow = function(site) {
   }
   return 0;
 };
+/**
+ * intialize the the values for the preference window
+ */
 var initPreferences = function() {
   generateKeys();
   generatePattern();
   document.getElementById('current-key').addEventListener('keypress', SK.Keys.grabKey, true);
-}
+};
