@@ -227,7 +227,7 @@ SK.Keys.setCurrentKey = function(val) {
    * The id of the selected key
    * @private
    */
-  currentId = tree.view.getCellText(tree.currentIndex, tree.columns.getColumnAt(0)),
+  currentId = tree.view.getCellText(tree.currentIndex, tree.columns.getColumnAt(0));
   keys[currentId].key = val;
   if(SK.Keys.isConflict(keys)) {
     alert('key already used');
@@ -259,7 +259,7 @@ SK.Keys.setCurrentDisabled = function(val) {
    * The id of the selected key
    * @private
    */
-  currentId = tree.view.getCellText(tree.currentIndex, tree.columns.getColumnAt(0)),
+  currentId = tree.view.getCellText(tree.currentIndex, tree.columns.getColumnAt(0));
 
   keys[currentId].disabled = val;
   if(SK.Keys.isConflict(keys)) {
