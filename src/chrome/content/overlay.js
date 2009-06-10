@@ -247,6 +247,21 @@ function surfkeys_(reload) {
     gBrowser.moveTabTo(gBrowser.mCurrentTab,gBrowser.mTabContainer.childNodes.length-1);
   };
   /**
+   *
+   */
+  this.focusFirstInput = function() {
+    stopScroller();
+    var inputs = gBrowser.getBrowserAtIndex(gBrowser.mTabContainer.selectedIndex).contentWindow.getElementsByTagName('input');
+    if(inputs.length) {
+      inputs[0].focus();
+    } else {
+      var textareas = gBrowser.getBrowserAtIndex(gBrowser.mTabContainer.selectedIndex).contentWindow.getElementsByTagName('textarea');
+      if(textareas.length) {
+        textareas[0].focus();
+      }
+    }
+  };
+  /**
    * search for <link...> tags which rel attribute is next
    * if a link found, redirects to it's value
    * @return true if link found false if not found
