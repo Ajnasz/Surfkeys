@@ -16,4 +16,6 @@
 <!ENTITY surfkeys.sites.del "Delete site">
 <!ENTITY surfkeys.editpath.title "Edit path">
 <!ENTITY surfkeys.editpath.pathlabel "Path">
+<!ENTITY surfkeys.editpath.custom "custom">
+<!ENTITY surfkeys.editpath.url "url">
 

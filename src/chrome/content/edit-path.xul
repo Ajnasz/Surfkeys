@@ -21,12 +21,12 @@
     window.addEventListener('dialogcancel', SK.EditPath.cancel, false);
   ]]>
   </script>
-  <label value="url" control="path"/><textbox id="path" flex="1" size="50" disabled="true" />
+  <label value="&surfkeys.editpath.url;" control="path"/><textbox id="path" flex="1" size="50" disabled="true" />
   <radiogroup>
     <radio id="original" label="" />
     <radio id="extended" label="" />
     <radio id="domain" label="" />
-    <radio id="custom" label="custom" />
+    <radio id="custom" label="&surfkeys.editpath.custom;" />
   </radiogroup>
   <label value="&surfkeys.editpath.pathlabel;" control="custom-path" /><textbox id="custom-path" flex="1" disabled="true" />
 </dialog>
