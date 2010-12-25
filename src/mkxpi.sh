@@ -1,7 +1,7 @@
 #!/bin/bash
 ########################## Configuration ################################
 if [ -z $1 ];then
-  SFVER='0.6.1a';
+  SFVER='0.6.2a';
 else
   SFVER=$1;
 fi
