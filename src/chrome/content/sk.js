@@ -1,23 +1,27 @@
+/*jslint indent: 2, ustream: false*/
+/*global Components: true, alert: true, SKLog: true */
 /**
  * @module SK
  */
-SK = {};
+var SK = {};
 /**
  * Method to access to the preferences of the surfkeys
  * @namespace SK
  * @method Prefs
  */
-SK.Prefs = function() {
-  return Components.classes["@mozilla.org/preferences-service;1"].getService(Components.interfaces.nsIPrefService).getBranch("extensions.surfkeys.");
-}
+SK.Prefs = function () {
+  return Components.classes["@mozilla.org/preferences-service;1"]
+    .getService(Components.interfaces.nsIPrefService).getBranch("extensions.surfkeys.");
+};
 /**
  * Method to access to the default preferences of the surfkeys
  * @namespace SK
  * @method Prefs
  */
-SK.DefaultPrefs = function() {
-  return Components.classes["@mozilla.org/preferences-service;1"].getService(Components.interfaces.nsIPrefService).getDefaultBranch("extensions.surfkeys.");
-}
+SK.DefaultPrefs = function () {
+  return Components.classes["@mozilla.org/preferences-service;1"]
+    .getService(Components.interfaces.nsIPrefService).getDefaultBranch("extensions.surfkeys.");
+};
 /**
  * @namespace SK
  */
@@ -31,13 +35,14 @@ SK.Sites = {
    * @param {} lastid
    * @type String
    */
-  createSiteStr: function(site, next, prev, lastid) {
-    if(!lastid) {
-      var lastid = SK.Prefs().getIntPref('lastsiteid');
-      lastid++;
+  createSiteStr: function (site, next, prev, lastid) {
+    if (!lastid) {
+      lastid = SK.Prefs().getIntPref('lastsiteid');
+      lastid += 1;
     }
     SK.Prefs().setIntPref('lastsiteid', lastid);
-    return '{"id":"' + lastid + '","site":"' + site + '","next":"' + next + '","prev":"' + prev + '"}';
+    return '{"id":"' + lastid + '","site":"' + site +
+      '","next":"' + next + '","prev":"' + prev + '"}';
   },
   /**
    * Generate javascript object from a JSON string
@@ -45,14 +50,14 @@ SK.Sites = {
    * @return a the javascript object which generated from the pattern
    * @type Array
    */
-  getSites: function(patterns) {
-    if(!patterns) {
+  getSites: function (patterns) {
+    if (!patterns) {
       patterns = SK.Prefs().getCharPref('resultpattern');
     }
     patterns = decodeURIComponent(patterns);
     try {
-      patterns = eval('(' + patterns + ')');
-    } catch(e) {
+      patterns = JSON.parse('(' + patterns + ')');
+    } catch (e) {
       patterns = [];
     }
     return patterns;
@@ -62,10 +67,10 @@ SK.Sites = {
    * @return a site object
    * @type Object
    */
-  getSiteFromID: function(id) {
-    var sites = this.getSites();
-    for(var i = 0, sl = sites.length; i < sl; i++) {
-      if(sites[i].id == id) {
+  getSiteFromID: function (id) {
+    var sites = this.getSites(), i, sl;
+    for (i = 0, sl = sites.length; i < sl; i += 1) {
+      if (sites[i].id === id) {
         return sites[i];
       }
     }
@@ -76,56 +81,56 @@ SK.Sites = {
    * @return a site object
    * @type Object
    */
-  getSiteFromURL: function(url) {
-    var sites = this.getSites();
-    for(var i = 0, sl = sites.length; i < sl; i++) {
-      if(sites[i].site == url) {
+  getSiteFromURL: function (url) {
+    var sites = this.getSites(), i, sl;
+    for (i = 0, sl = sites.length; i < sl; i += 1) {
+      if (sites[i].site === url) {
         return sites[i];
       }
     }
     return false;
   },
-  addSiteToArray: function(site) {
-    var sites = this.getSites(), overwrited;
-    for(var i = 0, sl = sites.length; i < sl; i++) {
-      if(sites[i].id == site.id) {
+  addSiteToArray: function (site) {
+    var sites = this.getSites(), overwrited, i, sl;
+    for (i = 0, sl = sites.length; i < sl; i += 1) {
+      if (sites[i].id === site.id) {
         sites[i] = site;
         overwrited = true;
         break;
       }
     }
-    if(!overwrited) {
+    if (!overwrited) {
       sites.push(site);
     }
     return sites;
   },
   /**
    * converts all the sites object to string
-   * @param {Array} sites 
+   * @param {Array} sites
    * @returns the sites as a string to make possible to stor them
    * @type String
    */
-  sitesToString: function(sites) {
-    var str = new Array();
-    for(var i = 0, sl = sites.length; i < sl; i++) {
+  sitesToString: function (sites) {
+    var str = [], i, sl;
+    for (i = 0, sl = sites.length; i < sl; i += 1) {
       str.push(this.createSiteStr(sites[i].site, sites[i].next, sites[i].prev, sites[i].id));
     }
-    return  '[' + str.join(',') + ']';
+    return '[' + str.join(',') + ']';
   },
   /**
    * @param Object site A site object {site: foo, next: bar, prev: baz, [id:foobar]}
    */
-  addSite: function(site) {
+  addSite: function (site) {
     var sites = this.addSiteToArray(site);
     this.setSites(this.sitesToString(sites));
   },
-  removeSite: function(id) {
+  removeSite: function (id) {
     /**
      * @private
      */
-    var sites = this.getSites();
-    for(var i = 0, sl = sites.length; i < sl; i++) {
-      if(sites[i].id == id) {
+    var sites = this.getSites(), i, sl;
+    for (i = 0, sl = sites.length; i < sl; i += 1) {
+      if (sites[i].id === id) {
         sites.splice(i, 1);
         break;
       }
@@ -136,38 +141,45 @@ SK.Sites = {
    * Update the site preference
    * @param {String} sites string sites
    */
-  setSites: function(sites) {
+  setSites: function (sites) {
     SK.Prefs().setCharPref('resultpattern', encodeURIComponent(sites));
   },
-  logSelected: function() {
+  logSelected: function () {
     SKLog.log('logselected: ', this.selectedSite.site);
   }
 };
 SK.Keys = {
-  getKeys: function(keys) {
-    if(!keys) {
-      keys = SK.Prefs().getCharPref("keys");
+  getKeys: function (keysStr) {
+    if (!keysStr) {
+      keysStr = SK.Prefs().getCharPref("keys");
+    }
+    var defaults, sandbox, i, parsed, keys;
+    try {
+      keys = JSON.parse(keysStr);
+    } catch (e) {
+      try {
+        sandbox = Components.utils.Sandbox('http://surfkeys.mozdev.org/');
+        keys = Components.utils.evalInSandbox('(' + keysStr + ')', sandbox);
+      } catch (e1) {
+        keys = {};
+      }
     }
     try {
-      keys = eval('(' + keys + ')');
-    } catch(e) {
-      keys = {};
+      defaults = JSON.parse(SK.DefaultPrefs().getCharPref('keys'));
+    } catch (er) {
+      defaults = {};
     }
-    try {
-      var defaults = eval('(' + SK.DefaultPrefs().getCharPref('keys') + ')');
-    } catch(e) {
-      var defaults = {};
-    }
-    for(var i in defaults) {
-      if(typeof keys[i] == 'undefined') {
+    for (i in defaults) {
+      if (typeof keys[i] === 'undefined') {
         keys[i] = defaults[i];
       }
     }
     return keys;
   },
-  setKeys: function(keys) {
-    if(typeof keys != 'string') {
-      keys = this.keysToString(keys);
+  setKeys: function (keys) {
+    if (typeof keys !== 'string') {
+      //keys = this.keysToString(keys);
+      keys = JSON.stringify(keys);
     }
     SK.Prefs().setCharPref('keys', keys);
   },
@@ -180,19 +192,23 @@ SK.Keys = {
    * @param {Boolean} disabled Enabled/disabled hotkey
    * @type String
    */
-  createKeyStr: function(id, key, shift, alt, control, disabled) {
-    return id + ':{key:"' + key + '",shift:' + shift + ',alt:' + alt + ',control:' + control + ',disabled:' + disabled + '}';
+  createKeyStr: function (id, key, shift, alt, control, disabled) {
+    return id + ':{key:"' + key + '",shift:' + shift + ',alt:' + alt +
+         ',control:' + control + ',disabled:' + disabled + '}';
   },
   /**
    * @param {Object} keys JS object
    * @type String
    */
-  keysToString: function(keys) {
-    var str = new Array();
-    for(k in keys) {
-      str.push(SK.Keys.createKeyStr(k, keys[k].key, keys[k].shift, keys[k].alt, keys[k].control, keys[k].disabled));
+  keysToString: function (keys) {
+    var str = [], k;
+    for (k in keys) {
+      if (keys.hasOwnProperty(k)) {
+        str.push(SK.Keys.createKeyStr(k, keys[k].key, keys[k].shift,
+          keys[k].alt, keys[k].control, keys[k].disabled));
+      }
     }
-    return  '{' + str.join(',') + '}';
+    return '{' + str.join(',') + '}';
   },
   /**
    * Check for items, which are the same in the paramter object
@@ -200,13 +216,20 @@ SK.Keys = {
    * @return true if the keys contains conflicting items
    * @type Boolean
    */
-  isConflict: function(keys) {
-    var o = {};
-    for(var i in keys) {
-      for(var j in o) {
-        if(j != i && keys[i].key == o[j].key && keys[i].alt == o[j].alt && keys[i].shift == o[j].shift && keys[i].disabled == o[j].disabled) {return true};
+  isConflict: function (keys) {
+    var o = {}, i, j;
+    for (i in keys) {
+      if (keys.hasOwnProperty(i)) {
+        for (j in o) {
+          if (o.hasOwnProperty(j)) {
+            if (j !== i && keys[i].key === o[j].key && keys[i].alt === o[j].alt &&
+            keys[i].shift === o[j].shift && keys[i].disabled === o[j].disabled) {
+              return true;
+            }
+          }
+        }
+        o[i] = keys[i];
       }
-      o[i] = keys[i];
     }
     return false;
   }
