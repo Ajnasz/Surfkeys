@@ -1,4 +1,4 @@
-/*jslint indent: 2, ustream: false*/
+/*jslint indent: 2*/
 /*global SK: true, Components: true, alert: true */
 /**
  * generates the rows to the tree on the site matching tab

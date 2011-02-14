@@ -324,8 +324,9 @@ function surfkeys_(reload) {
 
       var currloc = {loc: getContent().location.href}; // use an object here to make possible to change it's value in the dialog
       window.openDialog("chrome://surfkeys/content/edit-path.xul", 'Surfkeys Edit Path', 'chrome,titlebar,toolbar,centerscreen,modal', currloc);
-      if(currloc.loc === false) return;
-      var sites = SK.Sites.getSites();
+      if(currloc.loc === false) {
+        return;
+      }
       var site = SK.Sites.getSiteFromURL(currloc.loc);
       if(!site) {
         site = {
@@ -481,12 +482,12 @@ function surfkeys_(reload) {
     var convertSites = function() {
       var patterns = SK.Prefs().getCharPref("resultpattern")
       var siteArray = patterns.split(";");
-      var sites = new Array();
+      var sites = [];
       for(var i = 0, sl = siteArray.length, site; i < sl; i++) {
         site = siteArray[i].split(":");
-        sites.push(SK.Sites.createSiteStr(site[0], site[1], site[2]));
+        sites.push(SK.Sites.createSite(site[0], site[1], site[2]));
       }
-      SK.Sites.setSites('[' + sites.join(',') + ']');
+      SK.Sites.setSites(sites);
     }
     if(finished != SK_VERSION) {
       // Convert the old store format to the new one

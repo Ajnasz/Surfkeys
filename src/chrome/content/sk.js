@@ -1,4 +1,4 @@
-/*jslint indent: 2, ustream: false*/
+/*jslint indent: 2*/
 /*global Components: true, alert: true, SKLog: true */
 /**
  * @module SK
@@ -44,21 +44,42 @@ SK.Sites = {
     return '{"id":"' + lastid + '","site":"' + site +
       '","next":"' + next + '","prev":"' + prev + '"}';
   },
+  createSite: function (site, next, prev, lastid) {
+    if (!lastid) {
+      lastid = SK.Prefs().getIntPref('lastsiteid');
+      lastid += 1;
+    }
+    SK.Prefs().setIntPref('lastsiteid', lastid);
+    return {
+      id: lastid,
+      site: site,
+      next: next,
+      prev: prev
+    };
+  },
   /**
    * Generate javascript object from a JSON string
    * @param {String} [patterns]
    * @return a the javascript object which generated from the pattern
    * @type Array
    */
-  getSites: function (patterns) {
-    if (!patterns) {
-      patterns = SK.Prefs().getCharPref('resultpattern');
+  getSites: function (patternsStr) {
+    if (!patternsStr) {
+      patternsStr = SK.Prefs().getCharPref('resultpattern');
     }
-    patterns = decodeURIComponent(patterns);
+    if (patternsStr.indexOf('%5') === 0) {
+      patternsStr = decodeURIComponent(patternsStr);
+    }
+    var patterns, sandbox;
     try {
-      patterns = JSON.parse('(' + patterns + ')');
+      patterns = JSON.parse(patternsStr);
     } catch (e) {
-      patterns = [];
+      try {
+        sandbox = Components.utils.Sandbox('http://surfkeys.mozdev.org/');
+        patterns = Components.utils.evalInSandbox('(' + patternsStr + ')', sandbox);
+      } catch (er) {
+        patterns = [];
+      }
     }
     return patterns;
   },
@@ -122,7 +143,7 @@ SK.Sites = {
    */
   addSite: function (site) {
     var sites = this.addSiteToArray(site);
-    this.setSites(this.sitesToString(sites));
+    this.setSites(sites);
   },
   removeSite: function (id) {
     /**
@@ -135,14 +156,15 @@ SK.Sites = {
         break;
       }
     }
-    this.setSites(this.sitesToString(sites));
+    this.setSites(sites);
   },
   /**
    * Update the site preference
    * @param {String} sites string sites
    */
   setSites: function (sites) {
-    SK.Prefs().setCharPref('resultpattern', encodeURIComponent(sites));
+    // sites = this.sitesToString(sites);
+    SK.Prefs().setCharPref('resultpattern', JSON.stringify(sites));
   },
   logSelected: function () {
     SKLog.log('logselected: ', this.selectedSite.site);
@@ -157,6 +179,7 @@ SK.Keys = {
     try {
       keys = JSON.parse(keysStr);
     } catch (e) {
+      SKLog.log(' catched error', e);
       try {
         sandbox = Components.utils.Sandbox('http://surfkeys.mozdev.org/');
         keys = Components.utils.evalInSandbox('(' + keysStr + ')', sandbox);
@@ -167,7 +190,12 @@ SK.Keys = {
     try {
       defaults = JSON.parse(SK.DefaultPrefs().getCharPref('keys'));
     } catch (er) {
-      defaults = {};
+      try {
+        sandbox = Components.utils.Sandbox('http://surfkeys.mozdev.org/');
+      } catch (err) {
+        keys = Components.utils.evalInSandbox('(' + defaults + ')', sandbox);
+        defaults = {};
+      }
     }
     for (i in defaults) {
       if (typeof keys[i] === 'undefined') {
