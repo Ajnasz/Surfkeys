@@ -42,7 +42,7 @@ function setVersion {
 }
 
 if [ -z $1 ];then
-  SFVER='0.6.1';
+  SFVER='0.6.2';
 else
   SFVER=$1;
 fi
