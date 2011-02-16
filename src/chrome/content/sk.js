@@ -113,16 +113,16 @@ SK.Sites = {
   },
   addSiteToArray: function (site) {
     var sites = this.getSites(),
-      overwrited = false,
+      overwritten = false,
       i, sl;
     for (i = 0, sl = sites.length; i < sl; i += 1) {
-      if (sites[i].id === site.id) {
+      if (parseInt(sites[i].id, 10) === parseInt(site.id, 10)) {
         sites[i] = site;
-        overwrited = true;
+        overwritten = true;
         break;
       }
     }
-    if (!overwrited) {
+    if (!overwritten) {
       sites.push(site);
     }
     return sites;

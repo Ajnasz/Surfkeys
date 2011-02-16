@@ -1,3 +1,5 @@
+/*jslint indent: 2*/
+/*global SK: true */
 /**
  * @namespace SK
  */
@@ -12,23 +14,24 @@ SK.EditPath = {
    * @returns an object with the parsed url
    * @type Object
    */
-  getUrl: function() {
-    var currloc = window.arguments[0];
-    var url = currloc.loc.replace(/(^\w+:\/\/|\?.*$)/g, '').split('/');
-    var values = {
+  getUrl: function () {
+    var currloc = window.arguments[0],
+      url = currloc.loc.replace(/(^\w+:\/\/|\?.*$)/g, '').split('/');
+    return {
       original: currloc.loc,
       domain: url[0],
-      extended: url.slice(0, url.length).join('/'),
+      extended: url.slice(0, url.length).join('/')
     };
-    return values;
   },
   /**
    * Initializer function, which sets the input labels in the path editor window
    */
-  init: function(event) {
-    var values = SK.EditPath.getUrl();
+  init: function (event) {
+    var values = SK.EditPath.getUrl(),
+      inputs,
+      customPath;
     // get input elements
-    var inputs = {
+    inputs = {
       original: document.getElementById('original'),
       extended: document.getElementById('extended'),
       domain: document.getElementById('domain'),
@@ -37,14 +40,14 @@ SK.EditPath = {
       path: document.getElementById('path')
     };
     // enable/disable the custom path input field
-    var customPath = {
-      enable: function() {
-        if(inputs.customPath.disabled) {
+    customPath = {
+      enable: function () {
+        if (inputs.customPath.disabled) {
           inputs.customPath.disabled = false;
         }
       },
-      disable: function() {
-        if(!inputs.customPath.disabled) {
+      disable: function () {
+        if (!inputs.customPath.disabled) {
           inputs.customPath.disabled = true;
         }
       }
@@ -59,23 +62,23 @@ SK.EditPath = {
     inputs.customPath.value = values.original;
 
     // add event listeners
-    inputs.original.addEventListener('click', function(event){
+    inputs.original.addEventListener('click', function (event) {
       customPath.disable();
       inputs.path.value = this.getAttribute('label');
     }, false);
-    inputs.extended.addEventListener('click', function(event){
+    inputs.extended.addEventListener('click', function (event) {
       customPath.disable();
       inputs.path.value = this.getAttribute('label');
     }, false);
-    inputs.domain.addEventListener('click', function(event){
+    inputs.domain.addEventListener('click', function (event) {
       customPath.disable();
       inputs.path.value = this.getAttribute('label');
     }, false);
-    inputs.custom.addEventListener('click', function(event){
+    inputs.custom.addEventListener('click', function (event) {
       customPath.enable();
       inputs.path.value = inputs.customPath.value;
     }, false);
-    inputs.customPath.addEventListener('keyup', function(event){
+    inputs.customPath.addEventListener('keyup', function (event) {
       inputs.path.value = this.value;
     }, false);
   },
@@ -85,13 +88,13 @@ SK.EditPath = {
    * @returns true, to enable to close the window
    * @type Boolean
    */
-  save: function() {
-    var input = document.getElementById('path');
-    var currloc = window.arguments[0];
+  save: function () {
+    var input = document.getElementById('path'),
+      currloc = window.arguments[0];
     currloc.loc = input.value;
     return true;
   },
-  cancel: function() {
+  cancel: function () {
     var currloc = window.arguments[0];
     currloc.loc = false;
     return true;

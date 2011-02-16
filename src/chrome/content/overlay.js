@@ -529,12 +529,7 @@ function Surfkeys_(reload) {
       }
       site = SK.Sites.getSiteFromURL(currloc.loc);
       if (!site) {
-        site = {
-          site: currloc.loc,
-          next: '',
-          prev: '',
-          id: false
-        };
+        site = SK.Sites.createSite(currloc.loc, '', '');
       }
       if (direction === 1) {
         site.next = linktext;
