@@ -63,8 +63,9 @@ function Surfkeys_(reload) {
   }
   function startScroller() {
     if (!surfScroll) {
+      Components.utils.import("resource://surfkeysmodules/Timer.jsm");
       surfScroll = true;
-      s = window.setInterval(function () {
+      s = repeat(function () {
         _this.scroller();
       }, 10);
     }
@@ -72,7 +73,8 @@ function Surfkeys_(reload) {
   }
   function stopScroller() {
     if (surfScroll) {
-      window.clearInterval(s);
+      Components.utils.import("resource://surfkeysmodules/Timer.jsm");
+      never(s);
       surfScroll = false;
       scrDelta[SK_X] = 0;
       scrDelta[SK_Y] = 0;

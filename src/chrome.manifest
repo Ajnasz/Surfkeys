@@ -1,4 +1,5 @@
 content surfkeys jar:chrome/chrome.jar!/content/
+resource surfkeysmodules modules/
 overlay chrome://browser/content/browser.xul chrome://surfkeys/content/overlay.xul
 skin surfkeys classic/1.0 jar:chrome/chrome.jar!/skin/
 locale surfkeys en-US jar:chrome/chrome.jar!/locale/en-US/
