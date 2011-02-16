@@ -136,7 +136,7 @@ function Surfkeys_(reload) {
    * @author ajnasz
    */
   function setKeys() {
-    // postInstall();
+    postInstall();
     var keys = SK.Keys.getKeys(),
       modifiers = [],
       keyNode, key, parent, command, oncommand,
@@ -558,26 +558,7 @@ function Surfkeys_(reload) {
     }
   }
   function postInstall() {
-    var finished, convertSites;
-    try {
-      finished = SK.Prefs().getCharPref('version');
-    } catch (e) {}
-    convertSites = function () {
-      var siteArray = SK.Prefs().getSites(),
-        sites = [],
-        i, sl, site;
-      for (i = 0, sl = siteArray.length; i < sl; i += 1) {
-        site = siteArray[i].split(":");
-        sites.push(SK.Sites.createSite(site[0], site[1], site[2]));
-      }
-      SK.Sites.setSites(sites);
-    }
-    if (finished !== '0.5.2') {
-      // Convert the old store format to the new one
-      SKLog.log('postinstall');
-      convertSites();
-    }
-    SK.Prefs().setCharPref('version', '0.6');
+    SK.Prefs().setCharPref('version', '0.6.2');
   }
   //  window.addEventListener("keypress", surfkeysOnKeypress, true);
   // listeners to suppress keyboard browsing when in menu
