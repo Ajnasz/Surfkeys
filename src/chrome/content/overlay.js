@@ -558,7 +558,7 @@ function Surfkeys_(reload) {
     }
   }
   function postInstall() {
-    SK.Prefs().setCharPref('version', '0.6.2');
+    SK.Prefs().setCharPref('version', '###VERSION###');
   }
   //  window.addEventListener("keypress", surfkeysOnKeypress, true);
   // listeners to suppress keyboard browsing when in menu
