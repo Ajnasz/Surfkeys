@@ -56,7 +56,6 @@ function Surfkeys_(reload) {
   function isSidebarWindow() {
     var focusedWindow = getWindow(),
       sidebarWindow = document.getElementById("sidebar").contentWindow;
-    // SKLog.log(focusedWindow == sidebarWindow, focusedWindow.window == sidebarWindow);
     if (SK.Prefs().getBoolPref('disableinsidebar') &&
       focusedWindow && focusedWindow === sidebarWindow) {
       return true;
@@ -126,8 +125,8 @@ function Surfkeys_(reload) {
    * @author        aeternus
    */
   function surfkeysShowcontext() {
-    var sk_menuitem1 = document.getElementById("sk_markasnext");
-    var sk_menuitem2 = document.getElementById("sk_markasprev");
+    var sk_menuitem1 = document.getElementById("sk_markasnext"),
+      sk_menuitem2 = document.getElementById("sk_markasprev");
     sk_menuitem1.hidden = !gContextMenu.onLink;
     sk_menuitem2.hidden = !gContextMenu.onLink;
     stopScroller();
@@ -137,47 +136,50 @@ function Surfkeys_(reload) {
    * @author ajnasz
    */
   function setKeys() {
-    postInstall();
-    var keys = SK.Keys.getKeys();
-    var modifiers = new Array();
-    var keyNode, key, parent, command, oncommand;
-    for (var k in keys) {
-      key = keys[k];
-      modifiers = new Array();
-      keyNode = document.getElementById(k);
-      if (keyNode) {
-        command = keyNode.getAttribute('command');
-        oncommand = keyNode.getAttribute('oncommand');
-        keyset = keyNode.parentNode;
-        keyset.removeChild(keyNode);
-        keyNode = document.createElement('key');
-        if (key.shift) {
-          modifiers.push('shift');
+    // postInstall();
+    var keys = SK.Keys.getKeys(),
+      modifiers = [],
+      keyNode, key, parent, command, oncommand,
+      k, keyset;
+    for (k in keys) {
+      if (keys.hasOwnProperty(k)) {
+        key = keys[k];
+        modifiers = [];
+        keyNode = document.getElementById(k);
+        if (keyNode) {
+          command = keyNode.getAttribute('command');
+          oncommand = keyNode.getAttribute('oncommand');
+          keyset = keyNode.parentNode;
+          keyset.removeChild(keyNode);
+          keyNode = document.createElement('key');
+          if (key.shift) {
+            modifiers.push('shift');
+          }
+          if (key.alt) {
+            modifiers.push('alt');
+          }
+          if (key.control) {
+            modifiers.push('control');
+          }
+          if (key.meta) {
+            modifiers.push('meta');
+          }
+          modifiers = (modifiers.length) ? modifiers.join(' ') : false;
+          keyNode.setAttribute('key', key.key);
+          if (modifiers) {
+            keyNode.setAttribute('modifiers', modifiers);
+          }
+          if (command) {
+            keyNode.setAttribute('command', command);
+          }
+          if (oncommand) {
+            keyNode.setAttribute('oncommand', oncommand);
+          }
+          keyNode.setAttribute('disabled', key.disabled);
+          keyset.appendChild(keyNode);
+          oncommand = null;
+          command = null;
         }
-        if (key.alt) {
-          modifiers.push('alt');
-        }
-        if (key.control) {
-          modifiers.push('control');
-        }
-        if (key.meta) {
-          modifiers.push('meta');
-        }
-        modifiers = (modifiers.length) ? modifiers.join(' ') : false;
-        keyNode.setAttribute('key', key.key);
-        if (modifiers) {
-          keyNode.setAttribute('modifiers', modifiers);
-        }
-        if (command) {
-          keyNode.setAttribute('command', command);
-        }
-        if (oncommand) {
-          keyNode.setAttribute('oncommand', oncommand);
-        }
-        keyNode.setAttribute('disabled', key.disabled);
-        keyset.appendChild(keyNode);
-        oncommand = null;
-        command = null;
       }
     }
   }
@@ -566,8 +568,7 @@ function Surfkeys_(reload) {
       finished = SK.Prefs().getCharPref('version');
     } catch (e) {}
     convertSites = function () {
-      var patterns = SK.Prefs().getCharPref("resultpattern"),
-        siteArray = patterns.split(";"),
+      var siteArray = SK.Prefs().getSites(),
         sites = [],
         i, sl, site;
       for (i = 0, sl = siteArray.length; i < sl; i += 1) {
@@ -576,12 +577,12 @@ function Surfkeys_(reload) {
       }
       SK.Sites.setSites(sites);
     }
-    if (finished !== '0.6') {
+    if (finished !== '0.5.2') {
       // Convert the old store format to the new one
       SKLog.log('postinstall');
       convertSites();
-      SK.Prefs().setCharPref('version', '0.5.2');
     }
+    SK.Prefs().setCharPref('version', '0.6');
   }
   //  window.addEventListener("keypress", surfkeysOnKeypress, true);
   // listeners to suppress keyboard browsing when in menu
@@ -594,7 +595,7 @@ function Surfkeys_(reload) {
   } else {
     window.addEventListener("load", surfkeysLoad, true);
   }
-  SKLog.log("Initialized");
+  // SKLog.log("Initialized!'!a");
 }
 
 var surfkeys = new Surfkeys_();

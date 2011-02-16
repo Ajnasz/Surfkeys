@@ -1,5 +1,5 @@
 /*jslint indent: 2*/
-/*global SK: true, Components: true, alert: true */
+/*global SK: true, Components: true, alert: true, SKLog: true */
 /**
  * generates the rows to the tree on the site matching tab
  * @param {Object} [patterns]
@@ -101,7 +101,6 @@ var generateKeys = function (keys, selection) {
       if (!_keys[row]) {
         return;
       }
-      var bundle = document.getElementById('surfkeys-bundles');
       switch (column.id) {
       case 'shiftcol':
         return _keys[row].shift || false;
@@ -398,20 +397,25 @@ SK.Sites.tree = function () {
   return document.getElementById('sk-resultpattern-tree');
 };
 SK.Sites.siteSelected = function () {
-  var tree = this.tree(), currentId, currentSite, currentNext, currentPrev;
-  this.selectedSite  = {
-    id: tree.view.getCellText(tree.currentIndex, tree.columns.getColumnAt(0)),
-    site: tree.view.getCellText(tree.currentIndex, tree.columns.getColumnAt(1)),
-    next: tree.view.getCellText(tree.currentIndex, tree.columns.getColumnAt(2)),
-    prev: tree.view.getCellText(tree.currentIndex, tree.columns.getColumnAt(3))
+  var tree = this.tree(),
+    currentIndex = tree.currentIndex,
+    currentId,
+    currentSite,
+    currentNext,
+    currentPrev,
+    selectedSite = {
+    id: tree.view.getCellText(currentIndex, tree.columns.getColumnAt(0)),
+    site: tree.view.getCellText(currentIndex, tree.columns.getColumnAt(1)),
+    next: tree.view.getCellText(currentIndex, tree.columns.getColumnAt(2)),
+    prev: tree.view.getCellText(currentIndex, tree.columns.getColumnAt(3))
   };
   currentId = document.getElementById('sk-site-id');
   currentSite = document.getElementById('sk-site-name');
   currentNext = document.getElementById('sk-site-next');
   currentPrev = document.getElementById('sk-site-prev');
-  currentSite.value = this.selectedSite.site;
-  currentNext.value = this.selectedSite.next;
-  currentPrev.value = this.selectedSite.prev;
+  currentSite.value = selectedSite.site;
+  currentNext.value = selectedSite.next;
+  currentPrev.value = selectedSite.prev;
 };
 /**
  * Sets the current value for the site
@@ -455,8 +459,11 @@ SK.Sites.siteSetCurrent = function (field, val) {
    * The current site object
    * @private
    */
-  site = SK.Sites.getSiteFromID(currentSite) || {site: '', next: '', prev: '', id: false};
-  if (['site', 'next', 'prev', 'id'].indexOf(field) !== -1) {
+  site = SK.Sites.getSiteFromID(currentSite);
+  if (!site) {
+    site = SK.Sites.createSite('', '', '');
+  }
+  if (['site', 'next', 'prev', 'id'].indexOf(field) > -1) {
     site[field] = val;
     if (site.site === '') {
       SK.Sites.removeSite(site.id);

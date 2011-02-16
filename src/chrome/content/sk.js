@@ -91,7 +91,7 @@ SK.Sites = {
   getSiteFromID: function (id) {
     var sites = this.getSites(), i, sl;
     for (i = 0, sl = sites.length; i < sl; i += 1) {
-      if (sites[i].id === id) {
+      if (parseInt(sites[i].id, 10) === parseInt(id, 10)) {
         return sites[i];
       }
     }
@@ -112,7 +112,9 @@ SK.Sites = {
     return false;
   },
   addSiteToArray: function (site) {
-    var sites = this.getSites(), overwrited, i, sl;
+    var sites = this.getSites(),
+      overwrited = false,
+      i, sl;
     for (i = 0, sl = sites.length; i < sl; i += 1) {
       if (sites[i].id === site.id) {
         sites[i] = site;
@@ -179,7 +181,6 @@ SK.Keys = {
     try {
       keys = JSON.parse(keysStr);
     } catch (e) {
-      SKLog.log(' catched error', e);
       try {
         sandbox = Components.utils.Sandbox('http://surfkeys.mozdev.org/');
         keys = Components.utils.evalInSandbox('(' + keysStr + ')', sandbox);
