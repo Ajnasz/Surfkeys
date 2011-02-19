@@ -14,4 +14,7 @@
 <!ENTITY surfkeys.sites.title.site "Webbplats">
 <!ENTITY surfkeys.sites.add "Lägg till webbplats">
 <!ENTITY surfkeys.sites.del "Ta bort webbplats">
-
+<!ENTITY surfkeys.editpath.title "Edit path">
+<!ENTITY surfkeys.editpath.pathlabel "Path">
+<!ENTITY surfkeys.editpath.custom "custom">
+<!ENTITY surfkeys.editpath.url "url">

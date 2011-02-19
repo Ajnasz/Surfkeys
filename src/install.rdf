@@ -15,12 +15,14 @@
       </Description>
     </em:targetApplication>
 
+    <!--
     <em:file>
       <Description about="urn:mozilla:extension:file:surfkeys.jar">
         <em:package>content/surfkeys/</em:package>
         <em:skin>skin/classic/surfkeys/</em:skin>
       </Description>
     </em:file>
+    -->
 
     <em:localized>
       <Description>
@@ -33,6 +35,7 @@
         <em:contributor>Lukas Knop</em:contributor>
       </Description>
     </em:localized>
+    <em:type>2</em:type>
 
     <em:creator>Pekka Sillanpaa</em:creator>
     <em:description>Comfortable surfing with keyboard.</em:description>
