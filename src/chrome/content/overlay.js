@@ -171,6 +171,7 @@ function Surfkeys_(reload) {
           if (modifiers) {
             keyNode.setAttribute('modifiers', modifiers);
           }
+          /* must use setattribute to override values */
           if (command) {
             keyNode.setAttribute('command', command);
           }

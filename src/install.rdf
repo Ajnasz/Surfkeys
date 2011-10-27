@@ -11,7 +11,7 @@
       <Description>
         <em:id>{ec8030f7-c20a-464f-9b0e-13a3a9e97384}</em:id>
         <em:minVersion>3.0</em:minVersion>
-        <em:maxVersion>4.0</em:maxVersion>
+        <em:maxVersion>9.*</em:maxVersion>
       </Description>
     </em:targetApplication>
 
@@ -44,6 +44,5 @@
     <em:homepageURL>http://surfkeys.mozdev.org</em:homepageURL>
     <em:contributor>Lajos Koszti</em:contributor>
     <em:contributor>Lukas Knop</em:contributor>
-    <em:updateURL>https://www.mozdev.org/p/updates/surfkeys/{a44ef047-cd8d-406e-a354-b7101bd24735}/update.rdf</em:updateURL>
   </Description>
 </RDF>
