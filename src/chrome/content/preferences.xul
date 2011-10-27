@@ -54,10 +54,10 @@
           <vbox flex="1">
             <hbox align="center" flex="1">
               <label value="key" control="current-key" /><textbox id="current-key" size="25"/>
-              <checkbox id="current-disabled" label="disabled" oncommand="SK.Keys.setCurrentDisabled(this.checked);" />
+              <checkbox id="current-disabled" label="disabled" oncommand="SurfKeys.Keys.setCurrentDisabled(this.checked);" />
             </hbox>
             <label flex="1" value="Config keys" />
-            <tree id="sk-keys-tree" flex="1" rows="20" onselect="SK.Keys.keySelected();" class="tree" editable="true">
+            <tree id="sk-keys-tree" flex="1" rows="20" onselect="SurfKeys.Keys.keySelected();" class="tree" editable="true">
               <treecols>
                 <treecol id="idcol" label="id" flex="1" hidden="true" editable="true" />
                 <treecol id="namecol" label="name" flex="1" editable="true" />
@@ -85,13 +85,13 @@
               <vbox flex="1">
                 <label flex="1" value="&resultLinktexts.label;"/>
                 <hbox align="center" flex="1">
-                  <label control="sk-site-name" value="&surfkeys.sites.site;"/><textbox id="sk-site-name" size="5" flex="1" onkeyup="SK.Sites.setCurrentSite(this.value);" />
-                  <label control="sk-site-next" value="&surfkeys.sites.next;"/><textbox id="sk-site-next" size="5" onkeyup="SK.Sites.setCurrentNext(this.value);" />
-                  <label control="sk-site-prev" value="&surfkeys.sites.prev;"/><textbox id="sk-site-prev" size="5" onkeyup="SK.Sites.setCurrentPrev(this.value);" />
-                  <button id="sk-site-add" class="dialog" label="&surfkeys.sites.add;" onclick="SK.Sites.addSiteRow();" />
-                  <button id="sk-site-add" class="dialog" label="&surfkeys.sites.del;" onclick="SK.Sites.delSiteRow();" />
+                  <label control="sk-site-name" value="&surfkeys.sites.site;"/><textbox id="sk-site-name" size="5" flex="1" onkeyup="SurfKeys.Sites.setCurrentSite(this.value);" />
+                  <label control="sk-site-next" value="&surfkeys.sites.next;"/><textbox id="sk-site-next" size="5" onkeyup="SurfKeys.Sites.setCurrentNext(this.value);" />
+                  <label control="sk-site-prev" value="&surfkeys.sites.prev;"/><textbox id="sk-site-prev" size="5" onkeyup="SurfKeys.Sites.setCurrentPrev(this.value);" />
+                  <button id="sk-site-add" class="dialog" label="&surfkeys.sites.add;" onclick="SurfKeys.Sites.addSiteRow();" />
+                  <button id="sk-site-add" class="dialog" label="&surfkeys.sites.del;" onclick="SurfKeys.Sites.delSiteRow();" />
                 </hbox>
-                <tree id="sk-resultpattern-tree" rows="20" flex="1" onselect="SK.Sites.siteSelected();" class="tree">
+                <tree id="sk-resultpattern-tree" rows="20" flex="1" onselect="SurfKeys.Sites.siteSelected();" class="tree">
                   <treecols>
                     <treecol id="siteidcol" hidden="true" label="id" />
                     <treecol id="sitecol" label="&surfkeys.sites.title.site;" flex="1" />

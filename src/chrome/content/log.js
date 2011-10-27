@@ -40,4 +40,4 @@ SurfKeysLog.prototype = {
     };
   }
 };
-var SKLog = new SurfKeysLog();
+var SurfKeysLog = new SurfKeysLog();

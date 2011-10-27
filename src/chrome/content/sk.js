@@ -1,33 +1,33 @@
 /*jslint indent: 2*/
-/*global Components: true, alert: true, SKLog: true */
+/*global Components: true, alert: true, SurfKeysLog: true */
 /**
- * @module SK
+ * @module SurfKeys
  */
-var SK = {};
+var SurfKeys = {};
 /**
  * Method to access to the preferences of the surfkeys
- * @namespace SK
+ * @namespace SurfKeys
  * @method Prefs
  */
-SK.Prefs = function () {
+SurfKeys.Prefs = function () {
   return Components.classes["@mozilla.org/preferences-service;1"]
     .getService(Components.interfaces.nsIPrefService).getBranch("extensions.surfkeys.");
 };
 /**
  * Method to access to the default preferences of the surfkeys
- * @namespace SK
+ * @namespace SurfKeys
  * @method Prefs
  */
-SK.DefaultPrefs = function () {
+SurfKeys.DefaultPrefs = function () {
   return Components.classes["@mozilla.org/preferences-service;1"]
     .getService(Components.interfaces.nsIPrefService).getDefaultBranch("extensions.surfkeys.");
 };
 /**
- * @namespace SK
+ * @namespace SurfKeys
  */
-SK.Sites = {
+SurfKeys.Sites = {
   /**
-   * @namespace SK.Sites
+   * @namespace SurfKeys.Sites
    * @method createSiteStr
    * @param {String} site the url or regexp for a site
    * @param {String,Null} [next] pattern for the "next" link
@@ -37,19 +37,19 @@ SK.Sites = {
    */
   createSiteStr: function (site, next, prev, lastid) {
     if (!lastid) {
-      lastid = SK.Prefs().getIntPref('lastsiteid');
+      lastid = SurfKeys.Prefs().getIntPref('lastsiteid');
       lastid += 1;
     }
-    SK.Prefs().setIntPref('lastsiteid', lastid);
+    SurfKeys.Prefs().setIntPref('lastsiteid', lastid);
     return '{"id":"' + lastid + '","site":"' + site +
       '","next":"' + next + '","prev":"' + prev + '"}';
   },
   createSite: function (site, next, prev, lastid) {
     if (!lastid) {
-      lastid = SK.Prefs().getIntPref('lastsiteid');
+      lastid = SurfKeys.Prefs().getIntPref('lastsiteid');
       lastid += 1;
     }
-    SK.Prefs().setIntPref('lastsiteid', lastid);
+    SurfKeys.Prefs().setIntPref('lastsiteid', lastid);
     return {
       id: lastid,
       site: site,
@@ -65,7 +65,7 @@ SK.Sites = {
    */
   getSites: function (patternsStr) {
     if (!patternsStr) {
-      patternsStr = SK.Prefs().getCharPref('resultpattern');
+      patternsStr = SurfKeys.Prefs().getCharPref('resultpattern');
     }
     if (patternsStr.indexOf('%5') === 0) {
       patternsStr = decodeURIComponent(patternsStr);
@@ -166,16 +166,16 @@ SK.Sites = {
    */
   setSites: function (sites) {
     // sites = this.sitesToString(sites);
-    SK.Prefs().setCharPref('resultpattern', JSON.stringify(sites));
+    SurfKeys.Prefs().setCharPref('resultpattern', JSON.stringify(sites));
   },
   logSelected: function () {
-    SKLog.log('logselected: ', this.selectedSite.site);
+    SurfKeysLog.log('logselected: ', this.selectedSite.site);
   }
 };
-SK.Keys = {
+SurfKeys.Keys = {
   getKeys: function (keysStr) {
     if (!keysStr) {
-      keysStr = SK.Prefs().getCharPref("keys");
+      keysStr = SurfKeys.Prefs().getCharPref("keys");
     }
     var defaults, sandbox, i, parsed, keys;
     try {
@@ -189,7 +189,7 @@ SK.Keys = {
       }
     }
     try {
-      defaults = JSON.parse(SK.DefaultPrefs().getCharPref('keys'));
+      defaults = JSON.parse(SurfKeys.DefaultPrefs().getCharPref('keys'));
     } catch (er) {
       try {
         sandbox = Components.utils.Sandbox('http://surfkeys.mozdev.org/');
@@ -210,7 +210,7 @@ SK.Keys = {
       //keys = this.keysToString(keys);
       keys = JSON.stringify(keys);
     }
-    SK.Prefs().setCharPref('keys', keys);
+    SurfKeys.Prefs().setCharPref('keys', keys);
   },
   /**
    * @param {String} id The ID of the hotkey
@@ -233,7 +233,7 @@ SK.Keys = {
     var str = [], k;
     for (k in keys) {
       if (keys.hasOwnProperty(k)) {
-        str.push(SK.Keys.createKeyStr(k, keys[k].key, keys[k].shift,
+        str.push(SurfKeys.Keys.createKeyStr(k, keys[k].key, keys[k].shift,
           keys[k].alt, keys[k].control, keys[k].disabled));
       }
     }

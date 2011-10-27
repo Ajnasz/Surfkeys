@@ -1,15 +1,15 @@
 /*jslint indent: 2*/
-/*global SK: true */
+/*global SurfKeys: true */
 /**
- * @namespace SK
+ * @namespace SurfKeys
  */
-SK.EditPath = {
+SurfKeys.EditPath = {
   /**
    * Converts the current url to an object which contains the following properties:
    *  original: the original url
    *  domain: only the domain of the url
    *  extended: the original url without it's last element
-   * @namespace SK.EditPath
+   * @namespace SurfKeys.EditPath
    * @method getURl
    * @returns an object with the parsed url
    * @type Object
@@ -27,7 +27,7 @@ SK.EditPath = {
    * Initializer function, which sets the input labels in the path editor window
    */
   init: function (event) {
-    var values = SK.EditPath.getUrl(),
+    var values = SurfKeys.EditPath.getUrl(),
       inputs,
       customPath;
     // get input elements

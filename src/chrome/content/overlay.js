@@ -1,5 +1,5 @@
 /*jslint indent:2*/
-/*global SK: true, goDoCommand: true, gBrowser: true, gContextMenu: true, SKLog */
+/*global SurfKeys: true, goDoCommand: true, gBrowser: true, gContextMenu: true, SurfKeysLog */
 /**
  *
  * Mozilla Public License Notice
@@ -35,8 +35,8 @@
 function Surfkeys_(reload) {
   var sk_isFirstTime = true,
     surfScroll = false,
-    SK_X = 0,
-    SK_Y = 1,
+    SurfKeys_X = 0,
+    SurfKeys_Y = 1,
     scrDelta = [],
     scrAccel = [],
     s, // scroll interval
@@ -56,7 +56,7 @@ function Surfkeys_(reload) {
   function isSidebarWindow() {
     var focusedWindow = getWindow(),
       sidebarWindow = document.getElementById("sidebar").contentWindow;
-    if (SK.Prefs().getBoolPref('disableinsidebar') &&
+    if (SurfKeys.Prefs().getBoolPref('disableinsidebar') &&
       focusedWindow && focusedWindow === sidebarWindow) {
       return true;
     }
@@ -76,10 +76,10 @@ function Surfkeys_(reload) {
       Components.utils.import("resource://surfkeysmodules/Timer.jsm");
       never(s);
       surfScroll = false;
-      scrDelta[SK_X] = 0;
-      scrDelta[SK_Y] = 0;
-      scrAccel[SK_X] = 0;
-      scrAccel[SK_Y] = 0;
+      scrDelta[SurfKeys_X] = 0;
+      scrDelta[SurfKeys_Y] = 0;
+      scrAccel[SurfKeys_X] = 0;
+      scrAccel[SurfKeys_Y] = 0;
     }
     return 1;
   }
@@ -139,7 +139,7 @@ function Surfkeys_(reload) {
    */
   function setKeys() {
     postInstall();
-    var keys = SK.Keys.getKeys(),
+    var keys = SurfKeys.Keys.getKeys(),
       modifiers = [],
       keyNode, key, parent, command, oncommand,
       k, keyset;
@@ -200,7 +200,7 @@ function Surfkeys_(reload) {
         // url = win.location.href,
         linkArray = win.document.links,
         currloc = win.location.href,
-        sites = SK.Sites.getSites(),
+        sites = SurfKeys.Sites.getSites(),
         i, lr, link, txt, rel, title, href,
         j, sl, site, siter, rex;
 
@@ -234,7 +234,7 @@ function Surfkeys_(reload) {
    * ScrAccelerates the scroller either horizontally or vertically
    * by the given value
    *
-   * @param dir    direction, either SK_X or SK_Y
+   * @param dir    direction, either SurfKeys_X or SurfKeys_Y
    * @param value  value indicating the amount how much to scrAccelerate
    * @author       psillanp
    */
@@ -262,19 +262,19 @@ function Surfkeys_(reload) {
     if (isSidebarWindow()) {
       return;
     }
-    surfkeysScrAccelerateScroller(SK_Y, -1);
+    surfkeysScrAccelerateScroller(SurfKeys_Y, -1);
   };
   this.scrollDown = function () {
     if (isSidebarWindow()) {
       return;
     }
-    surfkeysScrAccelerateScroller(SK_Y, 1);
+    surfkeysScrAccelerateScroller(SurfKeys_Y, 1);
   };
   this.scrollLeft = function () {
-    surfkeysScrAccelerateScroller(SK_X, -1);
+    surfkeysScrAccelerateScroller(SurfKeys_X, -1);
   };
   this.scrollRight = function () {
-    surfkeysScrAccelerateScroller(SK_X, 1);
+    surfkeysScrAccelerateScroller(SurfKeys_X, 1);
   };
   this.pgDown = function () {
     stopScroller();
@@ -487,15 +487,15 @@ function Surfkeys_(reload) {
     var w = getWindow(),
       oScrollX = w.scrollX,
       oScrollY = w.scrollY;
-    w.scrollBy(scrDelta[SK_X], 0);
-    w.scrollBy(0, scrDelta[SK_Y]);
+    w.scrollBy(scrDelta[SurfKeys_X], 0);
+    w.scrollBy(0, scrDelta[SurfKeys_Y]);
     if (w.scrollX === oScrollX) {
-      scrDelta[SK_X] = 0;
+      scrDelta[SurfKeys_X] = 0;
     }
     if (w.scrollY === oScrollY) {
-      scrDelta[SK_Y] = 0;
+      scrDelta[SurfKeys_Y] = 0;
     }
-    if (scrDelta[SK_X] === 0 && scrDelta[SK_Y] === 0) {
+    if (scrDelta[SurfKeys_X] === 0 && scrDelta[SurfKeys_Y] === 0) {
       stopScroller();
     }
   };
@@ -529,16 +529,16 @@ function Surfkeys_(reload) {
       if (currloc.loc === false) {
         return;
       }
-      site = SK.Sites.getSiteFromURL(currloc.loc);
+      site = SurfKeys.Sites.getSiteFromURL(currloc.loc);
       if (!site) {
-        site = SK.Sites.createSite(currloc.loc, '', '');
+        site = SurfKeys.Sites.createSite(currloc.loc, '', '');
       }
       if (direction === 1) {
         site.next = linktext;
       } else {
         site.prev = linktext;
       }
-      SK.Sites.addSite(site);
+      SurfKeys.Sites.addSite(site);
       return;
     }
   }
@@ -560,7 +560,7 @@ function Surfkeys_(reload) {
     }
   }
   function postInstall() {
-    SK.Prefs().setCharPref('version', '###VERSION###');
+    SurfKeys.Prefs().setCharPref('version', '###VERSION###');
   }
   //  window.addEventListener("keypress", surfkeysOnKeypress, true);
   // listeners to suppress keyboard browsing when in menu
@@ -573,7 +573,7 @@ function Surfkeys_(reload) {
   } else {
     window.addEventListener("load", surfkeysLoad, true);
   }
-  // SKLog.log("Initialized!'!a");
+  // SurfKeysLog.log("Initialized!'!a");
 }
 
 var surfkeys = new Surfkeys_();
