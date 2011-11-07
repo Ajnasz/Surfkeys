@@ -37,6 +37,19 @@
     </em:localized>
     <em:type>2</em:type>
 
+    <em:localized>
+      <Description>
+        <em:locale>sv-SE</em:locale>
+        <em:name>Surfkeys</em:name>
+        <em:creator>Pekka Sillanpää</em:creator>
+        <em:description>Komfortabel surfning via tangentbordet.</em:description>
+        <em:homepageURL>http://surfkeys.mozdev.org</em:homepageURL>
+        <em:contributor>Lajos Koszti</em:contributor>
+        <em:contributor>Lukas Knop</em:contributor>
+        <em:translator>Mikael Hiort af Ornäs</em:translator>
+      </Description>
+    </em:localized>
+
     <em:creator>Pekka Sillanpaa</em:creator>
     <em:description>Comfortable surfing with keyboard.</em:description>
     <em:iconURL>chrome://surfkeys/skin/surfkeys-icon.png</em:iconURL>

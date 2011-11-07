@@ -1,11 +1,11 @@
-<!ENTITY settingsTitle.dialog "Inställningar">
+<!ENTITY settingsTitle.dialog "Inställningar för SurfKeys">
 <!ENTITY enabled.checkbox "Aktivera tillägget">
 <!ENTITY resultLinktexts.label "Surfningsmönster för resultatsidor">
 <!ENTITY surfkeys.markasnext.label "Märk som nästa ">
 <!ENTITY surfkeys.markasnext.key "2">
 <!ENTITY surfkeys.markasprev.label "Märk som föregående ">
 <!ENTITY surfkeys.markasprev.key "1">
-<!ENTITY surfkeys.disableinsidebar "Inaktivera SurfKeys i sidofältet">
+<!ENTITY surfkeys.disableinsidebar "Inaktivera SurfKeys i sidopanelen">
 <!ENTITY surfkeys.sites.site "Webbplats">
 <!ENTITY surfkeys.sites.next "Nästa">
 <!ENTITY surfkeys.sites.prev "Föregående">
@@ -14,7 +14,7 @@
 <!ENTITY surfkeys.sites.title.site "Webbplats">
 <!ENTITY surfkeys.sites.add "Lägg till webbplats">
 <!ENTITY surfkeys.sites.del "Ta bort webbplats">
-<!ENTITY surfkeys.editpath.title "Edit path">
-<!ENTITY surfkeys.editpath.pathlabel "Path">
-<!ENTITY surfkeys.editpath.custom "custom">
-<!ENTITY surfkeys.editpath.url "url">
+<!ENTITY surfkeys.editpath.title "Redigera sökväg">
+<!ENTITY surfkeys.editpath.pathlabel "Sökväg">
+<!ENTITY surfkeys.editpath.custom "Anpassad">
+<!ENTITY surfkeys.editpath.url "URL">
