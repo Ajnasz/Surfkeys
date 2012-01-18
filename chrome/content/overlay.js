@@ -137,7 +137,7 @@ var surfkeys;
       stopScroller();
     }
     function postInstall() {
-      SurfKeys.Prefs().setCharPref('version', '###VERSION###');
+      SurfKeys.Prefs().setCharPref('version', '___VERSION___');
     }
     /**
     * A function to change the key bindings

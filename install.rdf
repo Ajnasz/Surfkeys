@@ -4,7 +4,7 @@
   <Description about="urn:mozilla:install-manifest">
     <em:id>{a44ef047-cd8d-406e-a354-b7101bd24735}</em:id>
     <em:name>Surfkeys</em:name>
-    <em:version>###VERSION###</em:version>
+    <em:version>___VERSION___</em:version>
 
     <!-- Firefox -->
     <em:targetApplication>
