@@ -1,0 +1,77 @@
+!_TAG_FILE_FORMAT	2	/extended format; --format=1 will not append ;" to lines/
+!_TAG_FILE_SORTED	1	/0=unsorted, 1=sorted, 2=foldcase/
+!_TAG_PROGRAM_AUTHOR	Darren Hiebert	/dhiebert@users.sourceforge.net/
+!_TAG_PROGRAM_NAME	Exuberant Ctags	//
+!_TAG_PROGRAM_URL	http://ctags.sourceforge.net	/official site/
+!_TAG_PROGRAM_VERSION	5.7	//
+SK.DefaultPrefs	chrome/content/sk.js	/^SK.DefaultPrefs = function() {$/;"	f
+SK.Keys.keySelected	chrome/content/preferences.js	/^SK.Keys.keySelected = function() {$/;"	f
+SK.Keys.setCurrentAlt	chrome/content/preferences.js	/^SK.Keys.setCurrentAlt = function(val) {$/;"	c
+SK.Keys.setCurrentDisabled	chrome/content/preferences.js	/^SK.Keys.setCurrentDisabled = function(val) {$/;"	c
+SK.Keys.setCurrentKey	chrome/content/preferences.js	/^SK.Keys.setCurrentKey = function(val) {$/;"	c
+SK.Keys.setCurrentShift	chrome/content/preferences.js	/^SK.Keys.setCurrentShift = function(val) {$/;"	c
+SK.Keys.tree	chrome/content/preferences.js	/^SK.Keys.tree =  function() {return document.getElementById('sk-keys-tree');};$/;"	f
+SK.Prefs	chrome/content/sk.js	/^SK.Prefs = function() {$/;"	f
+SK.Sites.addSiteRow	chrome/content/preferences.js	/^SK.Sites.addSiteRow = function() {$/;"	f
+SK.Sites.delSiteRow	chrome/content/preferences.js	/^SK.Sites.delSiteRow = function() {$/;"	c
+SK.Sites.getSiteRow	chrome/content/preferences.js	/^SK.Sites.getSiteRow = function(site) {$/;"	f
+SK.Sites.setCurrentNext	chrome/content/preferences.js	/^SK.Sites.setCurrentNext = function(val) {$/;"	c
+SK.Sites.setCurrentPrev	chrome/content/preferences.js	/^SK.Sites.setCurrentPrev = function(val) {$/;"	c
+SK.Sites.setCurrentSite	chrome/content/preferences.js	/^SK.Sites.setCurrentSite = function(val) {$/;"	c
+SK.Sites.siteSelected	chrome/content/preferences.js	/^SK.Sites.siteSelected = function() {$/;"	c
+SK.Sites.siteSetCurrent	chrome/content/preferences.js	/^SK.Sites.siteSetCurrent = function(field, val) {$/;"	f
+SK.Sites.tree	chrome/content/preferences.js	/^SK.Sites.tree = function(){return document.getElementById('sk-resultpattern-tree')};$/;"	f
+SK_keygrab	chrome/content/keygrab.js	/^var SK_keygrab = function(event) {$/;"	f
+SurfKeysLog	chrome/content/log.js	/^var SurfKeysLog = function() {$/;"	c
+focusCurrentContent	chrome/content/overlay.js	/^  function focusCurrentContent() {$/;"	f
+focusShadow	chrome/content/keygrab.js	/^var focusShadow = function() {$/;"	f
+generateKeys	chrome/content/preferences.js	/^var generateKeys = function(keys, selection) {$/;"	f
+generatePattern	chrome/content/preferences.js	/^var generatePattern = function(patterns, selection, val) {$/;"	f
+getContent	chrome/content/overlay.js	/^  function getContent() {$/;"	f
+getWindow	chrome/content/overlay.js	/^  function getWindow() {$/;"	f
+initPreferences	chrome/content/preferences.js	/^var initPreferences = function() {$/;"	f
+isSidebarWindow	chrome/content/overlay.js	/^  function isSidebarWindow() {$/;"	f
+postInstall	chrome/content/overlay.js	/^  function postInstall() {$/;"	f
+postInstall.convertSites	chrome/content/overlay.js	/^    var convertSites = function() {$/;"	f
+setAllWinKeys	chrome/content/preferences.js	/^var setAllWinKeys = function() {$/;"	f
+setKeys	chrome/content/overlay.js	/^  function setKeys() {$/;"	f
+startScroller	chrome/content/overlay.js	/^  function startScroller() {$/;"	f
+stopScroller	chrome/content/overlay.js	/^  function stopScroller() {$/;"	f
+surfkeysChangePage	chrome/content/overlay.js	/^  function surfkeysChangePage(url, value) {$/;"	f
+surfkeysLoad	chrome/content/overlay.js	/^  function surfkeysLoad() {$/;"	f
+surfkeysScrAccelerateScroller	chrome/content/overlay.js	/^  function surfkeysScrAccelerateScroller(dir, value) {$/;"	f
+surfkeysShowcontext	chrome/content/overlay.js	/^  function surfkeysShowcontext() {$/;"	f
+surfkeys_	chrome/content/overlay.js	/^function surfkeys_(reload) {$/;"	c
+surfkeys_.SurfKeysAddNextPrev	chrome/content/overlay.js	/^  this.SurfKeysAddNextPrev = function(direction) {$/;"	m
+surfkeys_.back	chrome/content/overlay.js	/^  this.back = function() {$/;"	m
+surfkeys_.bottom	chrome/content/overlay.js	/^  this.bottom = function() {$/;"	m
+surfkeys_.closeTab	chrome/content/overlay.js	/^  this.closeTab = function() {$/;"	m
+surfkeys_.closeWindow	chrome/content/overlay.js	/^  this.closeWindow = function() {$/;"	m
+surfkeys_.focusFirst	chrome/content/overlay.js	/^  this.focusFirst = function() {$/;"	m
+surfkeys_.focusLast	chrome/content/overlay.js	/^  this.focusLast = function() {$/;"	m
+surfkeys_.forward	chrome/content/overlay.js	/^  this.forward = function() {$/;"	m
+surfkeys_.gotoLocationBar	chrome/content/overlay.js	/^  this.gotoLocationBar = function() {$/;"	m
+surfkeys_.moveLeft	chrome/content/overlay.js	/^  this.moveLeft = function() {$/;"	m
+surfkeys_.moveRight	chrome/content/overlay.js	/^  this.moveRight = function() {$/;"	m
+surfkeys_.moveToBeginning	chrome/content/overlay.js	/^  this.moveToBeginning = function() {$/;"	m
+surfkeys_.moveToEnd	chrome/content/overlay.js	/^  this.moveToEnd = function() {$/;"	m
+surfkeys_.newTab	chrome/content/overlay.js	/^  this.newTab = function() {$/;"	m
+surfkeys_.next	chrome/content/overlay.js	/^  this.next = function() {$/;"	m
+surfkeys_.nextRel	chrome/content/overlay.js	/^  var nextRel = function() {$/;"	m
+surfkeys_.nextTab	chrome/content/overlay.js	/^  this.nextTab = function() {$/;"	m
+surfkeys_.pgDown	chrome/content/overlay.js	/^  this.pgDown = function() {$/;"	m
+surfkeys_.pgUp	chrome/content/overlay.js	/^  this.pgUp = function() {$/;"	m
+surfkeys_.prevTab	chrome/content/overlay.js	/^  this.prevTab = function() {$/;"	m
+surfkeys_.previous	chrome/content/overlay.js	/^  this.previous = function() {$/;"	m
+surfkeys_.previousRel	chrome/content/overlay.js	/^  var previousRel = function() {$/;"	m
+surfkeys_.reload	chrome/content/overlay.js	/^  this.reload = function() {$/;"	m
+surfkeys_.scrollDown	chrome/content/overlay.js	/^  this.scrollDown = function() {$/;"	m
+surfkeys_.scrollLeft	chrome/content/overlay.js	/^  this.scrollLeft = function() {$/;"	m
+surfkeys_.scrollRight	chrome/content/overlay.js	/^  this.scrollRight = function() {$/;"	m
+surfkeys_.scrollUp	chrome/content/overlay.js	/^  this.scrollUp = function() {$/;"	m
+surfkeys_.scroller	chrome/content/overlay.js	/^  this.scroller = function() {$/;"	m
+surfkeys_.stop	chrome/content/overlay.js	/^  this.stop = function() {$/;"	m
+surfkeys_.top	chrome/content/overlay.js	/^  this.top = function() {$/;"	m
+surfkeys_.up	chrome/content/overlay.js	/^  this.up = function() {$/;"	m
+tree	chrome/content/preferences.js	/^  var tree = SK.Keys.tree();$/;"	v
+tree	chrome/content/preferences.js	/^  var tree = SK.Sites.tree();$/;"	v

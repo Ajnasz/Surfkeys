@@ -19,7 +19,13 @@ function buildXPI {
   cd ..;
   echo "Build package surfkeys.xpi";
   rm surfkeys.xpi;
-  zip surfkeys.xpi chrome.manifest install.rdf chrome/chrome.jar defaults/preferences/prefs.js -x \*CVS/\*;
+  zip surfkeys.xpi \
+    chrome.manifest \
+    install.rdf \
+    chrome/chrome.jar \
+    defaults/preferences/prefs.js \
+    modules/Timer.jsm \
+    -x \*CVS/\*;
 
   echo "Replace old XPIs with the new one";
   if [ -f $DOWNLOAD_DIR/surfkeys_$SFFVER.xpi ];then
@@ -39,10 +45,12 @@ function setVersion {
   echo "Set version to $SFVER";
   sed "s/###VERSION###/$SFVER/g" install.rdf > install.rdf.tmp;
   mv install.rdf.tmp install.rdf;
+  sed "s/###VERSION###/$SFVER/g" chrome/content/overlay.js > chrome/content/overlay.js.tmp;
+  mv chrome/content/overlay.js.tmp chrome/content/overlay.js;
 }
 
 if [ -z $1 ];then
-  SFVER='0.6';
+  SFVER='0.6.2b1';
 else
   SFVER=$1;
 fi
