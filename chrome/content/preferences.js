@@ -251,7 +251,6 @@
         },
         /**
         * Sets the the current key value
-        * @namespace scope.SurfKeys.Keys
         * @method setCurrentKey
         * @param {String} val the letter of the current key
         */
@@ -260,7 +259,7 @@
             * all of the keys
             * @private
             */
-            var keys = this.getKeys(),
+            var keys = scope.SurfKeys.Keys.getKeys(),
             /**
             * tree object
             * @private
@@ -279,11 +278,10 @@
                 return;
             }
             generateKeys(keys, tree.currentIndex);
-            this.setKeys(keys);
+            scope.SurfKeys.Keys.setKeys(keys);
         },
         /**
         * Changes the disable state of the currently selected key
-        * @namespace scope.SurfKeys.Keys
         * @method setCurrentDisabled
         * @param {Boolean} val
         */
@@ -292,7 +290,7 @@
             * all of the keys
             * @private
             */
-            var keys = this.getKeys(),
+            var keys = scope.SurfKeys.Keys.getKeys(),
             /**
             * tree object
             * @private
@@ -312,43 +310,42 @@
                 return;
             }
             generateKeys(keys, tree.currentIndex);
-            this.setKeys(keys);
-        }
-    };
-    /**
-    * Updates all value of the current key
-    * @namespace scope.SurfKeys.Keys
-    * @method setCurrent
-    * @param {Object} obj
-    */
-    scope.SurfKeys.Keys.setCurrent = function (obj) {
+            scope.SurfKeys.Keys.setKeys(keys);
+        },
         /**
-        * All of the keys
-        * @private
+        * Updates all value of the current key
+        * @method setCurrent
+        * @param {Object} obj
         */
-        var keys = this.getKeys(),
-        /**
-        * tree object
-        * @private
-        */
-        tree = scope.keysTree.getTree(),
-        /**
-        * The id of the selected key row
-        * @private
-        */
-        currentId = tree.view.getCellText(tree.currentIndex, tree.columns.getColumnAt(0));
-        keys[currentId].key = obj.key;
-        keys[currentId].shift = obj.shift;
-        keys[currentId].alt = obj.alt;
-        keys[currentId].control = obj.control;
-        keys[currentId].meta = obj.meta;
-        if (scope.SurfKeys.Keys.isConflict(keys)) {
-            alert('key config already used');
-            tree.view.selection.clearSelection();
-            tree.view.selection.select(tree.currentIndex);
-        } else {
-            generateKeys(keys, tree.currentIndex);
-            this.setKeys(keys);
+        setCurrent: function (obj) {
+            /**
+            * All of the keys
+            * @private
+            */
+            var keys = scope.SurfKeys.Keys.getKeys(),
+            /**
+            * tree object
+            * @private
+            */
+            tree = scope.keysTree.getTree(),
+            /**
+            * The id of the selected key row
+            * @private
+            */
+            currentId = tree.view.getCellText(tree.currentIndex, tree.columns.getColumnAt(0));
+            keys[currentId].key = obj.key;
+            keys[currentId].shift = obj.shift;
+            keys[currentId].alt = obj.alt;
+            keys[currentId].control = obj.control;
+            keys[currentId].meta = obj.meta;
+            if (scope.SurfKeys.Keys.isConflict(keys)) {
+                alert('key config already used');
+                tree.view.selection.clearSelection();
+                tree.view.selection.select(tree.currentIndex);
+            } else {
+                generateKeys(keys, tree.currentIndex);
+                scope.SurfKeys.Keys.setKeys(keys);
+            }
         }
     };
     /**
@@ -405,7 +402,7 @@
         }
         element.value = modifiers.length ? modifiers.join(' + ') + ' + ' : '';
         element.value += key.toUpperCase();
-        scope.SurfKeys.Keys.setCurrent(keys);
+        KeysCommands.setCurrent(keys);
         return false;
     };
     var SitesCommands = {
