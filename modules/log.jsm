@@ -28,12 +28,12 @@ SurfKeysLog.prototype = {
     * @param {String} arguments The arguments will be written to the error console
     */
     log: function () {
-        this.msg = '';
-        for (var i = 0; i < arguments.length; i += 1) {
-            this.msg += ', ' + arguments[i];
+        var msg = [], i, al;
+        for (i = 0, al = arguments.length; i < al; i += 1) {
+            msg.push(arguments[i].toString());
         }
         try {
-            this.s.logStringMessage('SurfKeys: ' + this.msg.replace(/^, /, ''));
+            this.s.logStringMessage('SurfKeys: ' + msg.join(', '));
         }
         catch (e) {
             // alert(this.msg.join(', '));
