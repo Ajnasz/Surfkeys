@@ -51,7 +51,7 @@
         <tabpanel>
           <vbox flex="1">
             <hbox align="center" flex="1">
-              <label value="key" control="current-key" /><textbox id="current-key" size="25"/>
+              <label value="key" control="sk-current-key" /><textbox id="sk-current-key" size="25"/>
               <checkbox id="sk-current-disabled" label="disabled" />
             </hbox>
             <label flex="1" value="Config keys" />
