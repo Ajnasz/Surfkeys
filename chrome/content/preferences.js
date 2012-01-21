@@ -552,3 +552,5 @@ var initPreferences = function () {
         scope.SurfKeys.Sites.delSiteRow();
     }, false);
 };
+window.addEventListener('load', initPreferences, false);
+window.addEventListener('dialogcancel', setAllWinKeys, false);

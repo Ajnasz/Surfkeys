@@ -28,8 +28,6 @@
 
 
 <prefwindow id="surfkeysPreferences" title = "Surfkeys preferences" xmlns="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul"
-  onload="initPreferences();"
-  ondialogcancel="setAllWinKeys();"
   height="400"
   width="600"
   persist="width,height">
