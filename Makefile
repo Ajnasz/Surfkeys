@@ -30,6 +30,7 @@ xpi:
 		chrome.manifest \
 		install.rdf \
 		modules/Timer.jsm \
+		modules/sk.jsm \
 		defaults/preferences/$(PROJECT_NAME).js \
 		chrome/ \
 		license.txt;

@@ -6,6 +6,8 @@
  * @param {Integer} [selection]
  * @param {String} [val]
  */
+
+Components.utils.import("resource://surfkeysmodules/sk.jsm");
 var generatePattern = function (patterns, selection, val) {
   if (!patterns) {
     patterns = false;

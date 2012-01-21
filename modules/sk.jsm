@@ -263,3 +263,5 @@ SurfKeys.Keys = {
     return false;
   }
 };
+
+var EXPORTED_SYMBOLS = ['SurfKeys'];

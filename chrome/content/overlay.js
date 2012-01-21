@@ -1,5 +1,5 @@
 /*jslint indent:2*/
-/*global SurfKeys: true, goDoCommand: true, gBrowser: true, gContextMenu: true, SurfKeysLog */
+/*global Components: true, goDoCommand: true, gBrowser: true, gContextMenu: true, SurfKeysLog: true */
 /**
  *
  * Mozilla Public License Notice
@@ -59,7 +59,8 @@ var surfkeys;
     function isSidebarWindow() {
       var focusedWindow = getWindow(),
         sidebarWindow = document.getElementById("sidebar").contentWindow;
-      if (SurfKeys.Prefs().getBoolPref('disableinsidebar') &&
+      Components.utils.import("resource://surfkeysmodules/sk.jsm", scope);
+      if (scope.SurfKeys.Prefs().getBoolPref('disableinsidebar') &&
         focusedWindow && focusedWindow === sidebarWindow) {
         return true;
       }
@@ -76,7 +77,7 @@ var surfkeys;
     }
     function stopScroller() {
       if (surfScroll) {
-        Components.utils.import("resource://surfkeysmodules/Timer.jsm");
+        Components.utils.import("resource://surfkeysmodules/Timer.jsm", scope);
         scope.never(s);
         surfScroll = false;
         scrDelta[SurfKeys_X] = 0;
@@ -137,7 +138,8 @@ var surfkeys;
       stopScroller();
     }
     function postInstall() {
-      SurfKeys.Prefs().setCharPref('version', '___VERSION___');
+      Components.utils.import("resource://surfkeysmodules/sk.jsm", scope);
+      scope.SurfKeys.Prefs().setCharPref('version', '___VERSION___');
     }
     /**
     * A function to change the key bindings
@@ -145,7 +147,8 @@ var surfkeys;
     */
     function setKeys() {
       postInstall();
-      var keys = SurfKeys.Keys.getKeys(),
+      Components.utils.import("resource://surfkeysmodules/sk.jsm", scope);
+      var keys = scope.SurfKeys.Keys.getKeys(),
         modifiers = [],
         keyNode, key, parent, command, oncommand,
         k, keyset;
@@ -203,11 +206,12 @@ var surfkeys;
     * @author       psillanp
     */
     function surfkeysChangePage(url, value) {
+      Components.utils.import("resource://surfkeysmodules/sk.jsm", scope);
       var win = getWindow(),
           // url = win.location.href,
           linkArray = win.document.links,
           currloc = win.location.href,
-          sites = SurfKeys.Sites.getSites(),
+          sites = scope.SurfKeys.Sites.getSites(),
           i, lr, link, txt, rel, title, href,
           j, sl, site, siter, rex;
 
@@ -536,16 +540,17 @@ var surfkeys;
         if (currloc.loc === false) {
           return;
         }
-        site = SurfKeys.Sites.getSiteFromURL(currloc.loc);
+        Components.utils.import("resource://surfkeysmodules/sk.jsm", scope);
+        site = scope.SurfKeys.Sites.getSiteFromURL(currloc.loc);
         if (!site) {
-          site = SurfKeys.Sites.createSite(currloc.loc, '', '');
+          site = scope.SurfKeys.Sites.createSite(currloc.loc, '', '');
         }
         if (direction === 1) {
           site.next = linktext;
         } else {
           site.prev = linktext;
         }
-        SurfKeys.Sites.addSite(site);
+        scope.SurfKeys.Sites.addSite(site);
         return;
       }
     };
@@ -578,6 +583,6 @@ var surfkeys;
       window.addEventListener("load", surfkeysLoad, true);
     }
     // SurfKeysLog.log("Initialized!'!a");
-  };
+  }
   surfkeys = new Surfkeys_();
 }());

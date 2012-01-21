@@ -1,8 +1,4 @@
 /*jslint indent: 2*/
-/*global SurfKeys: true */
-/**
- * @namespace SurfKeys
- */
 SurfKeys.EditPath = {
   /**
    * Converts the current url to an object which contains the following properties:
