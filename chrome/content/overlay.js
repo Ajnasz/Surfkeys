@@ -216,19 +216,29 @@ var surfkeys;
           j, sl, site, siter, rex;
 
       for (i = 0, lr = linkArray.length; i < lr; i += 1) {
-        txt = linkArray[i].innerHTML;
-        href = linkArray[i].href;
-        rel = linkArray[i].rel;
-        title = linkArray[i].title;
+        link = linkArray[i];
+        txt = link.textContent;
+        href = link.href;
+        rel = link.rel;
+        title = link.title;
         for (j = 0, sl = sites.length; j < sl; j += 1) {
           site = sites[j];
           // regexp for the url, to make possible the usage on sites like google.com/?search=.*
           siter = new RegExp(site.site);
           if (siter.test(currloc)) {
-            if (value === 1) {
+            switch (value) {
+            case 1:
+              if (!site.next) {
+                continue;
+              }
               rex = new RegExp('(?:\\b|^)' + site.next + '(?:\\b|$)');
-            } else if (value === 2) {
+              break;
+            case 2:
+              if (!site.prev) {
+                continue;
+              }
               rex = new RegExp('(?:\\b|^)' + site.prev + '(?:\\b|$)');
+              break;
             }
             //RC NEW: Bypass onsite check if javascript link
             if ((rel && rex.test(rel) || title && rex.test(title) ||
@@ -526,7 +536,7 @@ var surfkeys;
 
       if (gContextMenu) {
         href = gContextMenu.linkURL;
-        linktext = gContextMenu.linkText();
+        linktext = gContextMenu.target.textContent;
 
         hrefstripped = href.substring(href.indexOf("//") + 2, href.length);
         domain = hrefstripped.substring(0, hrefstripped.indexOf("/"));
