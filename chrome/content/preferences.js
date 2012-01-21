@@ -1,4 +1,4 @@
-/*global SurfKeys: true, Components: true, alert: true, SurfKeysLog: true */
+/*global Components: true, alert: true, SurfKeysLog: true */
 /**
  * generates the rows to the tree on the site matching tab
  * @param {Object} [patterns]
@@ -6,13 +6,26 @@
  * @param {String} [val]
  */
 
-Components.utils.import("resource://surfkeysmodules/sk.jsm");
+var scope = {};
+
+var SurfkeysTree = function (treeId) {
+    var tree = document.getElementById(treeId);
+    return {
+        setView: function (view) {
+            tree.view = view;
+        },
+        getTree: function () {
+            return tree;
+        }
+    };
+};
+Components.utils.import("resource://surfkeysmodules/sk.jsm", scope);
 var generatePattern = function (patterns, selection, val) {
     if (!patterns) {
         patterns = false;
     }
-    var sites, treeView, tree;
-    sites = SurfKeys.Sites.getSites(patterns);
+    var sites, treeView, tree, sitesTree;
+    sites = scope.SurfKeys.Sites.getSites(patterns);
     treeView = {
         rowCount: sites.length + 1,
         getCellText: function (row, column) {
@@ -55,11 +68,13 @@ var generatePattern = function (patterns, selection, val) {
         getCellProperties: function (row, col, props) {},
         getColumnProperties: function (colid, col, props) {}
     };
-    tree = SurfKeys.Sites.tree();
-    tree.view = treeView;
+    sitesTree = new SurfkeysTree('sk-resultpattern-tree');
+    scope.sitesTree = sitesTree;
+    sitesTree.setView(treeView);
+    tree = sitesTree.getTree();
 
     if (val) {
-        tree.view.selection.select(SurfKeys.Sites.getSiteRow(val));
+        tree.view.selection.select(scope.SurfKeys.Sites.getSiteRow(val));
     } else if (!isNaN(selection)) {
         tree.view.selection.select(selection);
     } else {
@@ -73,9 +88,9 @@ var generatePattern = function (patterns, selection, val) {
  */
 var generateKeys = function (keys, selection) {
     if (!keys) {
-        keys = SurfKeys.Keys.getKeys(keys);
+        keys = scope.SurfKeys.Keys.getKeys(keys);
     }
-    var _keys = [], key, treeView, tree;
+    var _keys = [], key, treeView, tree, keysTree;
     for (key in keys) {
         if (keys.hasOwnProperty(key)) {
             keys[key].id = key;
@@ -141,8 +156,10 @@ var generateKeys = function (keys, selection) {
         getCellProperties: function (row, col, props) {},
         getColumnProperties: function (colid, col, props) {}
     };
-    tree = SurfKeys.Keys.tree();
-    tree.view = treeView;
+    keysTree = new SurfkeysTree('sk-keys-tree');
+    keysTree.setView(treeView);
+    tree = keysTree.getTree();
+    scope.keysTree = keysTree;
     if (!isNaN(selection)) {
         tree.view.selection.select(selection);
     } else {
@@ -171,18 +188,18 @@ var setAllWinKeys = function () {
         }
     }
 };
-SurfKeys.Keys.tree = function () {
+scope.SurfKeys.Keys.tree = function () {
     return document.getElementById('sk-keys-tree');
 };
 /**
  * runs when select a row in a tree
  */
-SurfKeys.Keys.keySelected = function () {
+scope.SurfKeys.Keys.keySelected = function () {
     /**
     * tree object
     * @private
     */
-    var tree = SurfKeys.Keys.tree(), selectedKey, currentKey, currentDisabled, modifiers;
+    var tree = scope.keysTree.getTree(), selectedKey, currentKey, currentDisabled, modifiers;
     /**
     * the properties of the currently selected command
     * @private
@@ -206,7 +223,7 @@ SurfKeys.Keys.keySelected = function () {
     * the disabler checkbox
     * @param
     */
-    currentDisabled = document.getElementById('current-disabled');
+    currentDisabled = document.getElementById('sk-current-disabled');
     /**
     * an array to store the active modifiers
     * @param
@@ -234,11 +251,11 @@ SurfKeys.Keys.keySelected = function () {
 };
 /**
  * Sets the the current key value
- * @namespace SurfKeys.Keys
+ * @namespace scope.SurfKeys.Keys
  * @method setCurrentKey
  * @param {String} val the letter of the current key
  */
-SurfKeys.Keys.setCurrentKey = function (val) {
+scope.SurfKeys.Keys.setCurrentKey = function (val) {
     /**
     * all of the keys
     * @private
@@ -255,7 +272,7 @@ SurfKeys.Keys.setCurrentKey = function (val) {
     */
     currentId = tree.view.getCellText(tree.currentIndex, tree.columns.getColumnAt(0));
     keys[currentId].key = val;
-    if (SurfKeys.Keys.isConflict(keys)) {
+    if (scope.SurfKeys.Keys.isConflict(keys)) {
         alert('key already used');
         tree.view.selection.clearSelection();
         tree.view.selection.select(tree.currentIndex);
@@ -266,11 +283,11 @@ SurfKeys.Keys.setCurrentKey = function (val) {
 };
 /**
  * Changes the disable state of the currently selected key
- * @namespace SurfKeys.Keys
+ * @namespace scope.SurfKeys.Keys
  * @method setCurrentDisabled
  * @param {Boolean} val
  */
-SurfKeys.Keys.setCurrentDisabled = function (val) {
+scope.SurfKeys.Keys.setCurrentDisabled = function (val) {
     /**
     * all of the keys
     * @private
@@ -288,7 +305,7 @@ SurfKeys.Keys.setCurrentDisabled = function (val) {
     currentId = tree.view.getCellText(tree.currentIndex, tree.columns.getColumnAt(0));
 
     keys[currentId].disabled = val;
-    if (SurfKeys.Keys.isConflict(keys)) {
+    if (scope.SurfKeys.Keys.isConflict(keys)) {
         alert('key already used');
         tree.view.selection.clearSelection();
         tree.view.selection.select(tree.currentIndex);
@@ -299,11 +316,11 @@ SurfKeys.Keys.setCurrentDisabled = function (val) {
 };
 /**
  * Updates all value of the current key
- * @namespace SurfKeys.Keys
+ * @namespace scope.SurfKeys.Keys
  * @method setCurrent
  * @param {Object} obj
  */
-SurfKeys.Keys.setCurrent = function (obj) {
+scope.SurfKeys.Keys.setCurrent = function (obj) {
     /**
     * All of the keys
     * @private
@@ -324,7 +341,7 @@ SurfKeys.Keys.setCurrent = function (obj) {
     keys[currentId].alt = obj.alt;
     keys[currentId].control = obj.control;
     keys[currentId].meta = obj.meta;
-    if (SurfKeys.Keys.isConflict(keys)) {
+    if (scope.SurfKeys.Keys.isConflict(keys)) {
         alert('key config already used');
         tree.view.selection.clearSelection();
         tree.view.selection.select(tree.currentIndex);
@@ -339,7 +356,7 @@ SurfKeys.Keys.setCurrent = function (obj) {
  * @method grabKey
  * @param {Event} event A keypress event
  */
-SurfKeys.Keys.grabKey = function (event) {
+scope.SurfKeys.Keys.grabKey = function (event) {
     event.preventDefault();
     event.stopPropagation();
     /**
@@ -387,16 +404,13 @@ SurfKeys.Keys.grabKey = function (event) {
     }
     element.value = modifiers.length ? modifiers.join(' + ') + ' + ' : '';
     element.value += key.toUpperCase();
-    SurfKeys.Keys.setCurrent(keys);
+    scope.SurfKeys.Keys.setCurrent(keys);
     return false;
 };
 /**
- * Extending SurfKeys.Sites object for preferences window
+ * Extending scope.SurfKeys.Sites object for preferences window
  */
-SurfKeys.Sites.tree = function () {
-    return document.getElementById('sk-resultpattern-tree');
-};
-SurfKeys.Sites.siteSelected = function () {
+scope.SurfKeys.Sites.siteSelected = function () {
     var tree = this.tree(),
     currentIndex = tree.currentIndex,
     currentId,
@@ -421,21 +435,21 @@ SurfKeys.Sites.siteSelected = function () {
  * Sets the current value for the site
  * @param {String} val The url what should be the current site
  */
-SurfKeys.Sites.setCurrentSite = function (val) {
+scope.SurfKeys.Sites.setCurrentSite = function (val) {
     this.siteSetCurrent('site', val);
 };
 /**
  * Sets the current value of the next property
  * @param {String} val the inner text of the next link
  */
-SurfKeys.Sites.setCurrentNext = function (val) {
+scope.SurfKeys.Sites.setCurrentNext = function (val) {
     this.siteSetCurrent('next', val);
 };
 /**
  * Sets the current value of the previous property
  * @param {String} val the inner text of the previous link
  */
-SurfKeys.Sites.setCurrentPrev = function (val) {
+scope.SurfKeys.Sites.setCurrentPrev = function (val) {
     this.siteSetCurrent('prev', val);
 };
 /**
@@ -443,7 +457,7 @@ SurfKeys.Sites.setCurrentPrev = function (val) {
  * @param {String} field The field name what should be changed
  * @param {String} value The new value
  */
-SurfKeys.Sites.siteSetCurrent = function (field, val) {
+scope.SurfKeys.Sites.siteSetCurrent = function (field, val) {
     var tree, currentSite, site;
     /**
     * tree object
@@ -459,16 +473,16 @@ SurfKeys.Sites.siteSetCurrent = function (field, val) {
     * The current site object
     * @private
     */
-    site = SurfKeys.Sites.getSiteFromID(currentSite);
+    site = scope.SurfKeys.Sites.getSiteFromID(currentSite);
     if (!site) {
-        site = SurfKeys.Sites.createSite('', '', '');
+        site = scope.SurfKeys.Sites.createSite('', '', '');
     }
     if (['site', 'next', 'prev', 'id'].indexOf(field) > -1) {
         site[field] = val;
         if (site.site === '') {
-            SurfKeys.Sites.removeSite(site.id);
+            scope.SurfKeys.Sites.removeSite(site.id);
         } else {
-            SurfKeys.Sites.addSite(site);
+            scope.SurfKeys.Sites.addSite(site);
         }
         generatePattern(null, tree.currentIndex);
     }
@@ -476,7 +490,7 @@ SurfKeys.Sites.siteSetCurrent = function (field, val) {
 /**
  * Adds row to the tree
  */
-SurfKeys.Sites.addSiteRow = function () {
+scope.SurfKeys.Sites.addSiteRow = function () {
     generatePattern();
     var tree = this.tree();
     tree.view.selection.select(tree.view.rowCount - 1);
@@ -484,13 +498,13 @@ SurfKeys.Sites.addSiteRow = function () {
 /**
  * Deletes a row from the tree
  */
-SurfKeys.Sites.delSiteRow = function () {
+scope.SurfKeys.Sites.delSiteRow = function () {
     this.setCurrentSite('');
 };
 /**
  * @param {String} site
  */
-SurfKeys.Sites.getSiteRow = function (site) {
+scope.SurfKeys.Sites.getSiteRow = function (site) {
     /**
     * tree object
     * @private
@@ -515,5 +529,26 @@ SurfKeys.Sites.getSiteRow = function (site) {
 var initPreferences = function () {
     generateKeys();
     generatePattern();
-    document.getElementById('current-key').addEventListener('keypress', SurfKeys.Keys.grabKey, true);
+    document.getElementById('current-key').addEventListener('keypress', scope.SurfKeys.Keys.grabKey, true);
+    document.getElementById('sk-current-disabled').addEventListener('command', function () {
+        scope.SurfKeys.Keys.setCurrentDisabled(this.checked);
+    }, false);
+    document.getElementById('sk-keys-tree').addEventListener('select', function () {
+        scope.SurfKeys.Keys.keySelected();
+    }, false);
+    document.getElementById('sk-site-name').addEventListener('keyup', function () {
+        scope.SurfKeys.Sites.setCurrentSite(this.value);
+    }, false);
+    document.getElementById('sk-site-next').addEventListener('keyup', function () {
+        scope.SurfKeys.Sites.setCurrentNext(this.value);
+    }, false);
+    document.getElementById('sk-site-prev').addEventListener('keyup', function () {
+        scope.SurfKeys.Sites.setCurrentPrev(this.value);
+    }, false);
+    document.getElementById('sk-site-add').addEventListener('click', function () {
+        scope.SurfKeys.Sites.addSiteRow();
+    }, false);
+    document.getElementById('sk-site-remove').addEventListener('click', function () {
+        scope.SurfKeys.Sites.delSiteRow();
+    }, false);
 };
