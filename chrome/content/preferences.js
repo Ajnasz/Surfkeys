@@ -68,6 +68,7 @@
             },
             getRowProperties: function (row, props) {},
             getCellProperties: function (row, col, props) {},
+            cycleHeader: function (col, elem) {},
             getColumnProperties: function (colid, col, props) {}
         };
         sitesTree = new SurfkeysTree('sk-resultpattern-tree');
