@@ -8,7 +8,7 @@
     */
 
     var scope = {}, initPreferences, SurfkeysTree, generatePattern, generateKeys,
-        setAllWinKeys;
+        setAllWinKeys, KeysCommands, SitesCommands;
 
     SurfkeysTree = function (treeId) {
         var tree = document.getElementById(treeId);
@@ -194,7 +194,7 @@
     /**
     * runs when select a row in a tree
     */
-    var KeysCommands = {
+    KeysCommands = {
         keySelected: function () {
             /**
             * tree object
@@ -406,7 +406,7 @@
         KeysCommands.setCurrent(keys);
         return false;
     };
-    var SitesCommands = {
+    SitesCommands = {
         /**
         * Sets the current value for the site
         * @param {String} val The url what should be the current site
@@ -552,7 +552,7 @@
         }, false);
         document.getElementById('sk-resultpattern-tree').addEventListener('select', function () {
             SitesCommands.siteSelected();
-        }, false)
+        }, false);
         generateKeys();
         generatePattern();
     };
