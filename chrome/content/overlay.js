@@ -1,5 +1,5 @@
 /*jslint indent:2*/
-/*global Components: true, goDoCommand: true, gBrowser: true, gContextMenu: true, SurfKeysLog: true */
+/*global Components: true, goDoCommand: true, gBrowser: true, gContextMenu: true */
 /**
  *
  * Mozilla Public License Notice
@@ -582,7 +582,6 @@ var surfkeys;
     } else {
       window.addEventListener("load", surfkeysLoad, true);
     }
-    // SurfKeysLog.log("Initialized!'!a");
   }
   surfkeys = new Surfkeys_();
 }());

@@ -1,5 +1,5 @@
 /*jslint indent: 2*/
-/*global Components: true, alert: true, SurfKeysLog: true */
+/*global Components: true */
 /**
  * @module SurfKeys
  */
@@ -169,7 +169,8 @@ SurfKeys.Sites = {
     SurfKeys.Prefs().setCharPref('resultpattern', JSON.stringify(sites));
   },
   logSelected: function () {
-    SurfKeysLog.log('logselected: ', this.selectedSite.site);
+    Components.utils.import("resource://surfkeysmodules/log.jsm", this);
+    this.surfKeysLog.log('logselected: ', this.selectedSite.site);
   }
 };
 SurfKeys.Keys = {

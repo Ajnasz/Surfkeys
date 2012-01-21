@@ -1,5 +1,5 @@
 (function () {
-    /*global Components: true, alert: true, SurfKeysLog: true */
+    /*global Components: true, alert: true */
     /**
     * generates the rows to the tree on the site matching tab
     * @param {Object} [patterns]

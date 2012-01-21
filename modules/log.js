@@ -41,4 +41,6 @@ SurfKeysLog.prototype = {
         }
     }
 };
-var SurfKeysLog = new SurfKeysLog();
+var surfKeysLog = new SurfKeysLog();
+
+let EXPORTED_SYMBOLS = ['surfKeysLog'];
