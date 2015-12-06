@@ -34,6 +34,8 @@
 
 var surfkeys;
 (function () {
+	var scrollBlacklist = ['plus.google.com', 'blog.hu', 'feedly.com'];
+
   function Surfkeys_(reload) {
     var sk_isFirstTime = true,
       surfScroll = false,
@@ -56,6 +58,23 @@ var surfkeys;
     function getWindow() {
       return document.commandDispatcher.focusedWindow;
     }
+
+	function isScrollBlackListed() {
+		var focusedWindow = getWindow();
+		var loc = focusedWindow.location;
+		var regexp;
+
+		if (!loc) {
+			return false;
+		}
+
+		regexp = new RegExp(loc.hostname + '$');
+
+		return scrollBlacklist.some(function (i) {
+			return regexp.test(i);
+		});
+	}
+
     function isSidebarWindow() {
       var focusedWindow = getWindow(),
         sidebarWindow = document.getElementById("sidebar").contentWindow;
@@ -283,13 +302,21 @@ var surfkeys;
       if (isSidebarWindow()) {
         return;
       }
-      surfkeysScrAccelerateScroller(SurfKeys_Y, -1);
+	  if (!isScrollBlackListed()) {
+		  surfkeysScrAccelerateScroller(SurfKeys_Y, -1);
+	  } else {
+		  stopScroller();
+	  }
     };
     this.scrollDown = function () {
       if (isSidebarWindow()) {
         return;
       }
-      surfkeysScrAccelerateScroller(SurfKeys_Y, 1);
+	  if (!isScrollBlackListed()) {
+		  surfkeysScrAccelerateScroller(SurfKeys_Y, 1);
+	  } else {
+		  stopScroller();
+	  }
     };
     this.scrollLeft = function () {
       surfkeysScrAccelerateScroller(SurfKeys_X, -1);
