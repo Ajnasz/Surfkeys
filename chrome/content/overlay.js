@@ -34,7 +34,14 @@
 
 var surfkeys;
 (function () {
-	var scrollBlacklist = ['plus.google.com', 'blog.hu', 'feedly.com'];
+	var scrollBlacklist = [
+		'plus.google.com',
+		'blog.hu',
+		'feedly.com',
+		'origo.hu',
+		'index.hu',
+		'twitter.com'
+	];
 
   function Surfkeys_(reload) {
     var sk_isFirstTime = true,
@@ -326,11 +333,17 @@ var surfkeys;
     };
     this.pgDown = function () {
       stopScroller();
+	  if (isScrollBlackListed()) {
+		  return;
+	  }
       // window._content.scrollByPages(1);
       goDoCommand('cmd_scrollPageDown');
     };
     this.pgUp = function () {
       stopScroller();
+	  if (isScrollBlackListed()) {
+		  return;
+	  }
       // window._content.scrollByPages(-1);
       goDoCommand('cmd_scrollPageUp');
     };
