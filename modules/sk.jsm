@@ -70,18 +70,7 @@ SurfKeys.Sites = {
     if (patternsStr.indexOf('%5') === 0) {
       patternsStr = decodeURIComponent(patternsStr);
     }
-    var patterns, sandbox;
-    try {
-      patterns = JSON.parse(patternsStr);
-    } catch (e) {
-      try {
-        sandbox = Components.utils.Sandbox('http://surfkeys.mozdev.org/');
-        patterns = Components.utils.evalInSandbox('(' + patternsStr + ')', sandbox);
-      } catch (er) {
-        patterns = [];
-      }
-    }
-    return patterns;
+    return JSON.parse(patternsStr);
   },
   /**
    * @param {Integer} id the id of the site
